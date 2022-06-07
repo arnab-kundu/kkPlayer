@@ -17,10 +17,11 @@ import java.io.OutputStream
  * @param context Context required for API level R
  */
 
+@Suppress("unused")
 object FolderFiles {
 
     private const val TAG = "FolderFiles"
-    const val PARENT_DIRECTORY_NAME = "ZebraApp"
+    const val PARENT_DIRECTORY_NAME = "kkPlayer"
 
     /**
      * Generic method to Create folder
@@ -53,7 +54,7 @@ object FolderFiles {
      * @param fileExtension
      */
     fun createFile(context: Context? = null, folderName: String, fileName: String, fileExtension: String? = null): File {
-
+        Log.d(TAG, "Android Device Build Version: ${Build.VERSION.SDK_INT}")
         val file: File = if (Build.VERSION.SDK_INT < Build.VERSION_CODES.R)
             File(Environment.getExternalStorageDirectory(), "$PARENT_DIRECTORY_NAME/$folderName/$fileName.$fileExtension")
         else
@@ -61,7 +62,8 @@ object FolderFiles {
                 File(context?.getExternalFilesDir(null), "$folderName/$fileName.$fileExtension")
             else
                 File(context?.getExternalFilesDir(null), "$folderName/$fileName")
-
+        //File(context?.externalCacheDir?.path, "$folderName/$fileName")
+        //File(context?.obbDir?.path, "$folderName/$fileName")
         if (!file.exists()) {
             try {
                 file.createNewFile()
@@ -69,6 +71,7 @@ object FolderFiles {
                 e.printStackTrace()
             }
         }
+        Log.d(TAG, "File path: ${file.absolutePath}")
         return file
     }
 

@@ -4,7 +4,6 @@ import android.content.Context
 import android.media.MediaPlayer
 import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -34,15 +33,17 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.work.Constraints
+import androidx.work.Data
+import androidx.work.NetworkType.UNMETERED
+import androidx.work.OneTimeWorkRequest.Builder
+import androidx.work.WorkManager
 import com.akundu.kkplayer.data.Song
 import com.akundu.kkplayer.data.SongDataProvider
-import com.akundu.kkplayer.network.ApiRequest
-import com.akundu.kkplayer.network.RetrofitRequest
 import com.akundu.kkplayer.ui.theme.KkPlayerTheme
-import okhttp3.ResponseBody
-import retrofit2.Call
-import retrofit2.Callback
+import com.akundu.kkplayer.work.DownloadWork
 import java.io.File
+import java.io.FileNotFoundException
 import java.io.FileOutputStream
 import java.io.IOException
 import java.io.InputStream
@@ -64,22 +65,12 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun SongItem(
-    song: Song,
-    modifier: Modifier = Modifier,
-) {
+fun SongItem(song: Song, modifier: Modifier = Modifier) {
     val context = LocalContext.current
     Row(
         modifier = Modifier
             .background(Color(0xFFF3D3C8))
-            .clickable {
-                val mPlayer: MediaPlayer = MediaPlayer.create(
-                    context,
-                    //R.raw.tu_hi_meri_shab_hai,
-                    Uri.parse(File("/storage/emulated/0/Android/data/com.akundu.kkplayer/files/${song.fileName}").toString())
-                )
-                mPlayer.start()
-            },
+            .clickable { playSong(context, song.fileName) },
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Image(
@@ -121,32 +112,61 @@ fun SongItem(
     }
 }
 
+fun playSong(context: Context, fileName: String) {
+    Logg.i("FileName: $fileName")
+
+    try {
+        val uriString: String = File("/storage/emulated/0/Android/data/com.akundu.kkplayer/files/${fileName}").toString()
+
+        val songFile = File(uriString)
+        val isFileExist = songFile.exists()
+        if (isFileExist) {
+            Logg.i("File exist: $isFileExist")
+
+            //val mPlayer: MediaPlayer = MediaPlayer.create(context, R.raw.tu_hi_meri_shab_hai)
+            val mPlayer: MediaPlayer = MediaPlayer.create(context, Uri.parse(uriString))
+            mPlayer.start()
+        } else {
+            Logg.e("File exist: $isFileExist")
+            Logg.e("UriString: $uriString")
+
+            Toast.makeText(context, "Please download", Toast.LENGTH_LONG).show()
+        }
+
+    } catch (e: FileNotFoundException) {
+        Logg.e("$fileName not found. Cause ${e.localizedMessage}")
+        Toast.makeText(context, "Please download", Toast.LENGTH_LONG).show()
+
+    } catch (e: NullPointerException) {
+        Logg.e("Cause ${e.localizedMessage}")
+        Toast.makeText(context, "Please download", Toast.LENGTH_LONG).show()
+    }
+}
+
 
 fun download(fileName: String, context: Context) {
     Toast.makeText(context, "Downloading: $fileName", Toast.LENGTH_LONG).show()
 
-    val apiRequest = RetrofitRequest.getRetrofitInstance().create(ApiRequest::class.java)
-    apiRequest.downloadSong(fileName = fileName).enqueue(object : Callback<ResponseBody> {
-        override fun onResponse(call: Call<ResponseBody>, response: retrofit2.Response<ResponseBody>) {
-            if (response.isSuccessful) {
-                val inputStream: InputStream? = response.body()?.byteStream()
-                val file = FolderFiles.createFile(context = context, folderName = "", fileName = fileName)
-                if (inputStream != null)
-                    copyInputStreamToFile(inputStream = inputStream, file = file)
-            } else {
-                Log.e("TAG", "StatusCode: ${response.code()}")
-            }
-        }
+    val data: Data = Data.Builder()
+        .putString("fileName", fileName)
+        .build()
 
-        override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-            Log.e("TAG", "onFailure: ${t.localizedMessage}")
-        }
-    })
+    val constraints: Constraints = Constraints.Builder()
+        .setRequiredNetworkType(UNMETERED)
+        .build()
+
+    val request = Builder(DownloadWork::class.java)
+        .setInputData(data)
+        .setConstraints(constraints)
+        .build()
+
+    WorkManager.getInstance(context).enqueue(request)
+
 }
 
 
 @Throws(IOException::class)
-private fun copyInputStreamToFile(inputStream: InputStream, file: File) {
+fun copyInputStreamToFile(inputStream: InputStream, file: File) {
 
     FileOutputStream(file, false).use { outputStream ->
         var read: Int

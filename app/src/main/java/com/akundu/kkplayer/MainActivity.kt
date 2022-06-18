@@ -219,14 +219,26 @@ fun SongListPreview() {
 
 
 private fun getDrawable(movie: String): Int {
-    return when (movie) {
-        "Gangster" -> R.drawable.gangster
-        "Jannat" -> R.drawable.jannat
-        "Woh Lamhe" -> R.drawable.woh_lamhe
+    return when(movie) {
         "Bajrangi Bhaijaan" -> R.drawable.bajrangi_bhaijaan
-        "Kites" -> R.drawable.kites
-        "Live-The Train" -> R.drawable.the_train
-        else -> R.drawable.ic_music
+        "EK THA TIGER"      -> R.drawable.ek_tha_tiger
+        "Gangster"          -> R.drawable.gangster
+        "Jannat"            -> R.drawable.jannat
+        "Jism"              -> R.drawable.jism
+        "Kites"             -> R.drawable.kites
+        "Laali Ki Shaadi"   -> R.drawable.laali_ki_shaadi
+        "Musafir"           -> R.drawable.musafir
+        "New York"          -> R.drawable.new_york
+        "Om Shanti Om"      -> R.drawable.om_shanti_om
+        "Raaz Reboot"       -> R.drawable.raaz_reboot
+        "Race"              -> R.drawable.race
+        "Raees"             -> R.drawable.raees
+        "Saathiya"          -> R.drawable.saathiya
+        "The Killer"        -> R.drawable.the_killer
+        "Live-The Train"    -> R.drawable.the_train
+        "Woh Lamhe"         -> R.drawable.woh_lamhe
+        "Zeher"             -> R.drawable.zeher
+        else                -> R.drawable.ic_music
     }
 }
 

@@ -2,6 +2,8 @@
   <code_scheme name="Project" version="173">
     <option name="RIGHT_MARGIN" value="180" />
     <JetCodeStyleSettings>
+      <option name="ALIGN_IN_COLUMNS_CASE_BRANCH" value="true" />
+      <option name="SPACE_BEFORE_WHEN_PARENTHESES" value="false" />
       <option name="NAME_COUNT_TO_USE_STAR_IMPORT" value="2147483647" />
       <option name="NAME_COUNT_TO_USE_STAR_IMPORT_FOR_MEMBERS" value="2147483647" />
       <option name="IMPORT_NESTED_CLASSES" value="true" />

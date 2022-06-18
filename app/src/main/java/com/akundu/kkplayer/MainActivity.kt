@@ -97,7 +97,7 @@ fun SongItem(song: Song, modifier: Modifier = Modifier) {
             }
         }
         IconButton(
-            onClick = { download(song.fileName, context) }
+            onClick = { download(context, song.fileName, song.movie) }
         ) {
             Icon(
                 painterResource(id = R.drawable.ic_download),
@@ -144,11 +144,15 @@ fun playSong(context: Context, fileName: String) {
 }
 
 
-fun download(fileName: String, context: Context) {
-    Toast.makeText(context, "Downloading: $fileName", Toast.LENGTH_LONG).show()
+fun download(context: Context, fileName: String, movie: String) {
+    Logg.i("Downloading: $fileName")
+    //Toast.makeText(context, "Downloading: $fileName", Toast.LENGTH_LONG).show()
 
+    val notificationID = (Math.random() * 10000000000000).toInt()
     val data: Data = Data.Builder()
         .putString("fileName", fileName)
+        .putString("movie", movie)
+        .putInt("notificationID", notificationID)
         .build()
 
     val constraints: Constraints = Constraints.Builder()
@@ -162,6 +166,15 @@ fun download(fileName: String, context: Context) {
 
     WorkManager.getInstance(context).enqueue(request)
 
+    AppsNotificationManager.getInstance(context)?.downloadingNotification(
+        targetNotificationActivity = MainActivity::class.java,
+        channelId = "CHANNEL_ID",
+        title = fileName,
+        text = "Downloading",
+        bigText = "",
+        notificationId = notificationID,
+        drawableId = getDrawable(movie)
+    )
 }
 
 

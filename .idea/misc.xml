@@ -3,11 +3,14 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Users/Dell/StudioProjects/kkPlayer/app/src/main/res/drawable-v24/background.xml" value="0.25833333333333336" />
+        <entry key="..\:/Users/Dell/StudioProjects/kkPlayer/app/src/main/res/drawable/shade.xml" value="0.25833333333333336" />
+        <entry key="..\:/Users/Dell/StudioProjects/kkPlayer/app/src/main/res/layout/activity_player.xml" value="0.2421875" />
         <entry key="..\:/Users/arnab/AndroidStudioProjects/kkPlayer/app/src/main/res/drawable/ic_download.xml" value="0.24259259259259258" />
       </map>
     </option>
   </component>
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="Android Studio default JDK" project-jdk-type="JavaSDK">
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="11" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/build/classes" />
   </component>
   <component name="ProjectType">

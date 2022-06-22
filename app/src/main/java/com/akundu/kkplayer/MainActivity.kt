@@ -1,6 +1,7 @@
 package com.akundu.kkplayer
 
 import android.content.Context
+import android.content.Intent
 import android.media.MediaPlayer
 import android.net.Uri
 import android.os.Bundle
@@ -113,9 +114,17 @@ fun SongItem(song: Song, modifier: Modifier = Modifier) {
 }
 
 fun playSong(context: Context, fileName: String) {
+
+    //TODO
+    // Only UI implemented
+    // Need proper logic implementation
+    val intent = Intent(context,PlayerActivity::class.java)
+    context.startActivity(intent)
+
     Logg.i("FileName: $fileName")
 
     try {
+
         val uriString: String = File("/storage/emulated/0/Android/data/com.akundu.kkplayer/files/${fileName}").toString()
 
         val songFile = File(uriString)
@@ -123,9 +132,13 @@ fun playSong(context: Context, fileName: String) {
         if (isFileExist) {
             Logg.i("File exist: $isFileExist")
 
+            val svc = Intent(context, BackgroundSoundService::class.java)
+            svc.putExtra("uri", uriString)
+            context.startService(svc)
+
             //val mPlayer: MediaPlayer = MediaPlayer.create(context, R.raw.tu_hi_meri_shab_hai)
-            val mPlayer: MediaPlayer = MediaPlayer.create(context, Uri.parse(uriString))
-            mPlayer.start()
+            //val mPlayer: MediaPlayer = MediaPlayer.create(context, Uri.parse(uriString))
+            //mPlayer.start()
         } else {
             Logg.e("File exist: $isFileExist")
             Logg.e("UriString: $uriString")

@@ -40,6 +40,8 @@ import androidx.work.WorkManager
 import com.akundu.kkplayer.Constants.MEDIA_PATH
 import com.akundu.kkplayer.data.Song
 import com.akundu.kkplayer.data.SongDataProvider
+import com.akundu.kkplayer.service.BackgroundSoundService
+import com.akundu.kkplayer.service.ServiceTools
 import com.akundu.kkplayer.ui.theme.KkPlayerTheme
 import com.akundu.kkplayer.work.DownloadWork
 import java.io.File
@@ -125,9 +127,13 @@ fun playSong(context: Context, fileName: String, index: Int) {
         if (isFileExist) {
             Logg.i("File exist: $isFileExist")
 
+            if (ServiceTools.isServiceRunning(context = context, "com.akundu.kkplayer.service.BackgroundSoundService")) {
+                context.stopService(Intent(context,BackgroundSoundService::class.java))
+            }
+
             val svc = Intent(context, BackgroundSoundService::class.java)
             svc.putExtra("uri", uriString)
-            //context.startService(svc)
+            context.startService(svc)
 
             val intent = Intent(context, PlayerActivity::class.java)
             intent.putExtra("index", index)

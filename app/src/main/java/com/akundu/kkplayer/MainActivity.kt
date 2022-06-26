@@ -99,19 +99,41 @@ fun SongItem(song: Song, index: Int) {
             }
         }
         IconButton(
-            onClick = { download(context, song.fileName, song.movie) }
+            onClick = {
+                if (isFileExists(fileName = song.fileName)) playSong(context, song.fileName, index) else download(context, song.fileName, song.movie)
+            }
         ) {
             Icon(
-                painterResource(id = R.drawable.ic_download),
-                contentDescription = "Download",
+                painter = painterResource(
+                    id = if (isFileExists(fileName = song.fileName)) android.R.drawable.ic_media_play else {
+                        R.drawable.ic_download
+                    }
+                ),
+                contentDescription = if (isFileExists(fileName = song.fileName)) "Play" else {
+                    "Download"
+                },
                 modifier = Modifier
                     .size(48.dp)
                     .clip(CircleShape)
                     .padding(8.dp),
-                tint = Color.Blue
+                tint = if (isFileExists(fileName = song.fileName)) Color(0xFF0C610C) else {
+                    Color.Blue
+                }
             )
         }
     }
+}
+
+fun isFileExists(fileName: String): Boolean {
+    val uriString: String = File("$MEDIA_PATH$fileName").toString()
+    val songFile = File(uriString)
+    val isFileExist = songFile.exists()
+    if (isFileExist)
+        Logg.i("Is file exists: $isFileExist. Filename: $fileName")
+    else
+        Logg.e("Is file exists: $isFileExist. Filename: $fileName")
+
+    return isFileExist
 }
 
 fun playSong(context: Context, fileName: String, index: Int) {
@@ -122,13 +144,10 @@ fun playSong(context: Context, fileName: String, index: Int) {
 
         val uriString: String = File("$MEDIA_PATH$fileName").toString()
 
-        val songFile = File(uriString)
-        val isFileExist = songFile.exists()
-        if (isFileExist) {
-            Logg.i("File exist: $isFileExist")
+        if (isFileExists(fileName = fileName)) {
 
             if (ServiceTools.isServiceRunning(context = context, "com.akundu.kkplayer.service.BackgroundSoundService")) {
-                context.stopService(Intent(context,BackgroundSoundService::class.java))
+                context.stopService(Intent(context, BackgroundSoundService::class.java))
             }
 
             val svc = Intent(context, BackgroundSoundService::class.java)
@@ -140,7 +159,7 @@ fun playSong(context: Context, fileName: String, index: Int) {
             context.startActivity(intent)
 
         } else {
-            Logg.e("File exist: $isFileExist")
+            Logg.e("File exist: false")
             Logg.e("UriString: $uriString")
 
             Toast.makeText(context, "Please download", Toast.LENGTH_SHORT).show()

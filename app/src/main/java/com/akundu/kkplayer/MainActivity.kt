@@ -152,7 +152,7 @@ fun playSong(context: Context, fileName: String, index: Int) {
 
             val svc = Intent(context, BackgroundSoundService::class.java)
             svc.putExtra("uri", uriString)
-            context.startService(svc)
+            //context.startService(svc)
 
             val intent = Intent(context, PlayerActivity::class.java)
             intent.putExtra("index", index)

@@ -1,5 +1,6 @@
 package com.akundu.kkplayer
 
+import android.content.Context
 import android.media.MediaPlayer
 import android.net.Uri
 import android.os.Bundle
@@ -26,6 +27,8 @@ import androidx.compose.material.SliderDefaults
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -136,6 +139,15 @@ fun AlbumArt(
 fun PlayerButtons(song: Song) {
 
     val context = LocalContext.current
+    val index = remember { mutableStateOf(0) }
+    val isPlaying = remember { mutableStateOf(false) }
+
+    val uriString: String = File("$MEDIA_PATH${song.fileName}").toString()
+    val mediaPlayer = remember {
+        MediaPlayer.create(context, Uri.parse(uriString))
+    }
+
+    val length = remember { mutableStateOf(0) }
 
     Row(
         modifier = Modifier
@@ -145,30 +157,18 @@ fun PlayerButtons(song: Song) {
     ) {
 
         IconButton(
-            onClick = { Log.d(TAG, "playerController: Previous") }
-        ) {
-            Icon(
-                painterResource(id = android.R.drawable.ic_media_previous),
-                contentDescription = "Download",
-                modifier = Modifier
-                    .size(48.dp)
-                    .clip(CircleShape)
-                    .padding(8.dp),
-                tint = Color.White
-            )
-        }
-
-        IconButton(
             onClick = {
-                Log.d(TAG, "playerController: Play")
-                val uriString: String = File("$MEDIA_PATH${song.fileName}").toString()
-                val mediaPlayer = MediaPlayer.create(context, Uri.parse(uriString))
-                mediaPlayer.start()
+                Log.d(TAG, "playerController: Previous")
+
+                if (index.value > 0) index.value--
+                else index.value = SongDataProvider.kkSongList.size - 1
+
+                playSong(context = context, SongDataProvider.kkSongList[index.value])
             }
         ) {
             Icon(
-                painterResource(id = android.R.drawable.ic_media_play),
-                contentDescription = "Play",
+                painterResource(id = android.R.drawable.ic_media_previous),
+                contentDescription = "Previous",
                 modifier = Modifier
                     .size(48.dp)
                     .clip(CircleShape)
@@ -177,12 +177,62 @@ fun PlayerButtons(song: Song) {
             )
         }
 
+
+        if (isPlaying.value) {
+            IconButton(
+                onClick = {
+                    Log.d(TAG, "playerController: Pause")
+                    isPlaying.value = false
+                    length.value = mediaPlayer.currentPosition
+                    mediaPlayer.pause()
+                }
+            ) {
+                Icon(
+                    painterResource(id = android.R.drawable.ic_media_pause),
+                    contentDescription = "Pause",
+                    modifier = Modifier
+                        .size(48.dp)
+                        .clip(CircleShape)
+                        .padding(8.dp),
+                    tint = Color.White
+                )
+            }
+        } else {
+
+            IconButton(
+                onClick = {
+                    Log.d(TAG, "playerController: Play")
+                    isPlaying.value = true
+                    mediaPlayer.start()
+                    mediaPlayer.seekTo(length.value)
+                }
+            ) {
+                Icon(
+                    painterResource(id = android.R.drawable.ic_media_play),
+                    contentDescription = "Play",
+                    modifier = Modifier
+                        .size(48.dp)
+                        .clip(CircleShape)
+                        .padding(8.dp),
+                    tint = Color.White
+                )
+            }
+        }
+
+
         IconButton(
-            onClick = { Log.d(TAG, "playerController: Next") }
+            onClick = {
+                Log.d(TAG, "playerController: Next")
+
+                if (index.value < SongDataProvider.kkSongList.size - 1) index.value++
+                else index.value = 0
+                mediaPlayer.release()
+                playSong(context = context, SongDataProvider.kkSongList[index.value])
+            }
         ) {
             Icon(
                 painterResource(id = android.R.drawable.ic_media_next),
-                contentDescription = "Download",
+                contentDescription = "Next",
                 modifier = Modifier
                     .size(48.dp)
                     .clip(CircleShape)
@@ -191,6 +241,13 @@ fun PlayerButtons(song: Song) {
             )
         }
     }
+}
+
+private fun playSong(context: Context, song: Song) {
+    val uriString: String = File("$MEDIA_PATH${song.fileName}").toString()
+
+    val mediaPlayer = MediaPlayer.create(context, Uri.parse(uriString))
+    mediaPlayer.start()
 }
 
 

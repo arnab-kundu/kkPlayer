@@ -53,7 +53,7 @@ class DownloadWork(val context: Context, workerParameters: WorkerParameters) :
             }
 
             override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                Logg.e("onFailure: ${t.localizedMessage}")
+                Logg.e("Song download failed: ${t.localizedMessage}")
             }
         })
         return Result.success()

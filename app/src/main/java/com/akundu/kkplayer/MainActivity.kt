@@ -2,8 +2,6 @@ package com.akundu.kkplayer
 
 import android.content.Context
 import android.content.Intent
-import android.media.MediaPlayer
-import android.net.Uri
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.ComponentActivity
@@ -16,7 +14,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
@@ -39,6 +37,7 @@ import androidx.work.Data
 import androidx.work.NetworkType.UNMETERED
 import androidx.work.OneTimeWorkRequest.Builder
 import androidx.work.WorkManager
+import com.akundu.kkplayer.Constants.MEDIA_PATH
 import com.akundu.kkplayer.data.Song
 import com.akundu.kkplayer.data.SongDataProvider
 import com.akundu.kkplayer.ui.theme.KkPlayerTheme
@@ -66,12 +65,12 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun SongItem(song: Song, modifier: Modifier = Modifier) {
+fun SongItem(song: Song, index: Int) {
     val context = LocalContext.current
     Row(
         modifier = Modifier
             .background(Color(0xFFF3D3C8))
-            .clickable { playSong(context, song.fileName) },
+            .clickable { playSong(context, song.fileName, index) },
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Image(
@@ -113,19 +112,13 @@ fun SongItem(song: Song, modifier: Modifier = Modifier) {
     }
 }
 
-fun playSong(context: Context, fileName: String) {
-
-    //TODO
-    // Only UI implemented
-    // Need proper logic implementation
-    val intent = Intent(context,PlayerActivity::class.java)
-    context.startActivity(intent)
+fun playSong(context: Context, fileName: String, index: Int) {
 
     Logg.i("FileName: $fileName")
 
     try {
 
-        val uriString: String = File("/storage/emulated/0/Android/data/com.akundu.kkplayer/files/${fileName}").toString()
+        val uriString: String = File("$MEDIA_PATH$fileName").toString()
 
         val songFile = File(uriString)
         val isFileExist = songFile.exists()
@@ -134,34 +127,35 @@ fun playSong(context: Context, fileName: String) {
 
             val svc = Intent(context, BackgroundSoundService::class.java)
             svc.putExtra("uri", uriString)
-            context.startService(svc)
+            //context.startService(svc)
 
-            //val mPlayer: MediaPlayer = MediaPlayer.create(context, R.raw.tu_hi_meri_shab_hai)
-            //val mPlayer: MediaPlayer = MediaPlayer.create(context, Uri.parse(uriString))
-            //mPlayer.start()
+            val intent = Intent(context, PlayerActivity::class.java)
+            intent.putExtra("index", index)
+            context.startActivity(intent)
+
         } else {
             Logg.e("File exist: $isFileExist")
             Logg.e("UriString: $uriString")
 
-            Toast.makeText(context, "Please download", Toast.LENGTH_LONG).show()
+            Toast.makeText(context, "Please download", Toast.LENGTH_SHORT).show()
         }
 
     } catch (e: FileNotFoundException) {
         Logg.e("$fileName not found. Cause ${e.localizedMessage}")
-        Toast.makeText(context, "Please download", Toast.LENGTH_LONG).show()
+        Toast.makeText(context, "Please download", Toast.LENGTH_SHORT).show()
 
     } catch (e: NullPointerException) {
         Logg.e("Cause ${e.localizedMessage}")
-        Toast.makeText(context, "Please download", Toast.LENGTH_LONG).show()
+        Toast.makeText(context, "Please download", Toast.LENGTH_SHORT).show()
     }
 }
 
 
 fun download(context: Context, fileName: String, movie: String) {
     Logg.i("Downloading: $fileName")
-    //Toast.makeText(context, "Downloading: $fileName", Toast.LENGTH_LONG).show()
 
-    val notificationID = (Math.random() * 10000000000000).toInt()
+    val notificationID = System.currentTimeMillis().toInt()
+
     val data: Data = Data.Builder()
         .putString("fileName", fileName)
         .putString("movie", movie)
@@ -206,7 +200,7 @@ fun copyInputStreamToFile(inputStream: InputStream, file: File) {
 @Preview
 @Composable
 fun SongItemPreview() {
-    SongItem(SongDataProvider.kkSongList[0])
+    SongItem(SongDataProvider.kkSongList[0], 0)
 }
 
 
@@ -217,8 +211,8 @@ fun SongListCompose(
 ) {
     // Use LazyRow when making horizontal lists
     LazyColumn(modifier = modifier) {
-        items(songList) { song ->
-            SongItem(song = song)
+        itemsIndexed(songList) { index, song ->
+            SongItem(song = song, index = index)
         }
     }
 }

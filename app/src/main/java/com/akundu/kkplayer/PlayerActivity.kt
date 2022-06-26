@@ -1,5 +1,7 @@
 package com.akundu.kkplayer
 
+import android.media.MediaPlayer
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
@@ -27,28 +29,39 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.akundu.kkplayer.R.drawable
+import androidx.compose.ui.unit.sp
+import com.akundu.kkplayer.Constants.MEDIA_PATH
 import com.akundu.kkplayer.data.Song
 import com.akundu.kkplayer.data.SongDataProvider
 import com.akundu.kkplayer.ui.theme.KkPlayerTheme
+import java.io.File
 
 private val TAG = "PlayerActivity"
 
 class PlayerActivity : ComponentActivity() {
 
+    var songIndex = 0
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+
+        val bundle = intent.extras
+        songIndex = bundle?.getInt("index") ?: 0
+
         setContent {
             KkPlayerTheme {
                 // A surface container using the 'background' color from the theme
                 Surface(color = MaterialTheme.colors.background) {
-                    PlayerPreview()
+                    Player(SongDataProvider.kkSongList[songIndex])
                 }
             }
         }
@@ -58,62 +71,76 @@ class PlayerActivity : ComponentActivity() {
 
 @Preview
 @Composable
-fun PlayerPreview() {
+fun PlayerPreview(song: Song = SongDataProvider.kkSongList[1]) {
+    Player(song = song)
+}
 
-    Column() {
-        Row(modifier = Modifier.weight(1F)) {
-            AlbumArt()
-        }
-        Row(modifier = Modifier.weight(1F)) {
+@Composable
+fun Player(song: Song) {
 
-        }
-    }
-
-    Box(modifier = Modifier.fillMaxSize()) {
-        Image(
-            painter = painterResource(drawable.background),
-            contentDescription = "Background",
-            modifier = Modifier
-                .fillMaxWidth()
-                .fillMaxHeight(),
-            contentScale = ContentScale.FillBounds,
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .fillMaxHeight(0.4f)
+    ) {
+        AlbumArt(
+            drawable = getDrawable(song.movie),
+            songTitle = song.title
         )
     }
+
+
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(
+                Brush.verticalGradient(
+                    colors = listOf(
+                        Color.Transparent,
+                        Color.Black,
+                        Color(0xFF101010),
+                        Color.DarkGray
+                    ),
+                    startY = 300f
+                )
+            )
+    )
 
     Box(modifier = Modifier.fillMaxSize()) {
         PlayerController(
             modifier = Modifier
                 .align(Alignment.BottomStart)
-                .background(Color(0x00F3D3C8))
+                .background(Color(0x00F3D3C8)),
+            song = song
         )
     }
 }
 
 @Composable
-fun AlbumArt() {
-    val context = LocalContext.current
+fun AlbumArt(
+    drawable: Int = R.drawable.bajrangi_bhaijaan,
+    songTitle: String? = null
+) {
 
     Image(
-        painterResource(id = drawable.bajrangi_bhaijaan),
-        contentDescription = null,
-        contentScale = ContentScale.FillBounds,
+        painterResource(id = drawable),
+        contentDescription = songTitle,
+        contentScale = ContentScale.Crop,
         modifier = Modifier
-            .fillMaxHeight()
-            .size(400.dp, 300.dp)
+            .fillMaxSize()
     )
-
 }
 
 
-@Preview
 @Composable
-fun PlayerButtons(
-    modifier: Modifier = Modifier
-        .size(width = 144.dp, height = 48.dp)
-        .fillMaxWidth(1F)
-) {
+fun PlayerButtons(song: Song) {
+
+    val context = LocalContext.current
+
     Row(
-        modifier = modifier,
+        modifier = Modifier
+            .size(width = 144.dp, height = 48.dp)
+            .fillMaxWidth(1F),
         verticalAlignment = Alignment.CenterVertically
     ) {
 
@@ -132,7 +159,12 @@ fun PlayerButtons(
         }
 
         IconButton(
-            onClick = { Log.d(TAG, "playerController: Play") }
+            onClick = {
+                Log.d(TAG, "playerController: Play")
+                val uriString: String = File("$MEDIA_PATH${song.fileName}").toString()
+                val mediaPlayer = MediaPlayer.create(context, Uri.parse(uriString))
+                mediaPlayer.start()
+            }
         ) {
             Icon(
                 painterResource(id = android.R.drawable.ic_media_play),
@@ -162,27 +194,26 @@ fun PlayerButtons(
 }
 
 
-@Preview
 @Composable
 fun PlayerController(
-    modifier: Modifier = Modifier.background(Color(0xFFF3D3C8)),
+    modifier: Modifier = Modifier,
     song: Song = SongDataProvider.kkSongList[0]
 ) {
 
     var sliderPosition = 0F
 
     Column(
-        modifier = modifier
-            .padding(24.dp),
+        modifier = modifier.padding(24.dp),
         verticalArrangement = Arrangement.Bottom,
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
 
         Text(
             text = song.title,
-            modifier = Modifier
-                .padding(horizontal = 16.dp)
+            modifier = Modifier.padding(horizontal = 16.dp),
+            style = TextStyle(color = Color.White, fontSize = 16.sp)
         )
+
         Slider(
             value = sliderPosition,
             onValueChange = { sliderPosition = it },
@@ -198,12 +229,32 @@ fun PlayerController(
             ),
             modifier = Modifier.padding(horizontal = 16.dp)
         )
-        PlayerButtons(
-            modifier = Modifier
-                .size(width = 144.dp, height = 80.dp)
-                .fillMaxWidth(1F)
-                .padding(0.dp, 0.dp, 0.dp, 32.dp),
-        )
 
+        PlayerButtons(song = song)
+
+    }
+}
+
+private fun getDrawable(movie: String): Int {
+    return when(movie) {
+        "Bajrangi Bhaijaan" -> R.drawable.bajrangi_bhaijaan
+        "EK THA TIGER"      -> R.drawable.ek_tha_tiger
+        "Gangster"          -> R.drawable.gangster
+        "Jannat"            -> R.drawable.jannat
+        "Jism"              -> R.drawable.jism
+        "Kites"             -> R.drawable.kites
+        "Laali Ki Shaadi"   -> R.drawable.laali_ki_shaadi
+        "Musafir"           -> R.drawable.musafir
+        "New York"          -> R.drawable.new_york
+        "Om Shanti Om"      -> R.drawable.om_shanti_om
+        "Raaz Reboot"       -> R.drawable.raaz_reboot
+        "Race"              -> R.drawable.race
+        "Raees"             -> R.drawable.raees
+        "Saathiya"          -> R.drawable.saathiya
+        "The Killer"        -> R.drawable.the_killer
+        "Live-The Train"    -> R.drawable.the_train
+        "Woh Lamhe"         -> R.drawable.woh_lamhe
+        "Zeher"             -> R.drawable.zeher
+        else                -> R.drawable.ic_music
     }
 }

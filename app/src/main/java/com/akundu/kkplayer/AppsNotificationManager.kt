@@ -27,36 +27,6 @@ class AppsNotificationManager private constructor(private val context: Context) 
         }
     }
 
-    fun triggerNotification(
-        targetNotificationActivity: Class<*>?,
-        channelId: String?,
-        title: String?,
-        text: String?,
-        bigText: String?,
-        priority: Int,
-        autoCancel: Boolean,
-        notificationId: Int
-    ) {
-        val intent = Intent(context, targetNotificationActivity)
-        intent.putExtra("count", title)
-        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-        val pendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_IMMUTABLE)
-        val builder: Builder = Builder(context, channelId!!)
-            .setSmallIcon(R.mipmap.ic_launcher)
-            //.setLargeIcon(BitmapFactory.decodeResource(context.resources, R.drawable.avd_delete))
-            .setContentTitle(title)
-            .setContentText(text)
-            .setStyle(BigTextStyle().bigText(bigText))
-            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-            .setContentIntent(pendingIntent)
-            .setChannelId(channelId)
-            .setAutoCancel(true)
-            .setOngoing(true)
-            .setProgress(100, 0, true)
-        val notificationManagerCompat = NotificationManagerCompat.from(context)
-        notificationManagerCompat.notify(notificationId, builder.build())
-    }
-
     fun downloadingNotification(
         targetNotificationActivity: Class<*>?,
         channelId: String,
@@ -83,64 +53,6 @@ class AppsNotificationManager private constructor(private val context: Context) 
             .setOngoing(true)
             .setProgress(100, 0, true)
         val notificationManagerCompat = NotificationManagerCompat.from(context)
-        notificationManagerCompat.notify(notificationId, builder.build())
-    }
-
-    fun triggerNotification(
-        targetNotificationActivity: Class<*>?,
-        channelId: String?,
-        title: String?,
-        text: String?,
-        bigText: String?,
-        priority: Int,
-        autoCancel: Boolean,
-        notificationId: Int,
-        pendingIntentFlag: Int
-    ) {
-        val intent = Intent(context, targetNotificationActivity)
-        intent.putExtra("count", title)
-        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-        val pendingIntent = PendingIntent.getActivity(context, 0, intent, pendingIntentFlag)
-        val builder: Builder = Builder(context, channelId!!)
-            .setSmallIcon(R.mipmap.ic_launcher)
-            //.setLargeIcon(BitmapFactory.decodeResource(context.resources, drawable.avd_delete))
-            .setContentTitle(title)
-            .setContentText(text)
-            .setStyle(BigTextStyle().bigText(bigText))
-            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-            .setContentIntent(pendingIntent)
-            .setChannelId(channelId)
-            .setAutoCancel(true)
-        notificationManagerCompat.notify(notificationId, builder.build())
-    }
-
-    fun triggerNotificationWithBackStack(
-        targetNotificationActivity: Class<*>?,
-        channelId: String?,
-        title: String?,
-        text: String?,
-        bigText: String?,
-        priority: Int,
-        autoCancel: Boolean,
-        notificationId: Int,
-        pendingIntentFlag: Int
-    ) {
-        val intent = Intent(context, targetNotificationActivity)
-        val taskStackBuilder = TaskStackBuilder.create(context)
-        taskStackBuilder.addNextIntentWithParentStack(intent)
-        intent.putExtra("count", title)
-        val pendingIntent = taskStackBuilder.getPendingIntent(0, pendingIntentFlag)
-        val builder: Builder = Builder(context, channelId!!)
-            .setSmallIcon(R.mipmap.ic_launcher)
-            //.setLargeIcon(BitmapFactory.decodeResource(context.resources, drawable.avd_delete))
-            .setContentTitle(title)
-            .setContentText(text)
-            .setStyle(BigTextStyle().bigText(bigText))
-            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-            .setContentIntent(pendingIntent)
-            .setChannelId(channelId)
-            .setOngoing(false)
-            .setAutoCancel(false)
         notificationManagerCompat.notify(notificationId, builder.build())
     }
 

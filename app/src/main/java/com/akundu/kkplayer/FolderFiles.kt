@@ -1,15 +1,21 @@
 package com.akundu.kkplayer
 
+import android.content.ContentResolver
+import android.content.ContentValues
 import android.content.Context
+import android.net.Uri
 import android.os.Build
 import android.os.Environment
+import android.provider.MediaStore
 import android.util.Log
 import okhttp3.ResponseBody
 import java.io.File
+import java.io.FileNotFoundException
 import java.io.FileOutputStream
 import java.io.IOException
 import java.io.InputStream
 import java.io.OutputStream
+import java.util.*
 
 
 /**
@@ -17,7 +23,7 @@ import java.io.OutputStream
  * @param context Context required for API level R
  */
 
-@Suppress("unused")
+//@Suppress("unused")
 object FolderFiles {
 
     private const val TAG = "FolderFiles"
@@ -55,7 +61,7 @@ object FolderFiles {
      */
     fun createFile(context: Context? = null, folderName: String, fileName: String, fileExtension: String? = null): File {
         Log.d(TAG, "Android Device Build Version: ${Build.VERSION.SDK_INT}")
-        val file: File = if (Build.VERSION.SDK_INT < Build.VERSION_CODES.R)
+        val file: File = if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O)
             File(Environment.getExternalStorageDirectory(), "$PARENT_DIRECTORY_NAME/$folderName/$fileName.$fileExtension")
         else
             if (fileExtension != null)
@@ -146,6 +152,12 @@ object FolderFiles {
         return false
     }
 
+    /**
+     * Writes inputStream to file
+     *
+     * @param inputStream
+     * @param file
+     */
     @Throws(IOException::class)
     fun copyInputStreamToFile(inputStream: InputStream, file: File) {
 
@@ -201,5 +213,32 @@ object FolderFiles {
         } catch (e: IOException) {
             false
         }
+    }
+
+
+    /**
+     * Save file in External Download Folder using content resolver
+     * Issue: Empty File saved but no data
+     */
+    fun saveFileToPhone(context: Context, inputStream: InputStream, filename: String): File? {
+
+        try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                val contentResolver: ContentResolver = context.contentResolver
+                val contentValues: ContentValues = ContentValues()
+                contentValues.put(MediaStore.Downloads.DISPLAY_NAME, filename)
+                contentValues.put(MediaStore.MediaColumns.RELATIVE_PATH, Environment.DIRECTORY_DOWNLOADS)
+                val collection: Uri = MediaStore.Downloads.getContentUri(MediaStore.VOLUME_EXTERNAL_PRIMARY)
+                val fileUri: Uri? = contentResolver.insert(collection, contentValues)
+                if (fileUri != null) {
+                    val outputStream: OutputStream? = contentResolver.openOutputStream(fileUri)
+                    Objects.requireNonNull(outputStream)
+                }
+                return File(fileUri.toString())
+            }
+        } catch (e: FileNotFoundException) {
+            e.printStackTrace()
+        }
+        return null
     }
 }

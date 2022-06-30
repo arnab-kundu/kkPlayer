@@ -6,10 +6,10 @@ import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import com.akundu.kkplayer.AppsNotificationManager
 import com.akundu.kkplayer.FolderFiles
+import com.akundu.kkplayer.FolderFiles.copyInputStreamToFile
 import com.akundu.kkplayer.Logg
 import com.akundu.kkplayer.MainActivity
 import com.akundu.kkplayer.R
-import com.akundu.kkplayer.copyInputStreamToFile
 import com.akundu.kkplayer.network.ApiRequest
 import com.akundu.kkplayer.network.RetrofitRequest
 import okhttp3.ResponseBody
@@ -36,6 +36,14 @@ class DownloadWork(val context: Context, workerParameters: WorkerParameters) :
                     val file = FolderFiles.createFile(context = context, folderName = "", fileName = fileName)
                     if (inputStream != null)
                         copyInputStreamToFile(inputStream = inputStream, file = file)
+
+                    if (inputStream != null) {
+                        val file = FolderFiles.saveFileToPhone(context = context, inputStream = inputStream, filename = fileName)
+                        Logg.i("File Path:" + file?.absolutePath)
+                        /*if (file != null)
+                            copyInputStreamToFile(inputStream = inputStream, file = file) */
+                    }
+
                 } else {
                     Logg.e("StatusCode: ${response.code()}")
                 }
@@ -52,7 +60,8 @@ class DownloadWork(val context: Context, workerParameters: WorkerParameters) :
             }
 
             override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                Logg.e("Song download failed: ${t.localizedMessage}")
+                AppsNotificationManager.getInstance(context)?.cancelNotification(notificationID)
+                Logg.e("Song download failed: ${t.message}")
             }
         })
         return Result.success()

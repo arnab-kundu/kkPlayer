@@ -188,9 +188,9 @@ fun download(context: Context, fileName: String, movie: String) {
         .build()
 
     val constraints: Constraints = Constraints.Builder()
-        .setRequiredNetworkType(NetworkType.UNMETERED)
-        .setRequiresBatteryNotLow(true)
-        .setRequiresStorageNotLow(true)
+        //.setRequiredNetworkType(NetworkType.UNMETERED)
+        //.setRequiresBatteryNotLow(true)
+        //.setRequiresStorageNotLow(true)
         .build()
 
     val request = Builder(DownloadWork::class.java)

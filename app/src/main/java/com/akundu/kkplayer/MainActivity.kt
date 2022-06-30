@@ -34,7 +34,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.work.Constraints
 import androidx.work.Data
-import androidx.work.NetworkType.UNMETERED
+import androidx.work.NetworkType
 import androidx.work.OneTimeWorkRequest.Builder
 import androidx.work.WorkManager
 import com.akundu.kkplayer.Constants.MEDIA_PATH
@@ -188,7 +188,9 @@ fun download(context: Context, fileName: String, movie: String) {
         .build()
 
     val constraints: Constraints = Constraints.Builder()
-        .setRequiredNetworkType(UNMETERED)
+        .setRequiredNetworkType(NetworkType.UNMETERED)
+        .setRequiresBatteryNotLow(true)
+        .setRequiresStorageNotLow(true)
         .build()
 
     val request = Builder(DownloadWork::class.java)

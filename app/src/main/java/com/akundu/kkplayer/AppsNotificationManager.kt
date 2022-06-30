@@ -1,9 +1,9 @@
 package com.akundu.kkplayer
 
+import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
-import android.app.TaskStackBuilder
 import android.content.Context
 import android.content.Intent
 import android.graphics.BitmapFactory
@@ -16,11 +16,13 @@ import androidx.core.app.NotificationManagerCompat
 
 
 class AppsNotificationManager private constructor(private val context: Context) {
-    private val notificationManagerCompat: NotificationManagerCompat
-    private val notificationManager: NotificationManager
-    fun registerNotificationChannelChannel(channelId: String?, channelName: String?, channelDescription: String?) {
+
+    private val notificationManagerCompat: NotificationManagerCompat = NotificationManagerCompat.from(context)
+    private val notificationManager: NotificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+
+    fun registerNotificationChannel(channelId: String?, channelName: String?, channelDescription: String?) {
         if (VERSION.SDK_INT >= VERSION_CODES.O) {
-            val notificationChannel = NotificationChannel(channelId, channelName, NotificationManager.IMPORTANCE_DEFAULT)
+            val notificationChannel = NotificationChannel(channelId, channelName, NotificationManager.IMPORTANCE_HIGH)
             notificationChannel.description = channelDescription
             val notificationManager = context.getSystemService(NotificationManager::class.java)
             notificationManager.createNotificationChannel(notificationChannel)
@@ -44,39 +46,44 @@ class AppsNotificationManager private constructor(private val context: Context) 
             .setSmallIcon(R.mipmap.ic_launcher)
             .setLargeIcon(BitmapFactory.decodeResource(context.resources, drawableId))
             .setContentTitle(title)
+            .setDefaults(Notification.VISIBILITY_PUBLIC)
             .setContentText(text)
             .setStyle(BigTextStyle().bigText(bigText))
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
             .setContentIntent(pendingIntent)
-            .setChannelId(channelId)
+            .setChannelId("1")
             .setAutoCancel(true)
             .setOngoing(true)
             .setProgress(100, 0, true)
-        val notificationManagerCompat = NotificationManagerCompat.from(context)
-        notificationManagerCompat.notify(notificationId, builder.build())
+        val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        if (VERSION.SDK_INT >= VERSION_CODES.O) {
+            val downloadingNotificationChannel = NotificationChannel("1", "Downloading song", NotificationManager.IMPORTANCE_HIGH)
+            notificationManager.createNotificationChannel(downloadingNotificationChannel)
+        }
+        notificationManager.notify(notificationId, builder.build())
     }
 
-    fun updateWithPicture(
+    fun downloadCompletedNotification(
         targetNotificationActivity: Class<*>?,
         title: String?,
         text: String?,
-        channelId: String?,
+        channelId: String,
         notificationId: Int,
-        pendingIntentflag: Int,
+        pendingIntentFlag: Int,
         drawableId: Int
     ) {
         val intent = Intent(context, targetNotificationActivity)
         intent.putExtra("count", title)
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-        val pendingIntent = PendingIntent.getActivity(context, 0, intent, pendingIntentflag)
-        val builder: Builder = Builder(context, channelId!!)
+        val pendingIntent = PendingIntent.getActivity(context, 0, intent, pendingIntentFlag)
+        val builder: Builder = Builder(context, channelId)
             .setSmallIcon(R.mipmap.ic_launcher)
             .setLargeIcon(BitmapFactory.decodeResource(context.resources, drawableId))
             .setContentTitle(title)
             .setContentText(text)
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
             .setContentIntent(pendingIntent)
-            .setChannelId(channelId)
+            .setChannelId("1")
             .setAutoCancel(true)
         //val androidImage = BitmapFactory.decodeResource(context.resources, drawable.alert_dark_frame)
         //builder.setStyle(BigPictureStyle().bigPicture(androidImage).setBigContentTitle(bigpictureString))
@@ -97,8 +104,4 @@ class AppsNotificationManager private constructor(private val context: Context) 
         }
     }
 
-    init {
-        notificationManagerCompat = NotificationManagerCompat.from(context)
-        notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-    }
 }

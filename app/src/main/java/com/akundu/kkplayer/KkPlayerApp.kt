@@ -4,17 +4,21 @@ import android.app.Application
 
 class KkPlayerApp : Application() {
 
-
     var appsNotificationManager: AppsNotificationManager? = null
 
     override fun onCreate() {
         super.onCreate()
 
         appsNotificationManager = AppsNotificationManager.getInstance(this@KkPlayerApp)
-        appsNotificationManager?.registerNotificationChannelChannel(
-            "CHANNEL_ID",
-            "CHANNEL_MESSAGING",
-            "CHANNEL_DESCRIPTION"
+        appsNotificationManager?.registerNotificationChannel(
+            channelId = "1",
+            channelName = "Download channel",
+            channelDescription = "Song download notifications"
+        )
+        appsNotificationManager?.registerNotificationChannel(
+            channelId = "2",
+            channelName = "Player channel",
+            channelDescription = "Playing song notification"
         )
 
     }

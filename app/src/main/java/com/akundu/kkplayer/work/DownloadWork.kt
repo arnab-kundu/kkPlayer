@@ -33,21 +33,20 @@ class DownloadWork(val context: Context, workerParameters: WorkerParameters) :
 
                 if (response.isSuccessful) {
                     val inputStream: InputStream? = response.body()?.byteStream()
-                    val file =
-                        FolderFiles.createFile(context = context, folderName = "", fileName = fileName)
+                    val file = FolderFiles.createFile(context = context, folderName = "", fileName = fileName)
                     if (inputStream != null)
                         copyInputStreamToFile(inputStream = inputStream, file = file)
                 } else {
                     Logg.e("StatusCode: ${response.code()}")
                 }
                 AppsNotificationManager.getInstance(context)?.cancelNotification(notificationID)
-                AppsNotificationManager.getInstance(context)?.updateWithPicture(
+                AppsNotificationManager.getInstance(context)?.downloadCompletedNotification(
                     targetNotificationActivity = MainActivity::class.java,
                     channelId = "CHANNEL_ID",
                     title = fileName,
                     text = "Download Completed",
-                    notificationId = 0,
-                    pendingIntentflag = PendingIntent.FLAG_IMMUTABLE,
+                    notificationId = System.currentTimeMillis().toInt(),
+                    pendingIntentFlag = PendingIntent.FLAG_IMMUTABLE,
                     drawableId = getDrawable(movie)
                 )
             }

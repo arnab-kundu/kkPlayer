@@ -4,12 +4,16 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="..\:/Users/Dell/StudioProjects/kkPlayer/app/src/main/res/drawable-v24/background.xml" value="0.25833333333333336" />
-        <entry key="..\:/Users/Dell/StudioProjects/kkPlayer/app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.25833333333333336" />
+        <entry key="..\:/Users/Dell/StudioProjects/kkPlayer/app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.264" />
+        <entry key="..\:/Users/Dell/StudioProjects/kkPlayer/app/src/main/res/drawable/ic_kk.xml" value="0.25833333333333336" />
+        <entry key="..\:/Users/Dell/StudioProjects/kkPlayer/app/src/main/res/drawable/ic_kk1.xml" value="0.25833333333333336" />
+        <entry key="..\:/Users/Dell/StudioProjects/kkPlayer/app/src/main/res/drawable/ic_kk2.xml" value="0.25833333333333336" />
         <entry key="..\:/Users/Dell/StudioProjects/kkPlayer/app/src/main/res/drawable/ic_launcher_background.xml" value="0.25833333333333336" />
         <entry key="..\:/Users/Dell/StudioProjects/kkPlayer/app/src/main/res/drawable/ic_launcher_foreground.xml" value="0.25833333333333336" />
         <entry key="..\:/Users/Dell/StudioProjects/kkPlayer/app/src/main/res/drawable/shade.xml" value="0.25833333333333336" />
         <entry key="..\:/Users/Dell/StudioProjects/kkPlayer/app/src/main/res/layout/activity_player.xml" value="0.2421875" />
         <entry key="..\:/Users/Dell/StudioProjects/kkPlayer/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.25833333333333336" />
+        <entry key="..\:/Users/Dell/StudioProjects/kkPlayer/app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml" value="0.13802083333333334" />
         <entry key="..\:/Users/Dell/StudioProjects/kkPlayer/app/src/main/res/xml/provider_paths.xml" value="0.1" />
         <entry key="..\:/Users/arnab/AndroidStudioProjects/kkPlayer/app/src/main/res/drawable/ic_download.xml" value="0.24259259259259258" />
       </map>

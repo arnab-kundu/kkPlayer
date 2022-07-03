@@ -1,8 +1,9 @@
-package com.akundu.kkplayer
+package com.akundu.kkplayer.media
 
 import android.content.ContentResolver
 import android.content.ContentValues
 import android.content.Context
+import android.media.MediaScannerConnection
 import android.net.Uri
 import android.os.Build
 import android.os.Environment
@@ -59,23 +60,40 @@ object FolderFiles {
      * @param fileName
      * @param fileExtension
      */
-    fun createFile(context: Context? = null, folderName: String, fileName: String, fileExtension: String? = null): File {
-        Log.d(TAG, "Android Device Build Version: ${Build.VERSION.SDK_INT}")
-        val file: File = if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O)
-            File(Environment.getExternalStorageDirectory(), "$PARENT_DIRECTORY_NAME/$folderName/$fileName.$fileExtension")
-        else
-            if (fileExtension != null)
-                File(context?.getExternalFilesDir(null), "$folderName/$fileName.$fileExtension")
+    fun createFile(context: Context, folderName: String, fileName: String, fileExtension: String? = null): File {
+        val manufacturer = Build.MANUFACTURER
+        val model = Build.MODEL
+        val version = Build.VERSION.SDK_INT
+        val versionRelease = Build.VERSION.RELEASE
+
+        Log.e(TAG, "Android Device details: \nAPI Level: $version \nOS version: Android $versionRelease \nManufacturer: $manufacturer \nModel: $model")
+
+        val file: File =
+            if (fileExtension == null)
+                File(context.getExternalFilesDir(null), "$folderName/$fileName")
             else
-                File(context?.getExternalFilesDir(null), "$folderName/$fileName")
-        //File(context?.externalCacheDir?.path, "$folderName/$fileName")
-        //File(context?.obbDir?.path, "$folderName/$fileName")
+                File(context.getExternalFilesDir(null), "$folderName/$fileName.$fileExtension")
+        /**
+         * Different options to save files in Scoped storage Android
+         *
+         * File(context?.filesDir, "$folderName/$fileName")
+         * File(context?.obbDir, "$folderName/$fileName")
+         * File(context?.cacheDir, "$folderName/$fileName")
+         * File(context?.externalCacheDir, "$folderName/$fileName")
+         */
+
+
         if (!file.exists()) {
             try {
                 file.createNewFile()
             } catch (e: IOException) {
                 e.printStackTrace()
             }
+        }
+
+        // Without MediaScan file not visible to in PC after connecting via USB
+        MediaScannerConnection.scanFile(context, arrayOf(file.toString()), null) { path, uri ->
+
         }
         Log.d(TAG, "File path: ${file.absolutePath}")
         return file
@@ -154,6 +172,7 @@ object FolderFiles {
 
     /**
      * Writes inputStream to file
+     * Writes data to file
      *
      * @param inputStream
      * @param file
@@ -240,5 +259,26 @@ object FolderFiles {
             e.printStackTrace()
         }
         return null
+    }
+
+    /**
+     * Save file in Scoped Storage. Music Folder
+     */
+    suspend fun addMusic(context: Context, inputStream: InputStream, filename: String) {
+
+        val uri = MediaStoreUtils.createAudioUri(context, filename) ?: return
+
+        try {
+            context.contentResolver.openOutputStream(uri, "w")?.use { outputStream ->
+                inputStream.use { inputStream ->
+                    inputStream.copyTo(outputStream)
+                    MediaStoreUtils.scanUri(context, uri, "music/mp3")
+                    MediaStoreUtils.getResourceByUri(context, uri)
+                }
+            }
+
+        } catch (e: IOException) {
+            Log.e(TAG, e.printStackTrace().toString())
+        }
     }
 }

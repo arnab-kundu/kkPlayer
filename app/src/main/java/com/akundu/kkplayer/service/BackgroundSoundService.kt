@@ -74,11 +74,19 @@ class BackgroundSoundService : Service() {
         val pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, PendingIntent.FLAG_IMMUTABLE)
         val mNotificationManager = applicationContext.getSystemService(NOTIFICATION_SERVICE) as NotificationManager
         if (Build.VERSION.SDK_INT >= 26) {
-            val channel = NotificationChannel("2", "Player channel", NotificationManager.IMPORTANCE_DEFAULT)
+            val channel = NotificationChannel("2", "Player channel", NotificationManager.IMPORTANCE_HIGH)
             channel.description = "Playing song notification"
             channel.setShowBadge(true)
             mNotificationManager.createNotificationChannel(channel)
         }
+
+        val stopServicePendingIntent = PendingIntent.getBroadcast(
+            this,
+            404,
+            Intent(this, StopServiceReceiver::class.java).putExtra("isStopService", true),
+            PendingIntent.FLAG_IMMUTABLE
+        )
+
         val notification = NotificationCompat.Builder(this, "2")
             .setNumber(0)
             .setOngoing(true)
@@ -87,6 +95,8 @@ class BackgroundSoundService : Service() {
             .setSmallIcon(R.mipmap.ic_launcher)
             .setSubText("is playing...")
             .setContentTitle(songTitle)
+            .addAction(android.R.drawable.ic_media_play, "Pause", stopServicePendingIntent)
+            .addAction(android.R.drawable.ic_menu_close_clear_cancel, "Stop", stopServicePendingIntent)
             //.setContentText("Replace with your text")
             .setSilent(true)
             .setContentIntent(pendingIntent)

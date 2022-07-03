@@ -72,7 +72,7 @@ fun SongItem(song: Song, index: Int) {
     Row(
         modifier = Modifier
             .background(Color(0xFFF3D3C8))
-            .clickable { playSong(context, song.fileName, index) },
+            .clickable { playSong(context, song.title, song.fileName, index) },
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Image(
@@ -100,7 +100,7 @@ fun SongItem(song: Song, index: Int) {
         }
         IconButton(
             onClick = {
-                if (isFileExists(fileName = song.fileName)) playSong(context, song.fileName, index) else download(context, song.fileName, song.movie)
+                if (isFileExists(fileName = song.fileName)) playSong(context, song.title, song.fileName, index) else download(context, song.fileName, song.movie)
             }
         ) {
             Icon(
@@ -136,7 +136,7 @@ fun isFileExists(fileName: String): Boolean {
     return isFileExist
 }
 
-fun playSong(context: Context, fileName: String, index: Int) {
+fun playSong(context: Context, title: String, fileName: String, index: Int) {
 
     Logg.i("FileName: $fileName")
 
@@ -152,7 +152,7 @@ fun playSong(context: Context, fileName: String, index: Int) {
 
             val svc = Intent(context, BackgroundSoundService::class.java)
             svc.putExtra("uri", uriString)
-            svc.putExtra("songTitle", fileName.split(".mp3")[0])
+            svc.putExtra("songTitle", title)
             context.startService(svc)
 
             val intent = Intent(context, PlayerActivity::class.java)

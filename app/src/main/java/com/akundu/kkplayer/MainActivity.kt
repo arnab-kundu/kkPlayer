@@ -1,5 +1,7 @@
 package com.akundu.kkplayer
 
+import android.Manifest.permission.READ_EXTERNAL_STORAGE
+import android.Manifest.permission.WRITE_EXTERNAL_STORAGE
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -32,6 +34,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.core.app.ActivityCompat
 import androidx.work.Constraints
 import androidx.work.Data
 import androidx.work.OneTimeWorkRequest.Builder
@@ -62,7 +65,7 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
-        //ActivityCompat.requestPermissions(this@MainActivity, arrayOf(READ_EXTERNAL_STORAGE, WRITE_EXTERNAL_STORAGE), 111)
+        ActivityCompat.requestPermissions(this@MainActivity, arrayOf(READ_EXTERNAL_STORAGE, WRITE_EXTERNAL_STORAGE), 111)
     }
 }
 
@@ -152,11 +155,11 @@ fun playSong(context: Context, fileName: String, index: Int) {
 
             val svc = Intent(context, BackgroundSoundService::class.java)
             svc.putExtra("uri", uriString)
-            //context.startService(svc)
+            context.startService(svc)
 
             val intent = Intent(context, PlayerActivity::class.java)
             intent.putExtra("index", index)
-            context.startActivity(intent)
+            //context.startActivity(intent)
 
         } else {
             Logg.e("File exist: false")
@@ -209,19 +212,6 @@ fun download(context: Context, fileName: String, movie: String) {
         notificationId = notificationID,
         drawableId = getDrawable(movie)
     )
-}
-
-
-@Throws(IOException::class)
-fun copyInputStreamToFile(inputStream: InputStream, file: File) {
-
-    FileOutputStream(file, false).use { outputStream ->
-        var read: Int
-        val bytes = ByteArray(DEFAULT_BUFFER_SIZE)
-        while (inputStream.read(bytes).also { read = it } != -1) {
-            outputStream.write(bytes, 0, read)
-        }
-    }
 }
 
 @Preview

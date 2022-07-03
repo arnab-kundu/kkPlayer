@@ -10,7 +10,7 @@ import android.util.Log;
 
 public class BackgroundSoundService extends Service {
 
-    private static final String TAG = null;
+    private static final String TAG = "Service";
     MediaPlayer player;
     String uriString;
 
@@ -29,9 +29,12 @@ public class BackgroundSoundService extends Service {
         Log.d(TAG, "onBind: " + uriString);
 
         player = MediaPlayer.create(this, Uri.parse(uriString));
-        player.setLooping(false); // Set looping
-        player.setVolume(100, 100);
-        player.start();
+        if (player != null) {
+            player.setLooping(false); // Set looping
+            player.setVolume(100, 100);
+            player.start();
+            Log.i(TAG, "Playing: " + uriString.split("Music/")[1]);
+        }
         return START_NOT_STICKY;
     }
 
@@ -54,8 +57,10 @@ public class BackgroundSoundService extends Service {
 
     @Override
     public void onDestroy() {
-        player.stop();
-        player.release();
+        if (player != null) {
+            player.stop();
+            player.release();
+        }
     }
 
     @Override

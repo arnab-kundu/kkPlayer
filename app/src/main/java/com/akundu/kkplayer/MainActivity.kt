@@ -152,6 +152,7 @@ fun playSong(context: Context, fileName: String, index: Int) {
 
             val svc = Intent(context, BackgroundSoundService::class.java)
             svc.putExtra("uri", uriString)
+            svc.putExtra("songTitle", fileName.split(".mp3")[0])
             context.startService(svc)
 
             val intent = Intent(context, PlayerActivity::class.java)

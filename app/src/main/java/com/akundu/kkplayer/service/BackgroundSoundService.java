@@ -34,8 +34,9 @@ public class BackgroundSoundService extends Service {
             player.setVolume(100, 100);
             player.start();
             Log.i(TAG, "Playing: " + uriString.split("Music/")[1]);
+            player.setOnCompletionListener(mediaPlayer -> stopSelf());
         }
-        return START_NOT_STICKY;
+        return START_STICKY;
     }
 
     public void onStart(Intent intent, int startId) {

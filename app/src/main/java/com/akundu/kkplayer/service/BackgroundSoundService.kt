@@ -21,6 +21,13 @@ class BackgroundSoundService : Service() {
     var uriString: String = ""
     var songTitle: String = ""
 
+    companion object {
+        private var self: BackgroundSoundService? = null
+        fun getServiceObject(): BackgroundSoundService? {
+            return self
+        }
+    }
+
     override fun onBind(intent: Intent): IBinder? {
         return null
     }
@@ -33,7 +40,7 @@ class BackgroundSoundService : Service() {
         uriString = intent.extras?.getString("uri") ?: ""
         songTitle = intent.extras?.getString("songTitle") ?: ""
         Log.d(TAG, "onStartCommand: $uriString")
-
+        self = this
         player = MediaPlayer.create(this, Uri.parse(uriString))
         if (player != null) {
             player?.isLooping = false // Set looping
@@ -60,8 +67,8 @@ class BackgroundSoundService : Service() {
 
     override fun onDestroy() {
         if (player != null) {
-            player!!.stop()
-            player!!.release()
+            player?.stop()
+            player?.release()
         }
     }
 
@@ -82,8 +89,15 @@ class BackgroundSoundService : Service() {
 
         val stopServicePendingIntent = PendingIntent.getBroadcast(
             this,
-            404,
+            400,
             Intent(this, StopServiceReceiver::class.java).putExtra("isStopService", true),
+            PendingIntent.FLAG_IMMUTABLE
+        )
+
+        val pauseServicePendingIntent = PendingIntent.getBroadcast(
+            this,
+            200,
+            Intent(this, StopServiceReceiver::class.java).putExtra("isPauseService", true),
             PendingIntent.FLAG_IMMUTABLE
         )
 
@@ -95,11 +109,21 @@ class BackgroundSoundService : Service() {
             .setSmallIcon(R.mipmap.ic_launcher)
             .setSubText("is playing...")
             .setContentTitle(songTitle)
-            .addAction(android.R.drawable.ic_media_play, "Pause", stopServicePendingIntent)
+            .addAction(android.R.drawable.ic_media_play, "Play/Pause", pauseServicePendingIntent)
             .addAction(android.R.drawable.ic_menu_close_clear_cancel, "Stop", stopServicePendingIntent)
             //.setContentText("Replace with your text")
             .setSilent(true)
             .setContentIntent(pendingIntent)
         startForeground(12345, notification.build())
+    }
+
+    fun playPausePlayer() {
+        if (player != null) {
+            if (player?.isPlaying == true) {
+                player?.pause()
+            } else {
+                player?.start()
+            }
+        }
     }
 }

@@ -9,9 +9,15 @@ class StopServiceReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
 
         val isStopService: Boolean = intent.extras?.getBoolean("isStopService") ?: false
+        val isPauseService: Boolean = intent.extras?.getBoolean("isPauseService") ?: false
 
-        if(isStopService) {
+        if (isStopService) {
             context.stopService(Intent(context, BackgroundSoundService::class.java))
+        }
+
+        if (isPauseService) {
+            val soundService = BackgroundSoundService.getServiceObject() as BackgroundSoundService
+            soundService.playPausePlayer()
         }
     }
 }

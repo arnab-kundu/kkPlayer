@@ -39,6 +39,7 @@ import androidx.work.Constraints
 import androidx.work.Data
 import androidx.work.OneTimeWorkRequest.Builder
 import androidx.work.WorkManager
+import com.akundu.kkplayer.Constants.INTERNAL_MEDIA_PATH
 import com.akundu.kkplayer.Constants.MEDIA_PATH
 import com.akundu.kkplayer.data.Song
 import com.akundu.kkplayer.data.SongDataProvider
@@ -125,14 +126,14 @@ fun SongItem(song: Song, index: Int) {
 }
 
 fun isFileExists(fileName: String): Boolean {
-    val uriString: String = File("$MEDIA_PATH$fileName").toString()
+    val uriString: String = File("$INTERNAL_MEDIA_PATH$fileName").toString()
     val songFile = File(uriString)
     val isFileExist = songFile.exists()
-    if (isFileExist)
-        Logg.i("Is file exists: $isFileExist. Filename: $fileName")
-    else
-        Logg.e("Is file exists: $isFileExist. Filename: $fileName")
-
+    if (isFileExist) {
+        //Logg.i("Is file exists: $isFileExist. Filename: $fileName")
+    } else {
+        //Logg.e("Is file exists: $isFileExist. Filename: $fileName")
+    }
     return isFileExist
 }
 
@@ -142,7 +143,7 @@ fun playSong(context: Context, title: String, fileName: String, index: Int) {
 
     try {
 
-        val uriString: String = File("$MEDIA_PATH$fileName").toString()
+        val uriString: String = File("$INTERNAL_MEDIA_PATH$fileName").toString()
 
         if (isFileExists(fileName = fileName)) {
 

@@ -9,6 +9,8 @@ import android.os.Build
 import android.os.Environment
 import android.provider.MediaStore
 import android.util.Log
+import com.akundu.kkplayer.BuildConfig
+import com.akundu.kkplayer.Logg
 import okhttp3.ResponseBody
 import java.io.File
 import java.io.FileNotFoundException
@@ -52,6 +54,57 @@ object FolderFiles {
         return logFolder.absolutePath;
     }
 
+
+    /**
+     * Creates Media folder in app package folder
+     *
+     * @param path Optional
+     * @return Path of created media folder
+     */
+    fun createInternalMediaDirectory(path: String = "media/${BuildConfig.APPLICATION_ID}"): String? {
+
+        try {
+            val rootFolderPath = "/storage/emulated/0/Android/"
+            var folder: File = File(rootFolderPath)
+
+            val pathFoldersList: List<String> = path.split("/")
+            pathFoldersList.forEach { childFolder ->
+                folder = File(folder, childFolder)
+
+                if (!folder.exists()) {
+                    Logg.d("Is Folder Created at: ${folder.absolutePath}: ${folder.mkdirs()}")
+                }
+            }
+
+            return folder.path
+
+        } catch (e: IOException) {
+            e.printStackTrace()
+            return null
+        }
+    }
+    fun createFileAtPath(context: Context, path: String, fileName: String = "", fileExtension: String? = null): File {
+
+        val file: File =
+            if (fileExtension == null)
+                File(path, "$fileName")
+            else
+                File(path, "$fileName.$fileExtension")
+
+        if (!file.exists()) {
+            try {
+                file.createNewFile()
+            } catch (e: IOException) {
+                e.printStackTrace()
+            }
+        }
+        // Without MediaScan file not visible to in PC after connecting via USB
+        MediaScannerConnection.scanFile(context, arrayOf(file.toString()), null) { path, uri ->
+
+        }
+        Log.d(TAG, "File path: ${file.absolutePath}")
+        return file
+    }
 
     /**
      * Generic method to Create File

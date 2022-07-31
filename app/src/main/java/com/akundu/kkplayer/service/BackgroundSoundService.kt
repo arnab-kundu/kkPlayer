@@ -48,7 +48,7 @@ class BackgroundSoundService : Service() {
             player?.start()
             player?.setOnCompletionListener { mediaPlayer: MediaPlayer? -> stopSelf() }
 
-            Log.i(TAG, "Playing: " + uriString.split("Music/").toTypedArray()[1])
+            //Log.i(TAG, "Playing: " + uriString.split("Music/").toTypedArray()[1])
 
             runAsForeground()
         }

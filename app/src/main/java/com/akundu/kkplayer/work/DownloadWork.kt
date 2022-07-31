@@ -6,7 +6,6 @@ import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import com.akundu.kkplayer.AppsNotificationManager
 import com.akundu.kkplayer.media.FolderFiles
-import com.akundu.kkplayer.media.FolderFiles.copyInputStreamToFile
 import com.akundu.kkplayer.Logg
 import com.akundu.kkplayer.MainActivity
 import com.akundu.kkplayer.R
@@ -61,8 +60,16 @@ class DownloadWork(val context: Context, workerParameters: WorkerParameters) :
                 val inputStream: InputStream? = response.body()?.byteStream()
 
                 /** Save file in scoped storage in Music folder */
-                if (inputStream != null) {
+                /*if (inputStream != null) {
                     FolderFiles.addMusic(context = context, inputStream = inputStream, filename = fileName)
+                }*/
+
+                /** Save file in app own storage media directory */
+                val path = FolderFiles.createInternalMediaDirectory()
+                if (path != null) {
+                    val file = FolderFiles.createFileAtPath(context = context, fileName = fileName, path = path)
+                    if (inputStream != null)
+                        FolderFiles.copyInputStreamToFile(inputStream = inputStream, file = file)
                 }
 
             } else {
@@ -101,7 +108,7 @@ class DownloadWork(val context: Context, workerParameters: WorkerParameters) :
 
                     val file = FolderFiles.createFile(context = context, folderName = "", fileName = fileName)
                     if (inputStream != null)
-                        copyInputStreamToFile(inputStream = inputStream, file = file)
+                        FolderFiles.copyInputStreamToFile(inputStream = inputStream, file = file)
 
                 } else {
                     Logg.e("StatusCode: ${response.code()}")

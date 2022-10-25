@@ -1,17 +1,16 @@
 package com.akundu.kkplayer.storage
 
-import android.R.attr.src
 import android.content.Context
 import android.media.MediaScannerConnection
 import com.akundu.kkplayer.BuildConfig
 import com.akundu.kkplayer.Logg
 import java.io.File
 import java.io.FileInputStream
+import java.io.FileNotFoundException
 import java.io.FileOutputStream
 import java.io.IOException
 import java.io.InputStream
 import java.io.OutputStream
-import kotlin.jvm.Throws
 
 
 @Suppress("RedundantExplicitType")
@@ -86,7 +85,7 @@ class AppFileManager : FileManager {
     }
 
     @Throws(IOException::class)
-    override fun copyFile(sourcePath: String, destinationPath: String) {
+    override fun copyFile(sourcePath: String, destinationPath: String): Boolean {
         val inputStream: InputStream = FileInputStream(sourcePath)
         try {
             val outputStream: OutputStream = FileOutputStream(destinationPath)
@@ -97,9 +96,16 @@ class AppFileManager : FileManager {
                 while (inputStream.read(buffer).also { len = it } > 0) {
                     outputStream.write(buffer, 0, len)
                 }
+            } catch (e: Exception) {
+                Logg.e(e.toString())
+                return false
             } finally {
                 outputStream.close()
             }
+            return true
+        } catch (e: FileNotFoundException) {
+            Logg.e(e.toString())
+            return false
         } finally {
             inputStream.close()
         }

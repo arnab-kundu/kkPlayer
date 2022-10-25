@@ -2,8 +2,6 @@ package com.akundu.kkplayer.storage
 
 import android.content.Context
 import java.io.File
-import java.io.FileOutputStream
-import java.io.IOException
 import java.io.InputStream
 
 
@@ -29,10 +27,11 @@ interface FileManager {
     /**
      * Copy a file from source path to destination path
      *
-     * @param sourcePath
-     * @param destinationPath
+     * @param sourcePath String
+     * @param destinationPath String
+     * @return isCopySuccessful - Boolean
      */
-    fun copyFile(sourcePath: String, destinationPath: String)
+    fun copyFile(sourcePath: String, destinationPath: String): Boolean
 
     fun moveFile(sourcePath: String, destinationPath: String)
 

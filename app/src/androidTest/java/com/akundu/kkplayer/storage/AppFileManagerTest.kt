@@ -75,11 +75,51 @@ class AppFileManagerTest {
     }
 
     @Test
+    fun testCopyFileToCacheDirSuccessful() {
+
+        val isCopySuccessful = fileManager.copyFile(
+            sourcePath = "/storage/emulated/0/Android/media/${BuildConfig.APPLICATION_ID}/testFile.txt",
+            destinationPath = appContext.cacheDir.path + "/testFile.txt"
+        )
+        assertTrue(isCopySuccessful)
+    }
+
+    @Test
+    fun testCopyFileToExternalCacheDirSuccessful() {
+
+        val isCopySuccessful = fileManager.copyFile(
+            sourcePath = "/storage/emulated/0/Android/media/${BuildConfig.APPLICATION_ID}/testFile.txt",
+            destinationPath = appContext.externalCacheDir?.path + "/testFile.txt"
+        )
+        assertTrue(isCopySuccessful)
+    }
+
+    @Test
+    fun testCopyFileToExternalFilesDirSuccessful() {
+
+        val isCopySuccessful = fileManager.copyFile(
+            sourcePath = "/storage/emulated/0/Android/media/${BuildConfig.APPLICATION_ID}/testFile.txt",
+            destinationPath = appContext.getExternalFilesDir(null)?.path + "/testFile.txt"
+        )
+        assertTrue(isCopySuccessful)
+    }
+
+    @Test
+    fun testCopyFilePublicMediaDirectorySuccessful() {
+
+        val isCopySuccessful = fileManager.copyFile(
+            sourcePath = "/storage/emulated/0/Android/media/${BuildConfig.APPLICATION_ID}/Tu Hi Meri Shab Hai (Gangster) - K.K - 320Kbps.mp3",
+            destinationPath = "${Constants.MUSIC_PATH}Tu Hi Meri Shab Hai (Gangster) - K.K - 320Kbps.mp3"
+        )
+        assertTrue(isCopySuccessful)
+    }
+
+    @Test
     fun testCopyFileToAnyRandomDirectoryFailed() {
         val fileManager = AppFileManager()
         val isCopySuccessful = fileManager.copyFile(
             sourcePath = "/storage/emulated/0/Android/media/${BuildConfig.APPLICATION_ID}/Tu Hi Meri Shab Hai (Gangster) - K.K - 320Kbps.mp3",
-            destinationPath = "/storage/emulated/0/Android/media/com.dds.file/Tu Hi Meri Shab Hai (Gangster) - K.K - 320Kbps.mp3"//com.dds.file"
+            destinationPath = "/storage/emulated/0/Android/media/com.example.file/Tu Hi Meri Shab Hai (Gangster) - K.K - 320Kbps.mp3"
         )
         assertFalse(isCopySuccessful)
     }

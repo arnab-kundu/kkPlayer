@@ -39,12 +39,11 @@ import androidx.work.Constraints
 import androidx.work.Data
 import androidx.work.OneTimeWorkRequest.Builder
 import androidx.work.WorkManager
-import com.akundu.kkplayer.Constants.INTERNAL_MEDIA_PATH
-import com.akundu.kkplayer.Constants.MEDIA_PATH
 import com.akundu.kkplayer.data.Song
 import com.akundu.kkplayer.data.SongDataProvider
 import com.akundu.kkplayer.service.BackgroundSoundService
 import com.akundu.kkplayer.service.ServiceTools
+import com.akundu.kkplayer.storage.Constants.INTERNAL_MEDIA_PATH
 import com.akundu.kkplayer.ui.theme.KkPlayerTheme
 import com.akundu.kkplayer.work.DownloadWork
 import java.io.File

@@ -41,7 +41,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.akundu.kkplayer.Constants.MEDIA_PATH
+import com.akundu.kkplayer.storage.Constants.MUSIC_PATH
 import com.akundu.kkplayer.data.Song
 import com.akundu.kkplayer.data.SongDataProvider
 import com.akundu.kkplayer.ui.theme.KkPlayerTheme
@@ -142,7 +142,7 @@ fun PlayerButtons(song: Song) {
     val index = remember { mutableStateOf(0) }
     val isPlaying = remember { mutableStateOf(false) }
 
-    val uriString: String = File("$MEDIA_PATH${song.fileName}").toString()
+    val uriString: String = File("$MUSIC_PATH${song.fileName}").toString()
     val mediaPlayer = remember {
         MediaPlayer.create(context, Uri.parse(uriString))
     }
@@ -244,7 +244,7 @@ fun PlayerButtons(song: Song) {
 }
 
 private fun playSong(context: Context, song: Song) {
-    val uriString: String = File("$MEDIA_PATH${song.fileName}").toString()
+    val uriString: String = File("$MUSIC_PATH${song.fileName}").toString()
 
     val mediaPlayer = MediaPlayer.create(context, Uri.parse(uriString))
     mediaPlayer.start()

@@ -3,6 +3,8 @@ name: Android CI
 on:
   push:
     branches: [ "master" ]
+    paths:
+      - 'app-version.gradle'
   pull_request:
     branches: [ "master" ]
 

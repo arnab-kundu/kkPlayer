@@ -22,7 +22,16 @@ interface FileManager {
      */
     fun deleteFolder(directory: File)
 
-    fun createFile(context: Context, path: String, fileName: String, fileExtension: String?): File
+    /**
+     *  Creates a new file
+     *
+     *  @param context
+     *  @param fileLocationCategory
+     *  @param fileName
+     *  @param fileExtension
+     *  @return File
+     */
+    fun createFile(context: Context, fileLocationCategory: FileLocationCategory, fileName: String, fileExtension: String?): File
 
     /**
      * Copy a file from source path to destination path

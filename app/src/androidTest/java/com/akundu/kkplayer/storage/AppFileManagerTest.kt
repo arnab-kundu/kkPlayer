@@ -4,11 +4,13 @@ import android.content.Context
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import com.akundu.kkplayer.BuildConfig
+import com.akundu.kkplayer.storage.FileLocationCategory
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import java.io.File
 
 @RunWith(AndroidJUnit4::class)
 class AppFileManagerTest {
@@ -19,8 +21,58 @@ class AppFileManagerTest {
     @Before
     fun setUp() {
         fileManager = AppFileManager()
-        fileManager.createFile(appContext, "/storage/emulated/0/Android/media/${BuildConfig.APPLICATION_ID}/", "testFile", "txt")
+        fileManager.createFile(appContext, FileLocationCategory.MEDIA_DIRECTORY, "testFile", "txt")
     }
+
+
+    @Test
+    fun testCreateFileInCacheDirectorySuccessful() {
+        val file: File = fileManager.createFile(appContext, FileLocationCategory.CACHE_DIRECTORY, "createFileTested", "txt")
+        assertTrue(file.exists())
+    }
+
+    @Test
+    fun testCreateFileInDataDirectorySuccessful() {
+        val file: File = fileManager.createFile(appContext, FileLocationCategory.DATA_DIRECTORY, "createFileTested", "txt")
+        assertTrue(file.exists())
+    }
+
+    @Test
+    fun testCreateFileInFilesDirectorySuccessful() {
+        val file: File = fileManager.createFile(appContext, FileLocationCategory.FILES_DIRECTORY, "createFileTested", "txt")
+        assertTrue(file.exists())
+    }
+
+    @Test
+    fun testCreateFileInExternalCacheDirectorySuccessful() {
+        val file: File = fileManager.createFile(appContext, FileLocationCategory.EXTERNAL_CACHE_DIRECTORY, "createFileTested", "txt")
+        assertTrue(file.exists())
+    }
+
+    @Test
+    fun testCreateFileInExternalFilesDirectorySuccessful() {
+        val file: File = fileManager.createFile(appContext, FileLocationCategory.EXTERNAL_FILES_DIRECTORY, "createFileTested", "txt")
+        assertTrue(file.exists())
+    }
+
+    @Test
+    fun testCreateFileInMediaDirectorySuccessful() {
+        val file: File = fileManager.createFile(appContext, FileLocationCategory.MEDIA_DIRECTORY, "createFileTested", "txt")
+        assertTrue(file.exists())
+    }
+
+    @Test
+    fun testCreateFileInObbDirectorySuccessful() {
+        val file: File = fileManager.createFile(appContext, FileLocationCategory.OBB_DIRECTORY, "createFileTested", "txt")
+        assertTrue(file.exists())
+    }
+
+    @Test
+    fun testCreateFileInDownloadDirectorySuccessful() {
+        val file: File = fileManager.createFile(appContext, FileLocationCategory.DOWNLOADS_DIRECTORY, "createFileTested", "txt")
+        assertTrue(file.exists())
+    }
+
 
     @Test
     fun testCopyFileSuccessful() {

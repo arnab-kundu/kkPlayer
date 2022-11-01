@@ -2,8 +2,23 @@ package com.akundu.kkplayer.storage
 
 import android.content.Context
 import android.media.MediaScannerConnection
+import android.os.Build.VERSION_CODES
+import android.os.Environment
+import androidx.annotation.RequiresApi
 import com.akundu.kkplayer.BuildConfig
 import com.akundu.kkplayer.Logg
+import com.akundu.kkplayer.storage.FileLocationCategory.CACHE_DIRECTORY
+import com.akundu.kkplayer.storage.FileLocationCategory.DATA_DIRECTORY
+import com.akundu.kkplayer.storage.FileLocationCategory.DOCUMENT_DIRECTORY
+import com.akundu.kkplayer.storage.FileLocationCategory.DOWNLOADS_DIRECTORY
+import com.akundu.kkplayer.storage.FileLocationCategory.EXTERNAL_CACHE_DIRECTORY
+import com.akundu.kkplayer.storage.FileLocationCategory.EXTERNAL_FILES_DIRECTORY
+import com.akundu.kkplayer.storage.FileLocationCategory.FILES_DIRECTORY
+import com.akundu.kkplayer.storage.FileLocationCategory.MEDIA_DIRECTORY
+import com.akundu.kkplayer.storage.FileLocationCategory.MUSIC_DIRECTORY
+import com.akundu.kkplayer.storage.FileLocationCategory.OBB_DIRECTORY
+import com.akundu.kkplayer.storage.FileLocationCategory.PICTURES_DIRECTORY
+import com.akundu.kkplayer.storage.FileLocationCategory.VIDEOS_DIRECTORY
 import java.io.File
 import java.io.FileInputStream
 import java.io.FileNotFoundException
@@ -60,15 +75,13 @@ class AppFileManager : FileManager {
         }
     }
 
-    override fun createFile(context: Context, path: String, fileName: String, fileExtension: String?): File {
+    private fun createMediaFile(context: Context, path: String, fileName: String, fileExtension: String?): File {
 
         /** Create path */
         val folder = createAppsInternalPrivateStoragePath("media/${BuildConfig.APPLICATION_ID}")
 
-        val file: File = if (fileExtension == null)
-            File(folder!!.path, "$fileName")
-        else
-            File(folder!!.path, "$fileName.$fileExtension")
+        val file: File = if (fileExtension == null) File(folder!!.path, "$fileName")
+        else File(folder!!.path, "$fileName.$fileExtension")
 
         if (!file.exists()) {
             try {
@@ -80,6 +93,47 @@ class AppFileManager : FileManager {
         // Without MediaScan file not visible to in PC after connecting via USB
         MediaScannerConnection.scanFile(context, arrayOf(file.toString()), null) { path, uri ->
 
+        }
+        return file
+    }
+
+    @RequiresApi(VERSION_CODES.N)
+    override fun createFile(context: Context, fileLocationCategory: FileLocationCategory, fileName: String, fileExtension: String?): File {
+
+        /** Create path */
+        val folder: File? = when(fileLocationCategory) {
+            CACHE_DIRECTORY          -> context.cacheDir
+            DATA_DIRECTORY           -> context.dataDir
+            FILES_DIRECTORY          -> context.filesDir
+            EXTERNAL_CACHE_DIRECTORY -> context.externalCacheDir.let { if (it == null) Logg.w("externalCacheDir returns null"); it }
+
+            EXTERNAL_FILES_DIRECTORY -> context.getExternalFilesDir(null).let { if (it == null) Logg.w("getExternalFilesDir returns null"); it }
+            MEDIA_DIRECTORY          -> createAppsInternalPrivateStoragePath("media/${BuildConfig.APPLICATION_ID}").let { if (it == null) Logg.w("createMediaDir returns null"); it }
+            OBB_DIRECTORY            -> context.obbDir
+
+            DOWNLOADS_DIRECTORY      -> File("/storage/emulated/0/Download/")
+            DOCUMENT_DIRECTORY       -> TODO()
+            MUSIC_DIRECTORY          -> TODO()
+            PICTURES_DIRECTORY       -> TODO()
+            VIDEOS_DIRECTORY         -> TODO()
+        }
+
+        val file: File = if (fileExtension == null) File(folder!!.path, "$fileName")
+        else File(folder!!.path, "$fileName.$fileExtension")
+
+        if (!file.exists()) {
+            try {
+                file.createNewFile()
+                Logg.v("Created file successfully")
+            } catch (e: IOException) {
+                e.printStackTrace()
+                Logg.e("Failed to create file: $e")
+            }
+        }
+        // Without MediaScan file not visible to in PC after connecting via USB
+        MediaScannerConnection.scanFile(context, arrayOf(file.toString()), null) { path, uri ->
+            Logg.v("Created file path: $path")
+            Logg.v("Created file uri: $uri")
         }
         return file
     }

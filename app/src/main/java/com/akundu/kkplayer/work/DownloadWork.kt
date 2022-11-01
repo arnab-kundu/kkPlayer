@@ -12,6 +12,7 @@ import com.akundu.kkplayer.media.FolderFiles
 import com.akundu.kkplayer.network.ApiRequest
 import com.akundu.kkplayer.network.RetrofitRequest
 import com.akundu.kkplayer.storage.AppFileManager
+import com.akundu.kkplayer.storage.FileLocationCategory.MEDIA_DIRECTORY
 import com.akundu.kkplayer.storage.FileManager
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
@@ -78,7 +79,7 @@ class DownloadWork(val context: Context, workerParameters: WorkerParameters) :
 
                 /** Save file in app own storage media directory */
                 val fileManager: FileManager = AppFileManager()
-                val file: File = fileManager.createFile(context = context, path = "", fileName = fileName, fileExtension = null)
+                val file: File = fileManager.createFile(context = context, fileLocationCategory = MEDIA_DIRECTORY, fileName = fileName, fileExtension = null)
                 if (inputStream != null) {
                     fileManager.copyInputStreamToFile(inputStream = inputStream, file = file)
                 }

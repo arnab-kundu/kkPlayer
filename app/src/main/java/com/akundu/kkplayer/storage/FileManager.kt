@@ -16,14 +16,14 @@ interface FileManager {
     fun renameFolder(folderPath: String, newFolderName: String)
 
     /**
-     * Delete folder, subFolders and files
+     * **Delete folder, subFolders and files**
      *
      * @param directory
      */
     fun deleteFolder(directory: File)
 
     /**
-     *  Creates a new file
+     *  **Creates a new file**
      *
      *  @param context
      *  @param fileLocationCategory
@@ -34,7 +34,7 @@ interface FileManager {
     fun createFile(context: Context, fileLocationCategory: FileLocationCategory, fileName: String, fileExtension: String?): File
 
     /**
-     * Copy a file from source path to destination path
+     * **Copy a file from source path to destination path**
      *
      * @param sourcePath String
      * @param destinationPath String
@@ -42,21 +42,59 @@ interface FileManager {
      */
     fun copyFile(sourcePath: String, destinationPath: String): Boolean
 
+    /**
+     * **Delete file**
+     *
+     * @param sourceFilePath
+     * @return isFileDeleteSuccessful
+     */
+    fun deleteFile(sourceFilePath: String): Boolean
+
+    /**
+     * **Move file**
+     *
+     * @param sourcePath String
+     * @param destinationPath String
+     */
     fun moveFile(sourcePath: String, destinationPath: String)
 
 
-    /**
-     * Writes inputStream to file
-     * Writes data to file
+    /** **Write data to a empty file**
+     *  - Writes inputStream to file
+     *  - Writes data to file
      *
-     * @param inputStream
-     * @param file
+     * @param inputStream InputStream
+     * @param file File
      */
     fun copyInputStreamToFile(inputStream: InputStream, file: File)
 
-    fun renameFile(existingFilePath: String, newFileName: String)
+    /**
+     *  **Rename file**
+     *
+     * @param context Context
+     * @param existingFilePath String
+     * @param newFileName String
+     * @return renamedFile
+     */
+    fun renameFile(context: Context, existingFilePath: String, newFileName: String): File
 
-    fun zipFiles(filesPath: String, zipFilePath: String)
+    /**
+     * **Zip Folders and Files**
+     *
+     * @param srcFolderPath String
+     * @param destZipFilePath String
+     */
+    fun zipFiles(srcFolderPath: String, destZipFilePath: String)
 
+    /**
+     * **Unzip Folders and files**
+     *
+     * @param zipFilePath String
+     * @param extractLocationPath String
+     */
     fun unZipFile(zipFilePath: String, extractLocationPath: String)
+
+    fun encryptFile(filePath: String, encryptionRule: String): File
+
+    fun decryptFile(filePath: String, rule: String): File
 }

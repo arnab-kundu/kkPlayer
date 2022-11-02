@@ -3,7 +3,6 @@ package com.akundu.kkplayer.storage
 import android.content.Context
 import android.media.MediaScannerConnection
 import android.os.Build.VERSION_CODES
-import android.os.Environment
 import androidx.annotation.RequiresApi
 import com.akundu.kkplayer.BuildConfig
 import com.akundu.kkplayer.Logg
@@ -26,6 +25,9 @@ import java.io.FileOutputStream
 import java.io.IOException
 import java.io.InputStream
 import java.io.OutputStream
+import java.util.zip.ZipEntry
+import java.util.zip.ZipInputStream
+import java.util.zip.ZipOutputStream
 
 
 @Suppress("RedundantExplicitType")
@@ -165,21 +167,25 @@ class AppFileManager : FileManager {
         }
     }
 
+    override fun deleteFile(sourceFilePath: String): Boolean {
+        return File(sourceFilePath).delete()
+    }
+
     override fun moveFile(sourcePath: String, destinationPath: String) {
-        TODO("Not yet implemented")
+        copyFile(sourcePath, destinationPath)
+        deleteFile(sourcePath)
     }
 
-    override fun renameFile(existingFilePath: String, newFileName: String) {
-        TODO("Not yet implemented")
+    @RequiresApi(VERSION_CODES.N)
+    override fun renameFile(context: Context, existingFilePath: String, newFileName: String): File {
+        val newFile = createFile(context = context, EXTERNAL_FILES_DIRECTORY, fileName = newFileName, fileExtension = null)
+        val existingFile = File(existingFilePath)
+        val existingFileInputStream: InputStream = FileInputStream(existingFile)
+        copyInputStreamToFile(inputStream = existingFileInputStream, file = newFile)
+        deleteFile(existingFilePath)
+        return newFile
     }
 
-    /**
-     * Writes inputStream to file
-     * Writes data to file
-     *
-     * @param inputStream
-     * @param file
-     */
     @Throws(IOException::class)
     override fun copyInputStreamToFile(inputStream: InputStream, file: File) {
 
@@ -192,11 +198,74 @@ class AppFileManager : FileManager {
         }
     }
 
-    override fun zipFiles(filesPath: String, zipFilePath: String) {
-        TODO("Not yet implemented")
+    override fun zipFiles(srcFolderPath: String, destZipFilePath: String) {
+        var zip: ZipOutputStream? = null
+        var fileWriter: FileOutputStream? = null
+        fileWriter = FileOutputStream(destZipFilePath)
+        zip = ZipOutputStream(fileWriter)
+        addFolderToZip("", srcFolderPath, zip)
+        zip.flush()
+        zip.close()
     }
 
     override fun unZipFile(zipFilePath: String, extractLocationPath: String) {
+        try {
+            val fin = FileInputStream(zipFilePath)
+            val zin = ZipInputStream(fin)
+            var ze: ZipEntry? = null
+            while (zin.nextEntry.also { ze = it } != null) {
+
+                //create dir if required while unzipping
+                if (ze!!.isDirectory) {
+                    //TODO dirChecker(ze.getName());
+                } else {
+                    val fout = FileOutputStream(extractLocationPath + ze!!.name)
+                    var c = zin.read()
+                    while (c != -1) {
+                        fout.write(c)
+                        c = zin.read()
+                    }
+                    zin.closeEntry()
+                    fout.close()
+                }
+            }
+            zin.close()
+        } catch (e: Exception) {
+            println(e)
+        }
+    }
+
+    override fun encryptFile(filePath: String, encryptionRule: String): File {
         TODO("Not yet implemented")
+    }
+
+    override fun decryptFile(filePath: String, rule: String): File {
+        TODO("Not yet implemented")
+    }
+
+    private fun addFolderToZip(path: String, srcFolder: String, zip: ZipOutputStream) {
+        val folder = File(srcFolder)
+        for (fileName in folder.list()) {
+            if (path == "") {
+                addFileToZip(folder.name, "$srcFolder/$fileName", zip)
+            } else {
+                addFileToZip(path + "/" + folder.name, srcFolder + "/" + fileName, zip)
+            }
+        }
+    }
+
+    private fun addFileToZip(path: String, srcFile: String, zip: ZipOutputStream) {
+        val folder = File(srcFile)
+        if (folder.isDirectory) {
+            addFolderToZip(path, srcFile, zip)
+        } else {
+            val buf = ByteArray(1024)
+            var len: Int
+            val `in` = FileInputStream(srcFile)
+            zip.putNextEntry(ZipEntry(path + "/" + folder.name))
+            while (`in`.read(buf).also { len = it } > 0) {
+                zip.write(buf, 0, len)
+            }
+        }
     }
 }

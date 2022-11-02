@@ -4,13 +4,13 @@ import android.content.Context
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import com.akundu.kkplayer.BuildConfig
-import com.akundu.kkplayer.storage.FileLocationCategory
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import java.io.File
+import java.io.FileOutputStream
 
 @RunWith(AndroidJUnit4::class)
 class AppFileManagerTest {
@@ -174,5 +174,48 @@ class AppFileManagerTest {
             destinationPath = "/storage/emulated/0/Android/media/com.example.file/Tu Hi Meri Shab Hai (Gangster) - K.K - 320Kbps.mp3"
         )
         assertFalse(isCopySuccessful)
+    }
+
+    @Test
+    fun testRenameFileSuccessful() {
+        val fileManager = AppFileManager()
+        val file = fileManager.createFile(appContext, FileLocationCategory.MEDIA_DIRECTORY, "before_renamed_file", "txt")
+        FileOutputStream(file.path).use {
+            it.write("Arnab".toByteArray())
+        }
+
+        val renamedFile = fileManager.renameFile(
+            context = appContext,
+            existingFilePath = "/storage/emulated/0/Android/media/${BuildConfig.APPLICATION_ID}/before_renamed_file.txt",
+            newFileName = "after_renamed_file.txt"
+        )
+        val isRenameSuccessful = renamedFile.exists()
+        assertTrue(isRenameSuccessful)
+
+        val oldFile = File("/storage/emulated/0/Android/media/${BuildConfig.APPLICATION_ID}/before_renamed_file.txt")
+        val isOldFileExist = oldFile.exists()
+        assertFalse(isOldFileExist)
+    }
+
+    @Test
+    fun testZipFileSuccessful() {
+        val fileManager = AppFileManager()
+       /* fileManager.zipFiles(
+            srcFolderPath = "/storage/emulated/0/Android/media/${BuildConfig.APPLICATION_ID}",
+            destZipFilePath = "/storage/emulated/0/Android/media/${BuildConfig.APPLICATION_ID}/myTest.zip"
+        )*/
+    }
+
+    @Test
+    fun testUnzipFileSuccessful() {
+        val fileManager = AppFileManager()
+        val startingTime = System.currentTimeMillis()
+        fileManager.unZipFile(
+            zipFilePath = "/storage/emulated/0/Android/media/${BuildConfig.APPLICATION_ID}/10mb.zip",
+            extractLocationPath = "/storage/emulated/0/Android/media/${BuildConfig.APPLICATION_ID}/"
+        )
+        val endTime = System.currentTimeMillis()
+        println("Time taken to unzip: ${(endTime - startingTime) / 1000} seconds")
+        assertTrue(true)
     }
 }

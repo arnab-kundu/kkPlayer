@@ -12,6 +12,7 @@ import org.junit.runner.RunWith
 import java.io.File
 import java.io.FileOutputStream
 
+
 @RunWith(AndroidJUnit4::class)
 class AppFileManagerTest {
 
@@ -22,6 +23,11 @@ class AppFileManagerTest {
     fun setUp() {
         fileManager = AppFileManager()
         fileManager.createFile(appContext, FileLocationCategory.MEDIA_DIRECTORY, "testFile", "txt")
+
+        val zipFile = File("/storage/emulated/0/Android/media/${BuildConfig.APPLICATION_ID}/10mb.zip")
+        if (!zipFile.exists()) {
+            throw java.lang.RuntimeException("Copy `sampledata/10mb.zip` file into device Android/media/package directory")
+        }
     }
 
 
@@ -200,10 +206,24 @@ class AppFileManagerTest {
     @Test
     fun testZipFileSuccessful() {
         val fileManager = AppFileManager()
-       /* fileManager.zipFiles(
-            srcFolderPath = "/storage/emulated/0/Android/media/${BuildConfig.APPLICATION_ID}",
-            destZipFilePath = "/storage/emulated/0/Android/media/${BuildConfig.APPLICATION_ID}/myTest.zip"
-        )*/
+        /* fileManager.zipFiles(
+             srcFolderPath = "/storage/emulated/0/Android/media/${BuildConfig.APPLICATION_ID}",
+             destZipFilePath = "/storage/emulated/0/Android/media/${BuildConfig.APPLICATION_ID}/myTest.zip"
+         )*/
+    }
+
+    @Test
+    fun testUnzipSuccessful() {
+        val fileManager = AppFileManager()
+        val startingTime = System.currentTimeMillis()
+        fileManager.unZip(
+            zipFilePath = "/storage/emulated/0/Android/media/${BuildConfig.APPLICATION_ID}/10mb.zip",
+            extractLocationPath = "/storage/emulated/0/Android/media/${BuildConfig.APPLICATION_ID}/"
+        )
+        val endTime = System.currentTimeMillis()
+        val unZippingTimeInSeconds = (endTime - startingTime) / 1000
+        println("Time taken to unzip: $unZippingTimeInSeconds seconds")
+        assertTrue("Failed to complete Unzip in 1 minute", unZippingTimeInSeconds < 60)
     }
 
     @Test
@@ -215,7 +235,8 @@ class AppFileManagerTest {
             extractLocationPath = "/storage/emulated/0/Android/media/${BuildConfig.APPLICATION_ID}/"
         )
         val endTime = System.currentTimeMillis()
-        println("Time taken to unzip: ${(endTime - startingTime) / 1000} seconds")
-        assertTrue(true)
+        val unZippingTimeInMilliSeconds = (endTime - startingTime)
+        println("Time taken to unzip: $unZippingTimeInMilliSeconds milli seconds")
+        assertTrue("Failed to complete Unzip in 1 second", unZippingTimeInMilliSeconds < 1000)
     }
 }

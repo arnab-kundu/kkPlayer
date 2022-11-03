@@ -3,6 +3,7 @@ package com.akundu.kkplayer.storage
 import android.content.Context
 import android.media.MediaScannerConnection
 import android.os.Build.VERSION_CODES
+import android.util.Log
 import androidx.annotation.RequiresApi
 import com.akundu.kkplayer.BuildConfig
 import com.akundu.kkplayer.Logg
@@ -18,6 +19,7 @@ import com.akundu.kkplayer.storage.FileLocationCategory.MUSIC_DIRECTORY
 import com.akundu.kkplayer.storage.FileLocationCategory.OBB_DIRECTORY
 import com.akundu.kkplayer.storage.FileLocationCategory.PICTURES_DIRECTORY
 import com.akundu.kkplayer.storage.FileLocationCategory.VIDEOS_DIRECTORY
+import java.io.BufferedOutputStream
 import java.io.File
 import java.io.FileInputStream
 import java.io.FileNotFoundException
@@ -208,7 +210,17 @@ class AppFileManager : FileManager {
         zip.close()
     }
 
-    override fun unZipFile(zipFilePath: String, extractLocationPath: String) {
+    /**
+     * This unzip process is comparatively slower. For faster unzipping process use **unZipFile()**
+     * The reason of preforming slow is its using **FileOutputStream** instead of **BufferedOutputStream**
+     * @see     com.akundu.kkplayer.storage.AppFileManager.unZipFile
+     */
+    @Deprecated(
+        message = "Use unZipFile() for fast unzipping process",
+        replaceWith = ReplaceWith("unZipFile(zipFilePath = , extractLocationPath = )"),
+        level = DeprecationLevel.WARNING
+    )
+    override fun unZip(zipFilePath: String, extractLocationPath: String) {
         try {
             val fin = FileInputStream(zipFilePath)
             val zin = ZipInputStream(fin)
@@ -232,6 +244,50 @@ class AppFileManager : FileManager {
             zin.close()
         } catch (e: Exception) {
             println(e)
+        }
+    }
+
+    /**
+     * Improved in terms of performance. Unzipping time is very less compare to unZip()
+     * The reason of preforming fast is its using **BufferedOutputStream** instead of **FileOutputStream**
+     * @see     com.akundu.kkplayer.storage.AppFileManager.unZip
+     * @see     java.io.BufferedOutputStream
+     */
+    override fun unZipFile(zipFilePath: String, extractLocationPath: String) {
+        try {
+            val inputStream: FileInputStream = FileInputStream(zipFilePath)
+            val zipStream = ZipInputStream(inputStream)
+            var zEntry: ZipEntry? = null
+            while (zipStream.nextEntry.also { zEntry = it } != null) {
+                Log.d("Unzip", "Unzipping " + zEntry!!.name + " at " + extractLocationPath)
+                if (zEntry!!.isDirectory) {
+                    handleDirectory(extractLocationPath, zEntry!!.name)
+                } else {
+                    val fout: FileOutputStream = FileOutputStream(extractLocationPath + "/" + zEntry!!.name)
+                    val bufout = BufferedOutputStream(fout)
+                    val buffer = ByteArray(1024)
+                    var read = 0
+                    while (zipStream.read(buffer).also { read = it } != -1) {
+                        bufout.write(buffer, 0, read)
+                    }
+                    zipStream.closeEntry()
+                    bufout.close()
+                    fout.close()
+                }
+            }
+            zipStream.close()
+            Log.d("Unzip", "Unzipping complete. path :  $extractLocationPath")
+        } catch (e: java.lang.Exception) {
+            Log.d("Unzip", "Unzipping failed")
+            e.printStackTrace()
+        }
+
+    }
+
+    private fun handleDirectory(extractLocationPath: String, dir: String) {
+        val f: File = File(extractLocationPath + dir)
+        if (!f.isDirectory) {
+            f.mkdirs()
         }
     }
 

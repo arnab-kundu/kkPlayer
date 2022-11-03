@@ -3,6 +3,7 @@ package com.akundu.kkplayer.storage
 import android.content.Context
 import java.io.File
 import java.io.InputStream
+import kotlin.DeprecationLevel.WARNING
 
 
 interface FileManager {
@@ -86,6 +87,7 @@ interface FileManager {
      */
     fun zipFiles(srcFolderPath: String, destZipFilePath: String)
 
+    fun unZip(zipFilePath: String, extractLocationPath: String)
     /**
      * **Unzip Folders and files**
      *

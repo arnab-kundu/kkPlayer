@@ -8,7 +8,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath "com.android.tools.build:gradle:7.0.4"
+        classpath "com.android.tools.build:gradle:7.3.1"
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.7.10"
         classpath 'com.google.gms:google-services:4.3.13'           // Firebase
         // NOTE: Do not place your application dependencies here; they belong
@@ -28,3 +28,5 @@ task clean(type: Delete) {
 task Test{
 
 }
+// TODO (In Windows) Run `gradlew task` comment in Terminal to get all available gradlew methods
+// TODO (In Mac) Press [⌘ + ↩] to Run `gradlew task` comment in Terminal to get all available gradlew methods

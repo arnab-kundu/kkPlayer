@@ -24,6 +24,14 @@ class AppFileManagerTest {
         fileManager = AppFileManager()
         fileManager.createFile(appContext, FileLocationCategory.MEDIA_DIRECTORY, "testFile", "txt")
 
+        val sampleSongFile = File(
+            "/storage/emulated/0/Android/media/${BuildConfig.APPLICATION_ID}/" +
+                    "Tu Hi Meri Shab Hai (Gangster) - K.K - 320Kbps.mp3"
+        )
+        if (!sampleSongFile.exists()) {
+            throw java.lang.RuntimeException("Download `Tu Hi Meri Shab Hai (Gangster)` song using kkPlayer before test")
+        }
+
         val zipFile = File("/storage/emulated/0/Android/media/${BuildConfig.APPLICATION_ID}/10mb.zip")
         if (!zipFile.exists()) {
             throw java.lang.RuntimeException("Copy `sampledata/10mb.zip` file into device Android/media/package directory")
@@ -206,17 +214,40 @@ class AppFileManagerTest {
     @Test
     fun testZipFileSuccessful() {
         val fileManager = AppFileManager()
-        /* fileManager.zipFiles(
-             srcFolderPath = "/storage/emulated/0/Android/media/${BuildConfig.APPLICATION_ID}",
-             destZipFilePath = "/storage/emulated/0/Android/media/${BuildConfig.APPLICATION_ID}/myTest.zip"
-         )*/
+        val testOutputFile = fileManager.zipFiles(
+            srcFolderPath = "/storage/emulated/0/Android/media/${BuildConfig.APPLICATION_ID}",
+            destZipFilePath = "/storage/emulated/0/Android/media/${BuildConfig.APPLICATION_ID}/myTest.zip"
+        )
+        assertTrue(testOutputFile.exists())
+        println("Zip file size: ${testOutputFile.length() / 1024F} kb")
+        assertTrue(testOutputFile.length() > 0)
+        testOutputFile.delete()                                         // clear generated test file
+    }
+
+    @Test
+    fun testZipListOfFilesSuccessful() {
+        val fileManager = AppFileManager()
+        val inputPath = "/storage/emulated/0/Android/media/${BuildConfig.APPLICATION_ID}"
+
+        val listOfFiles = arrayListOf<String>()
+        listOfFiles.add("$inputPath/IMG_20211023_144759.jpg")
+        listOfFiles.add("$inputPath/createFileTested.txt")
+
+        // calling the zip function
+        fileManager.zipListOfFiles(listOfFiles, "$inputPath${File.separator}zipFileName.zip")
+
+        val testFile = File("$inputPath${File.separator}zipFileName.zip")
+        assertTrue(testFile.exists())
+        println("Zip file size: ${testFile.length() / 1024F} kb")
+        assertTrue(testFile.length() > 0)
+        testFile.delete()                                               // clear generated test file
     }
 
     @Test
     fun testUnzipSuccessful() {
         val fileManager = AppFileManager()
         val startingTime = System.currentTimeMillis()
-        fileManager.unZip(
+        fileManager.unZipFileSlowly(
             zipFilePath = "/storage/emulated/0/Android/media/${BuildConfig.APPLICATION_ID}/10mb.zip",
             extractLocationPath = "/storage/emulated/0/Android/media/${BuildConfig.APPLICATION_ID}/"
         )
@@ -224,6 +255,12 @@ class AppFileManagerTest {
         val unZippingTimeInSeconds = (endTime - startingTime) / 1000
         println("Time taken to unzip: $unZippingTimeInSeconds seconds")
         assertTrue("Failed to complete Unzip in 1 minute", unZippingTimeInSeconds < 60)
+        val generatedTestFile = File(
+            "/storage/emulated/0/Android/media/${BuildConfig.APPLICATION_ID}/big_buck_bunny_240p_10mb.mp4"
+        )
+        assertTrue(generatedTestFile.exists())
+        assertTrue(generatedTestFile.length() > 0)
+        generatedTestFile.delete()                                      // clear generated test file
     }
 
     @Test
@@ -238,5 +275,11 @@ class AppFileManagerTest {
         val unZippingTimeInMilliSeconds = (endTime - startingTime)
         println("Time taken to unzip: $unZippingTimeInMilliSeconds milli seconds")
         assertTrue("Failed to complete Unzip in 1 second", unZippingTimeInMilliSeconds < 1000)
+        val generatedTestFile = File(
+            "/storage/emulated/0/Android/media/${BuildConfig.APPLICATION_ID}/big_buck_bunny_240p_10mb.mp4"
+        )
+        assertTrue(generatedTestFile.exists())
+        assertTrue(generatedTestFile.length() > 0)
+        generatedTestFile.delete()                                      // clear generated test file
     }
 }

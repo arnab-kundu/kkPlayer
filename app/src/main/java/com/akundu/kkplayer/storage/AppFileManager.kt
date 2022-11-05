@@ -19,6 +19,7 @@ import com.akundu.kkplayer.storage.FileLocationCategory.MUSIC_DIRECTORY
 import com.akundu.kkplayer.storage.FileLocationCategory.OBB_DIRECTORY
 import com.akundu.kkplayer.storage.FileLocationCategory.PICTURES_DIRECTORY
 import com.akundu.kkplayer.storage.FileLocationCategory.VIDEOS_DIRECTORY
+import java.io.BufferedInputStream
 import java.io.BufferedOutputStream
 import java.io.File
 import java.io.FileInputStream
@@ -33,7 +34,7 @@ import java.util.zip.ZipOutputStream
 
 
 @Suppress("RedundantExplicitType")
-class AppFileManager : FileManager {
+class AppFileManager : FileManager, ZipManager, EncryptionManager {
 
     override fun createFolder(folderName: String, path: String): Boolean {
         val rootFolder: File = File(path, folderName)
@@ -79,12 +80,13 @@ class AppFileManager : FileManager {
         }
     }
 
-    private fun createMediaFile(context: Context, path: String, fileName: String, fileExtension: String?): File {
+    @Suppress("unused", "UNUSED_PARAMETER", "UNUSED_ANONYMOUS_PARAMETER")
+    private fun createMediaFile(context: Context, filePath: String, fileName: String, fileExtension: String?): File {
 
         /** Create path */
         val folder = createAppsInternalPrivateStoragePath("media/${BuildConfig.APPLICATION_ID}")
 
-        val file: File = if (fileExtension == null) File(folder!!.path, "$fileName")
+        val file: File = if (fileExtension == null) File(folder!!.path, fileName)
         else File(folder!!.path, "$fileName.$fileExtension")
 
         if (!file.exists()) {
@@ -122,7 +124,7 @@ class AppFileManager : FileManager {
             VIDEOS_DIRECTORY         -> TODO()
         }
 
-        val file: File = if (fileExtension == null) File(folder!!.path, "$fileName")
+        val file: File = if (fileExtension == null) File(folder!!.path, fileName)
         else File(folder!!.path, "$fileName.$fileExtension")
 
         if (!file.exists()) {
@@ -200,7 +202,10 @@ class AppFileManager : FileManager {
         }
     }
 
-    override fun zipFiles(srcFolderPath: String, destZipFilePath: String) {
+    /**
+     * Zip all the files available in provided path
+     */
+    override fun zipFiles(srcFolderPath: String, destZipFilePath: String): File {
         var zip: ZipOutputStream? = null
         var fileWriter: FileOutputStream? = null
         fileWriter = FileOutputStream(destZipFilePath)
@@ -208,6 +213,74 @@ class AppFileManager : FileManager {
         addFolderToZip("", srcFolderPath, zip)
         zip.flush()
         zip.close()
+        return File(destZipFilePath)
+    }
+
+    /**
+     * Zip only provide list of files
+     */
+    override fun zipListOfFiles(files: ArrayList<String>, zipFileName: String) {
+        val bufferSize = 1024
+        try {
+            var origin: BufferedInputStream?
+            val dest = FileOutputStream(zipFileName)
+            val out: ZipOutputStream = ZipOutputStream(
+                BufferedOutputStream(dest)
+            )
+            val data: ByteArray = ByteArray(bufferSize)
+            for (i in files.indices) {
+                Log.v("Compress", "Adding: " + files[i])
+                val fi: FileInputStream = FileInputStream(files[i])
+                origin = BufferedInputStream(fi, bufferSize)
+                val entry: ZipEntry = ZipEntry(files[i].substring(files[i].lastIndexOf("/") + 1))
+                out.putNextEntry(entry)
+                var count: Int
+                while (origin.read(data, 0, bufferSize).also { count = it } != -1) {
+                    out.write(data, 0, count)
+                }
+                origin.close()
+            }
+            out.close()
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
+    /**
+     * Improved in terms of performance. Unzipping time is very less compare to unZipFileSlowly()
+     * The reason of preforming fast is its using **BufferedOutputStream** instead of **FileOutputStream**
+     * @see     com.akundu.kkplayer.storage.AppFileManager.unZipFileSlowly
+     * @see     java.io.BufferedOutputStream
+     */
+    override fun unZipFile(zipFilePath: String, extractLocationPath: String) {
+        try {
+            val inputStream: FileInputStream = FileInputStream(zipFilePath)
+            val zipStream = ZipInputStream(inputStream)
+            var zEntry: ZipEntry?
+            while (zipStream.nextEntry.also { zEntry = it } != null) {
+                Log.d("Unzip", "Unzipping " + zEntry!!.name + " at " + extractLocationPath)
+                if (zEntry!!.isDirectory) {
+                    createFolder(folderName = zEntry!!.name, path = extractLocationPath)
+                } else {
+                    val fout: FileOutputStream = FileOutputStream(extractLocationPath + "/" + zEntry!!.name)
+                    val bufout = BufferedOutputStream(fout)
+                    val buffer = ByteArray(1024)
+                    var read: Int
+                    while (zipStream.read(buffer).also { read = it } != -1) {
+                        bufout.write(buffer, 0, read)
+                    }
+                    zipStream.closeEntry()
+                    bufout.close()
+                    fout.close()
+                }
+            }
+            zipStream.close()
+            Log.d("Unzip", "Unzipping complete. path :  $extractLocationPath")
+        } catch (e: java.lang.Exception) {
+            Log.d("Unzip", "Unzipping failed")
+            e.printStackTrace()
+        }
+
     }
 
     /**
@@ -220,11 +293,11 @@ class AppFileManager : FileManager {
         replaceWith = ReplaceWith("unZipFile(zipFilePath = , extractLocationPath = )"),
         level = DeprecationLevel.WARNING
     )
-    override fun unZip(zipFilePath: String, extractLocationPath: String) {
+    override fun unZipFileSlowly(zipFilePath: String, extractLocationPath: String) {
         try {
             val fin = FileInputStream(zipFilePath)
             val zin = ZipInputStream(fin)
-            var ze: ZipEntry? = null
+            var ze: ZipEntry?
             while (zin.nextEntry.also { ze = it } != null) {
 
                 //create dir if required while unzipping
@@ -248,68 +321,23 @@ class AppFileManager : FileManager {
     }
 
     /**
-     * Improved in terms of performance. Unzipping time is very less compare to unZip()
-     * The reason of preforming fast is its using **BufferedOutputStream** instead of **FileOutputStream**
-     * @see     com.akundu.kkplayer.storage.AppFileManager.unZip
-     * @see     java.io.BufferedOutputStream
+     * Zip helper function
      */
-    override fun unZipFile(zipFilePath: String, extractLocationPath: String) {
-        try {
-            val inputStream: FileInputStream = FileInputStream(zipFilePath)
-            val zipStream = ZipInputStream(inputStream)
-            var zEntry: ZipEntry? = null
-            while (zipStream.nextEntry.also { zEntry = it } != null) {
-                Log.d("Unzip", "Unzipping " + zEntry!!.name + " at " + extractLocationPath)
-                if (zEntry!!.isDirectory) {
-                    handleDirectory(extractLocationPath, zEntry!!.name)
-                } else {
-                    val fout: FileOutputStream = FileOutputStream(extractLocationPath + "/" + zEntry!!.name)
-                    val bufout = BufferedOutputStream(fout)
-                    val buffer = ByteArray(1024)
-                    var read = 0
-                    while (zipStream.read(buffer).also { read = it } != -1) {
-                        bufout.write(buffer, 0, read)
-                    }
-                    zipStream.closeEntry()
-                    bufout.close()
-                    fout.close()
-                }
-            }
-            zipStream.close()
-            Log.d("Unzip", "Unzipping complete. path :  $extractLocationPath")
-        } catch (e: java.lang.Exception) {
-            Log.d("Unzip", "Unzipping failed")
-            e.printStackTrace()
-        }
-
-    }
-
-    private fun handleDirectory(extractLocationPath: String, dir: String) {
-        val f: File = File(extractLocationPath + dir)
-        if (!f.isDirectory) {
-            f.mkdirs()
-        }
-    }
-
-    override fun encryptFile(filePath: String, encryptionRule: String): File {
-        TODO("Not yet implemented")
-    }
-
-    override fun decryptFile(filePath: String, rule: String): File {
-        TODO("Not yet implemented")
-    }
-
     private fun addFolderToZip(path: String, srcFolder: String, zip: ZipOutputStream) {
         val folder = File(srcFolder)
-        for (fileName in folder.list()) {
-            if (path == "") {
-                addFileToZip(folder.name, "$srcFolder/$fileName", zip)
-            } else {
-                addFileToZip(path + "/" + folder.name, srcFolder + "/" + fileName, zip)
+        if (folder.list() != null)
+            for (fileName in folder.list()) {
+                if (path == "") {
+                    addFileToZip(folder.name, "$srcFolder/$fileName", zip)
+                } else {
+                    addFileToZip(path + "/" + folder.name, "$srcFolder/$fileName", zip)
+                }
             }
-        }
     }
 
+    /**
+     * Zip helper function
+     */
     private fun addFileToZip(path: String, srcFile: String, zip: ZipOutputStream) {
         val folder = File(srcFile)
         if (folder.isDirectory) {
@@ -323,5 +351,13 @@ class AppFileManager : FileManager {
                 zip.write(buf, 0, len)
             }
         }
+    }
+
+    override fun encryptFile(filePath: String, encryptionRule: String): File {
+        TODO("Not yet implemented")
+    }
+
+    override fun decryptFile(filePath: String, rule: String): File {
+        TODO("Not yet implemented")
     }
 }

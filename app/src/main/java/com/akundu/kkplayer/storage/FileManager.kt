@@ -3,7 +3,6 @@ package com.akundu.kkplayer.storage
 import android.content.Context
 import java.io.File
 import java.io.InputStream
-import kotlin.DeprecationLevel.WARNING
 
 
 interface FileManager {
@@ -59,7 +58,6 @@ interface FileManager {
      */
     fun moveFile(sourcePath: String, destinationPath: String)
 
-
     /** **Write data to a empty file**
      *  - Writes inputStream to file
      *  - Writes data to file
@@ -79,24 +77,4 @@ interface FileManager {
      */
     fun renameFile(context: Context, existingFilePath: String, newFileName: String): File
 
-    /**
-     * **Zip Folders and Files**
-     *
-     * @param srcFolderPath String
-     * @param destZipFilePath String
-     */
-    fun zipFiles(srcFolderPath: String, destZipFilePath: String)
-
-    fun unZip(zipFilePath: String, extractLocationPath: String)
-    /**
-     * **Unzip Folders and files**
-     *
-     * @param zipFilePath String
-     * @param extractLocationPath String
-     */
-    fun unZipFile(zipFilePath: String, extractLocationPath: String)
-
-    fun encryptFile(filePath: String, encryptionRule: String): File
-
-    fun decryptFile(filePath: String, rule: String): File
 }

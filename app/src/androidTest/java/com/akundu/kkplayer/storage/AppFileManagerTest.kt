@@ -280,6 +280,42 @@ class AppFileManagerTest {
         )
         assertTrue(generatedTestFile.exists())
         assertTrue(generatedTestFile.length() > 0)
-        generatedTestFile.delete()                                      // clear generated test file
+        //generatedTestFile.delete()                                      // clear generated test file
+    }
+
+    @Test
+    fun testEncryptFileSuccessful() {
+        val fileManager = AppFileManager()
+        val startingTime = System.currentTimeMillis()
+        val generatedTestFile: File? = fileManager.encryptFile(
+            context = appContext,
+            srcFilePath = "/storage/emulated/0/Android/media/${BuildConfig.APPLICATION_ID}/big_buck_bunny_240p_10mb.mp4",
+            encryptedFileName = "encrypted-${System.currentTimeMillis()}"
+        )
+        val endTime = System.currentTimeMillis()
+        val encryptionTimeInMilliSeconds = (endTime - startingTime)
+        println("Time taken to encrypt: $encryptionTimeInMilliSeconds milli seconds")
+        assertTrue("Failed to complete encryption in 1 second", encryptionTimeInMilliSeconds < 1000)
+        assertTrue("Encrypted file not found", generatedTestFile.let { it?.exists() } ?: false)
+        assertTrue("No data available in encrypted file", generatedTestFile?.length()?.let { it > 0 } ?: false)
+        //generatedTestFile.delete()                                        // clear generated test file
+    }
+
+    @Test
+    fun testDecryptFileSuccessful() {
+        val fileManager = AppFileManager()
+        val startingTime = System.currentTimeMillis()
+        val generatedTestFile: File? = fileManager.decryptFile(
+            context = appContext,
+            encryptedFilePath = "/storage/emulated/0/Android/media/${BuildConfig.APPLICATION_ID}/encryptedArnab.enc",
+            outputFileName = "decrypted-${System.currentTimeMillis()}.mp4"
+        )
+        val endTime = System.currentTimeMillis()
+        val decryptionTimeInMilliSeconds = (endTime - startingTime)
+        println("Time taken to decrypt: $decryptionTimeInMilliSeconds milli seconds")
+        assertTrue("Failed to complete decryption in 1 second", decryptionTimeInMilliSeconds < 1000)
+        assertTrue("Decrypted file not found", generatedTestFile.let { it?.exists() } ?: false)
+        assertTrue("No data available in decrypted file", generatedTestFile?.length()?.let { it > 0 } ?: false)
+        generatedTestFile?.delete()                                     // clear generated test file
     }
 }

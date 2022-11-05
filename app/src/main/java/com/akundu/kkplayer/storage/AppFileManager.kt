@@ -34,7 +34,7 @@ import java.util.zip.ZipOutputStream
 
 
 @Suppress("RedundantExplicitType")
-class AppFileManager : FileManager, ZipManager, EncryptionManager {
+class AppFileManager : FileManager, ZipManager, EncryptionManager() {
 
     override fun createFolder(folderName: String, path: String): Boolean {
         val rootFolder: File = File(path, folderName)
@@ -353,11 +353,52 @@ class AppFileManager : FileManager, ZipManager, EncryptionManager {
         }
     }
 
-    override fun encryptFile(filePath: String, encryptionRule: String): File {
-        TODO("Not yet implemented")
+    @RequiresApi(VERSION_CODES.N)
+    override fun encryptFile(context: Context, srcFilePath: String, encryptedFileName: String): File? {
+        var encryptedOutputFile: File? = null
+        try {
+            val inputStream: InputStream = FileInputStream(srcFilePath)
+
+            /** Create Folder and file */
+            createFolder("encrypt", srcFilePath)
+            encryptedOutputFile = createFile(context, MEDIA_DIRECTORY, encryptedFileName, "enc")
+
+            encryptToFile(
+                keyStr = "keyLength16digit",
+                specStr = "keySizeMustBe16-",
+                inputStream,
+                FileOutputStream(encryptedOutputFile)
+            )
+        } catch (e: FileNotFoundException) {
+            e.printStackTrace()
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+        return encryptedOutputFile
     }
 
-    override fun decryptFile(filePath: String, rule: String): File {
-        TODO("Not yet implemented")
+    @RequiresApi(VERSION_CODES.N)
+    override fun decryptFile(context: Context, encryptedFilePath: String, outputFileName: String): File? {
+        var decryptedOutputFile: File? = null
+        val mInputStream: InputStream = FileInputStream(encryptedFilePath)
+        try {
+            /** Create Folder and file */
+            createFolder("decrypt", encryptedFilePath)
+            decryptedOutputFile = createFile(context, MEDIA_DIRECTORY, outputFileName,null)
+
+            decryptToFile(
+                keyStr = "keyLength16digit",
+                specStr = "keySizeMustBe16-",
+                mInputStream,
+                FileOutputStream(decryptedOutputFile)
+            )
+        } catch (e: FileNotFoundException) {
+            e.printStackTrace()
+            return null
+        } catch (e: Exception) {
+            e.printStackTrace()
+            return null
+        }
+        return decryptedOutputFile
     }
 }

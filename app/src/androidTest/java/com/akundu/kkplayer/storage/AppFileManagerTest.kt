@@ -19,10 +19,24 @@ class AppFileManagerTest {
     private val appContext: Context = InstrumentationRegistry.getInstrumentation().targetContext
     private lateinit var fileManager: AppFileManager
 
+    /**
+     * **Prerequisites for this tests**
+     *
+     *  - Fine the error logs in case of failing
+     */
     @Before
     fun setUp() {
         fileManager = AppFileManager()
-        fileManager.createFile(appContext, FileLocationCategory.MEDIA_DIRECTORY, "testFile", "txt")
+        val textFile = fileManager.createFile(appContext, FileLocationCategory.MEDIA_DIRECTORY, "testFile", "txt")
+        FileOutputStream(textFile.path).use {
+            it.write("Arnab".toByteArray())
+        }
+
+        val yourPackage = BuildConfig.APPLICATION_ID
+        val sampleImageFile = File("/storage/emulated/0/Android/media/${BuildConfig.APPLICATION_ID}/testImage.jpeg")
+        if (!sampleImageFile.exists()) {
+            throw java.lang.RuntimeException("Copy `testImage.jpeg` file into device Android/media/$yourPackage/ directory")
+        }
 
         val sampleSongFile = File(
             "/storage/emulated/0/Android/media/${BuildConfig.APPLICATION_ID}/" +
@@ -34,7 +48,7 @@ class AppFileManagerTest {
 
         val zipFile = File("/storage/emulated/0/Android/media/${BuildConfig.APPLICATION_ID}/10mb.zip")
         if (!zipFile.exists()) {
-            throw java.lang.RuntimeException("Copy `sampledata/10mb.zip` file into device Android/media/package directory")
+            throw java.lang.RuntimeException("Copy `sampledata/10mb.zip` file into device Android/media/$yourPackage/ directory")
         }
     }
 
@@ -214,6 +228,7 @@ class AppFileManagerTest {
     @Test
     fun testZipFileSuccessful() {
         val fileManager = AppFileManager()
+        // TODO still have issue in zipFiles() function
         val testOutputFile = fileManager.zipFiles(
             srcFolderPath = "/storage/emulated/0/Android/media/${BuildConfig.APPLICATION_ID}",
             destZipFilePath = "/storage/emulated/0/Android/media/${BuildConfig.APPLICATION_ID}/myTest.zip"
@@ -230,8 +245,9 @@ class AppFileManagerTest {
         val inputPath = "/storage/emulated/0/Android/media/${BuildConfig.APPLICATION_ID}"
 
         val listOfFiles = arrayListOf<String>()
-        listOfFiles.add("$inputPath/IMG_20211023_144759.jpg")
-        listOfFiles.add("$inputPath/createFileTested.txt")
+        listOfFiles.add("$inputPath/testFile.txt")
+        listOfFiles.add("$inputPath/testImage.jpeg")
+        listOfFiles.add("$inputPath/big_buck_bunny_240p_10mb.mp4")
 
         // calling the zip function
         fileManager.zipListOfFiles(listOfFiles, "$inputPath${File.separator}zipFileName.zip")
@@ -240,7 +256,7 @@ class AppFileManagerTest {
         assertTrue(testFile.exists())
         println("Zip file size: ${testFile.length() / 1024F} kb")
         assertTrue(testFile.length() > 0)
-        testFile.delete()                                               // clear generated test file
+        //testFile.delete()                                               // clear generated test file
     }
 
     @Test
@@ -260,7 +276,7 @@ class AppFileManagerTest {
         )
         assertTrue(generatedTestFile.exists())
         assertTrue(generatedTestFile.length() > 0)
-        generatedTestFile.delete()                                      // clear generated test file
+        //generatedTestFile.delete()                                      // clear generated test file
     }
 
     @Test
@@ -290,7 +306,7 @@ class AppFileManagerTest {
         val generatedTestFile: File? = fileManager.encryptFile(
             context = appContext,
             srcFilePath = "/storage/emulated/0/Android/media/${BuildConfig.APPLICATION_ID}/big_buck_bunny_240p_10mb.mp4",
-            encryptedFileName = "encrypted-${System.currentTimeMillis()}"
+            encryptedFileName = "encrypted-TestFile"
         )
         val endTime = System.currentTimeMillis()
         val encryptionTimeInMilliSeconds = (endTime - startingTime)
@@ -307,7 +323,7 @@ class AppFileManagerTest {
         val startingTime = System.currentTimeMillis()
         val generatedTestFile: File? = fileManager.decryptFile(
             context = appContext,
-            encryptedFilePath = "/storage/emulated/0/Android/media/${BuildConfig.APPLICATION_ID}/encryptedArnab.enc",
+            encryptedFilePath = "/storage/emulated/0/Android/media/${BuildConfig.APPLICATION_ID}/encrypted-TestFile.enc",
             outputFileName = "decrypted-${System.currentTimeMillis()}.mp4"
         )
         val endTime = System.currentTimeMillis()

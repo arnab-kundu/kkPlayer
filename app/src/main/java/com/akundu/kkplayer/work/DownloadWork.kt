@@ -5,6 +5,7 @@ import android.content.Context
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import com.akundu.kkplayer.AppsNotificationManager
+import com.akundu.kkplayer.BuildConfig
 import com.akundu.kkplayer.Logg
 import com.akundu.kkplayer.MainActivity
 import com.akundu.kkplayer.R
@@ -12,9 +13,9 @@ import com.akundu.kkplayer.media.FolderFiles
 import com.akundu.kkplayer.network.ApiRequest
 import com.akundu.kkplayer.network.RetrofitRequest
 import com.akundu.kkplayer.provider.FileAccessPermissionProvider
-import com.akundu.kkplayer.storage.AppFileManager
-import com.akundu.kkplayer.storage.FileLocationCategory.MEDIA_DIRECTORY
-import com.akundu.kkplayer.storage.FileManager
+import com.arnab.storage.AppFileManager
+import com.arnab.storage.FileLocationCategory.MEDIA_DIRECTORY
+import com.arnab.storage.FileManager
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
@@ -79,7 +80,7 @@ class DownloadWork(val context: Context, workerParameters: WorkerParameters) :
                 }*/
 
                 /** Save file in app own storage media directory */
-                val fileManager: FileManager = AppFileManager()
+                val fileManager: FileManager = AppFileManager(BuildConfig.APPLICATION_ID)
                 val file: File = fileManager.createFile(context = context, fileLocationCategory = MEDIA_DIRECTORY, fileName = fileName, fileExtension = null)
                 if (inputStream != null) {
                     fileManager.copyInputStreamToFile(inputStream = inputStream, file = file)

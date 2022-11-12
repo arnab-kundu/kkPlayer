@@ -87,4 +87,8 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
     androidTestImplementation "androidx.compose.ui:ui-test-junit4:$compose_version"
     androidTestImplementation 'com.nhaarman:mockito-kotlin-kt1.1:1.5.0'
+
+    /* Module Dependency*/
+    implementation project(path: ':storage')
+    implementation 'com.github.arnab-kundu:Storage:1.0'
 }

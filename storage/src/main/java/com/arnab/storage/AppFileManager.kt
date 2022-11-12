@@ -1,24 +1,22 @@
-package com.akundu.kkplayer.storage
+package com.arnab.storage
 
 import android.content.Context
 import android.media.MediaScannerConnection
 import android.os.Build.VERSION_CODES
 import android.util.Log
 import androidx.annotation.RequiresApi
-import com.akundu.kkplayer.BuildConfig
-import com.akundu.kkplayer.Logg
-import com.akundu.kkplayer.storage.FileLocationCategory.CACHE_DIRECTORY
-import com.akundu.kkplayer.storage.FileLocationCategory.DATA_DIRECTORY
-import com.akundu.kkplayer.storage.FileLocationCategory.DOCUMENT_DIRECTORY
-import com.akundu.kkplayer.storage.FileLocationCategory.DOWNLOADS_DIRECTORY
-import com.akundu.kkplayer.storage.FileLocationCategory.EXTERNAL_CACHE_DIRECTORY
-import com.akundu.kkplayer.storage.FileLocationCategory.EXTERNAL_FILES_DIRECTORY
-import com.akundu.kkplayer.storage.FileLocationCategory.FILES_DIRECTORY
-import com.akundu.kkplayer.storage.FileLocationCategory.MEDIA_DIRECTORY
-import com.akundu.kkplayer.storage.FileLocationCategory.MUSIC_DIRECTORY
-import com.akundu.kkplayer.storage.FileLocationCategory.OBB_DIRECTORY
-import com.akundu.kkplayer.storage.FileLocationCategory.PICTURES_DIRECTORY
-import com.akundu.kkplayer.storage.FileLocationCategory.VIDEOS_DIRECTORY
+import com.arnab.storage.FileLocationCategory.CACHE_DIRECTORY
+import com.arnab.storage.FileLocationCategory.DATA_DIRECTORY
+import com.arnab.storage.FileLocationCategory.DOCUMENT_DIRECTORY
+import com.arnab.storage.FileLocationCategory.DOWNLOADS_DIRECTORY
+import com.arnab.storage.FileLocationCategory.EXTERNAL_CACHE_DIRECTORY
+import com.arnab.storage.FileLocationCategory.EXTERNAL_FILES_DIRECTORY
+import com.arnab.storage.FileLocationCategory.FILES_DIRECTORY
+import com.arnab.storage.FileLocationCategory.MEDIA_DIRECTORY
+import com.arnab.storage.FileLocationCategory.MUSIC_DIRECTORY
+import com.arnab.storage.FileLocationCategory.OBB_DIRECTORY
+import com.arnab.storage.FileLocationCategory.PICTURES_DIRECTORY
+import com.arnab.storage.FileLocationCategory.VIDEOS_DIRECTORY
 import java.io.BufferedInputStream
 import java.io.BufferedOutputStream
 import java.io.File
@@ -34,7 +32,10 @@ import java.util.zip.ZipOutputStream
 
 
 @Suppress("RedundantExplicitType")
-class AppFileManager : FileManager, ZipManager, EncryptionManager() {
+class AppFileManager(packageName: String) : FileManager, ZipManager, EncryptionManager() {
+
+    private val APPLICATION_ID: String = packageName
+
 
     override fun createFolder(folderName: String, path: String): Boolean {
         val rootFolder: File = File(path, folderName)
@@ -84,7 +85,7 @@ class AppFileManager : FileManager, ZipManager, EncryptionManager() {
     private fun createMediaFile(context: Context, filePath: String, fileName: String, fileExtension: String?): File {
 
         /** Create path */
-        val folder = createAppsInternalPrivateStoragePath("media/${BuildConfig.APPLICATION_ID}")
+        val folder = createAppsInternalPrivateStoragePath("media/${APPLICATION_ID}")
 
         val file: File = if (fileExtension == null) File(folder!!.path, fileName)
         else File(folder!!.path, "$fileName.$fileExtension")
@@ -114,7 +115,7 @@ class AppFileManager : FileManager, ZipManager, EncryptionManager() {
             EXTERNAL_CACHE_DIRECTORY -> context.externalCacheDir.let { if (it == null) Logg.w("externalCacheDir returns null"); it }
 
             EXTERNAL_FILES_DIRECTORY -> context.getExternalFilesDir(null).let { if (it == null) Logg.w("getExternalFilesDir returns null"); it }
-            MEDIA_DIRECTORY          -> createAppsInternalPrivateStoragePath("media/${BuildConfig.APPLICATION_ID}").let { if (it == null) Logg.w("createMediaDir returns null"); it }
+            MEDIA_DIRECTORY          -> createAppsInternalPrivateStoragePath("media/${APPLICATION_ID}").let { if (it == null) Logg.w("createMediaDir returns null"); it }
             OBB_DIRECTORY            -> context.obbDir
 
             DOWNLOADS_DIRECTORY      -> File("/storage/emulated/0/Download/")
@@ -384,7 +385,7 @@ class AppFileManager : FileManager, ZipManager, EncryptionManager() {
         try {
             /** Create Folder and file */
             createFolder("decrypt", encryptedFilePath)
-            decryptedOutputFile = createFile(context, MEDIA_DIRECTORY, outputFileName,null)
+            decryptedOutputFile = createFile(context, MEDIA_DIRECTORY, outputFileName, null)
 
             decryptToFile(
                 keyStr = "keyLength16digit",

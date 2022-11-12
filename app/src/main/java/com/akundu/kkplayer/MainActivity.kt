@@ -1,13 +1,13 @@
 package com.akundu.kkplayer
 
-import android.Manifest.permission.READ_EXTERNAL_STORAGE
-import android.Manifest.permission.WRITE_EXTERNAL_STORAGE
 import android.content.Context
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.result.contract.ActivityResultContracts.RequestPermission
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -34,13 +34,13 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.core.app.ActivityCompat
 import androidx.work.Constraints
 import androidx.work.Data
 import androidx.work.OneTimeWorkRequest.Builder
 import androidx.work.WorkManager
 import com.akundu.kkplayer.data.Song
 import com.akundu.kkplayer.data.SongDataProvider
+import com.akundu.kkplayer.permission.RuntimePermission.askNotificationPermission
 import com.akundu.kkplayer.service.BackgroundSoundService
 import com.akundu.kkplayer.service.ServiceTools
 import com.akundu.kkplayer.storage.Constants.INTERNAL_MEDIA_PATH
@@ -62,7 +62,24 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
-        ActivityCompat.requestPermissions(this@MainActivity, arrayOf(READ_EXTERNAL_STORAGE, WRITE_EXTERNAL_STORAGE), 111)
+        //ActivityCompat.requestPermissions(this@MainActivity, arrayOf(READ_EXTERNAL_STORAGE, WRITE_EXTERNAL_STORAGE), 111)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            askNotificationPermission(this, requestPermissionLauncher)
+        }
+    }
+
+    private val requestPermissionLauncher = registerForActivityResult<String, Boolean>(RequestPermission()) { isGranted: Boolean ->
+        if (isGranted) {
+            Logg.i("Callback: Permission is granted")
+            // Permission is granted. Continue the action or workflow in your app.
+        } else {
+            Logg.e("Callback: Permission is NOT granted")
+            // Explain to the user that the feature is unavailable because the
+            // feature requires a permission that the user has denied. At the
+            // same time, respect the user's decision. Don't link to system
+            // settings in an effort to convince the user to change their
+            // decision.
+        }
     }
 }
 

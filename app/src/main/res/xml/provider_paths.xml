@@ -1,6 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <paths>
+
+    <!-- This path gives access to all the files of this app -->
     <external-path
-        name="external_path"
+        name="share"
         path="." />
+
+    <!-- This path gives access to only .mp3 file in media directory -->
+    <external-path
+        name="shared_music"
+        path="./media/com.akundu.kkplayer/*.mp3" />
+
 </paths>

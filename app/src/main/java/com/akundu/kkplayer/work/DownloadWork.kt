@@ -11,6 +11,7 @@ import com.akundu.kkplayer.R
 import com.akundu.kkplayer.media.FolderFiles
 import com.akundu.kkplayer.network.ApiRequest
 import com.akundu.kkplayer.network.RetrofitRequest
+import com.akundu.kkplayer.provider.FileAccessPermissionProvider
 import com.akundu.kkplayer.storage.AppFileManager
 import com.akundu.kkplayer.storage.FileLocationCategory.MEDIA_DIRECTORY
 import com.akundu.kkplayer.storage.FileManager
@@ -82,6 +83,15 @@ class DownloadWork(val context: Context, workerParameters: WorkerParameters) :
                 val file: File = fileManager.createFile(context = context, fileLocationCategory = MEDIA_DIRECTORY, fileName = fileName, fileExtension = null)
                 if (inputStream != null) {
                     fileManager.copyInputStreamToFile(inputStream = inputStream, file = file)
+                }
+
+                /** Share file between third party apps using content provider */
+                try {
+                    val fileProvider = FileAccessPermissionProvider(context, file)
+                    fileProvider.grandUriPermissionsToThirdPartyApp(FileAccessPermissionProvider.PACKAGE_NAME_OF_YOUTUBE_MUSIC)
+                    fileProvider.grandUriPermissionsToThirdPartyApp(FileAccessPermissionProvider.PACKAGE_NAME_OF_WYNK_MUSIC)
+                } catch (e: Exception) {
+                    Logg.e("createFile: $e")
                 }
 
             } else {

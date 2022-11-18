@@ -8,7 +8,8 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class RetrofitRequest {
 
     private static Retrofit retrofit;
-    private final static String BASE_URL = "https://pwdown.com/11981/";
+    // BASE_URL was https://pwdown.com/11981/ its changed on 19/11/2022
+    private final static String BASE_URL = "https://pwdown.info/11981/";
 
     public static Retrofit getRetrofitInstance() {
         if (retrofit == null) {

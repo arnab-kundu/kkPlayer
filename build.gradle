@@ -30,3 +30,8 @@ task Test{
 }
 // TODO (In Windows) Run `gradlew task` comment in Terminal to get all available gradlew methods
 // TODO (In Mac) Press [⌘ + ↩] to Run `gradlew task` comment in Terminal to get all available gradlew methods
+
+task ktlintCheck{
+
+}
+// TODO to run ktlintCheck from terminal execute "./gradlew ktlintCheck"

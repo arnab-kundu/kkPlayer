@@ -11,14 +11,14 @@ import android.provider.MediaStore
 import android.util.Log
 import com.akundu.kkplayer.BuildConfig
 import com.akundu.kkplayer.Logg
-import okhttp3.ResponseBody
 import java.io.File
 import java.io.FileNotFoundException
 import java.io.FileOutputStream
 import java.io.IOException
 import java.io.InputStream
 import java.io.OutputStream
-import java.util.*
+import java.util.Objects
+import okhttp3.ResponseBody
 
 
 /**
@@ -26,7 +26,7 @@ import java.util.*
  * @param context Context required for API level R
  */
 
-//@Suppress("unused")
+// @Suppress("unused")
 object FolderFiles {
 
     private const val TAG = "FolderFiles"
@@ -51,7 +51,7 @@ object FolderFiles {
                 e.printStackTrace()
             }
         }
-        return logFolder.absolutePath;
+        return logFolder.absolutePath
     }
 
 
@@ -199,8 +199,6 @@ object FolderFiles {
         return logFile
     }
 
-
-    //private const val FILE_PATH_PREFIX = "/storage/emulated/0/ZebraApp/"
 
     /**
      * Generic function to delete a file

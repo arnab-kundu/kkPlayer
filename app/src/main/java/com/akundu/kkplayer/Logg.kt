@@ -13,7 +13,7 @@ object Logg {
             val link = "(${it.fileName}:${it.lineNumber})"
             val path = "App# ${it.className.substringAfterLast(".")}.${it.methodName}"
             if (path.length + link.length > 80) {
-                "${path.take(80 - link.length)}...${link}"
+                "${path.take(80 - link.length)}...$link"
             } else {
                 "$path$link"
             }

@@ -13,10 +13,10 @@ import android.provider.MediaStore
 import android.provider.MediaStore.MediaColumns.DATE_ADDED
 import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat.checkSelfPermission
+import kotlin.coroutines.resume
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
-import kotlin.coroutines.resume
 
 object MediaStoreUtils {
     /**

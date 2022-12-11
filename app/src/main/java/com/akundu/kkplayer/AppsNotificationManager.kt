@@ -85,8 +85,8 @@ class AppsNotificationManager private constructor(private val context: Context) 
             .setContentIntent(pendingIntent)
             .setChannelId("1")
             .setAutoCancel(true)
-        //val androidImage = BitmapFactory.decodeResource(context.resources, drawable.alert_dark_frame)
-        //builder.setStyle(BigPictureStyle().bigPicture(androidImage).setBigContentTitle(bigpictureString))
+        // val androidImage = BitmapFactory.decodeResource(context.resources, drawable.alert_dark_frame)
+        // builder.setStyle(BigPictureStyle().bigPicture(androidImage).setBigContentTitle(bigpictureString))
         notificationManager.notify(notificationId, builder.build())
     }
 

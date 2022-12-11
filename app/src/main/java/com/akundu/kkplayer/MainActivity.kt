@@ -62,7 +62,7 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
-        //ActivityCompat.requestPermissions(this@MainActivity, arrayOf(READ_EXTERNAL_STORAGE, WRITE_EXTERNAL_STORAGE), 111)
+        // ActivityCompat.requestPermissions(this@MainActivity, arrayOf(READ_EXTERNAL_STORAGE, WRITE_EXTERNAL_STORAGE), 111)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             askNotificationPermission(this, requestPermissionLauncher)
         }
@@ -98,7 +98,7 @@ fun SongItem(song: Song, index: Int) {
             contentScale = ContentScale.FillBounds,
             modifier = Modifier
                 .size(88.dp)
-                //.clip(CircleShape)
+                // .clip(CircleShape)
                 .padding(12.dp)
         )
         Column(modifier = Modifier.weight(1f)) {
@@ -146,9 +146,9 @@ fun isFileExists(fileName: String): Boolean {
     val songFile = File(uriString)
     val isFileExist = songFile.exists()
     if (isFileExist) {
-        //Logg.i("Is file exists: $isFileExist. Filename: $fileName")
+        // Logg.i("Is file exists: $isFileExist. Filename: $fileName")
     } else {
-        //Logg.e("Is file exists: $isFileExist. Filename: $fileName")
+        // Logg.e("Is file exists: $isFileExist. Filename: $fileName")
     }
     return isFileExist
 }
@@ -174,7 +174,7 @@ fun playSong(context: Context, title: String, fileName: String, index: Int) {
 
             val intent = Intent(context, PlayerActivity::class.java)
             intent.putExtra("index", index)
-            //context.startActivity(intent)
+            // context.startActivity(intent)
 
         } else {
             Logg.e("File exist: false")
@@ -206,9 +206,9 @@ fun download(context: Context, fileName: String, movie: String) {
         .build()
 
     val constraints: Constraints = Constraints.Builder()
-        //.setRequiredNetworkType(NetworkType.UNMETERED)
-        //.setRequiresBatteryNotLow(true)
-        //.setRequiresStorageNotLow(true)
+        // .setRequiredNetworkType(NetworkType.UNMETERED)
+        // .setRequiresBatteryNotLow(true)
+        // .setRequiresStorageNotLow(true)
         .build()
 
     val request = Builder(DownloadWork::class.java)
@@ -258,7 +258,7 @@ fun SongListPreview() {
 
 
 private fun getDrawable(movie: String): Int {
-    return when(movie) {
+    return when (movie) {
         "Bajrangi Bhaijaan" -> R.drawable.bajrangi_bhaijaan
         "Bhool Bhulaiyaa"   -> R.drawable.bhool_bhulaiyaa
         "Crook"             -> R.drawable.crook

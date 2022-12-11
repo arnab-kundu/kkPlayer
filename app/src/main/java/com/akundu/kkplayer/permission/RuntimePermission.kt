@@ -18,7 +18,7 @@ object RuntimePermission {
      * for Android 13 and above
      */
     @RequiresApi(api = Build.VERSION_CODES.TIRAMISU)
-   fun askNotificationPermission(activity: Activity, requestPermissionLauncher: ActivityResultLauncher<String>) {
+    fun askNotificationPermission(activity: Activity, requestPermissionLauncher: ActivityResultLauncher<String>) {
         if (ContextCompat.checkSelfPermission(activity, Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED) {
             Logg.i("NOTIFICATION PERMISSION GRANTED")
         } else if (shouldShowRequestPermissionRationale(activity, Manifest.permission.POST_NOTIFICATIONS)) {

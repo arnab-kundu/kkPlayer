@@ -4,13 +4,13 @@ import android.content.Context
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import com.akundu.kkplayer.BuildConfig
+import java.io.File
+import java.io.FileOutputStream
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import java.io.File
-import java.io.FileOutputStream
 
 
 @RunWith(AndroidJUnit4::class)
@@ -39,8 +39,7 @@ class AppFileManagerTest {
         }
 
         val sampleSongFile = File(
-            "/storage/emulated/0/Android/media/${BuildConfig.APPLICATION_ID}/" +
-                    "Tu Hi Meri Shab Hai (Gangster) - K.K - 320Kbps.mp3"
+            "/storage/emulated/0/Android/media/${BuildConfig.APPLICATION_ID}/Tu Hi Meri Shab Hai (Gangster) - K.K - 320Kbps.mp3"
         )
         if (!sampleSongFile.exists()) {
             throw java.lang.RuntimeException("Download `Tu Hi Meri Shab Hai (Gangster)` song using kkPlayer before test")
@@ -256,7 +255,7 @@ class AppFileManagerTest {
         assertTrue(testFile.exists())
         println("Zip file size: ${testFile.length() / 1024F} kb")
         assertTrue(testFile.length() > 0)
-        //testFile.delete()                                               // clear generated test file
+        // testFile.delete()                                               // clear generated test file
     }
 
     @Test
@@ -276,7 +275,7 @@ class AppFileManagerTest {
         )
         assertTrue(generatedTestFile.exists())
         assertTrue(generatedTestFile.length() > 0)
-        //generatedTestFile.delete()                                      // clear generated test file
+        // generatedTestFile.delete()                                      // clear generated test file
     }
 
     @Test
@@ -296,7 +295,7 @@ class AppFileManagerTest {
         )
         assertTrue(generatedTestFile.exists())
         assertTrue(generatedTestFile.length() > 0)
-        //generatedTestFile.delete()                                      // clear generated test file
+        // generatedTestFile.delete()                                      // clear generated test file
     }
 
     @Test
@@ -314,7 +313,7 @@ class AppFileManagerTest {
         assertTrue("Failed to complete encryption in 1 second", encryptionTimeInMilliSeconds < 1000)
         assertTrue("Encrypted file not found", generatedTestFile.let { it?.exists() } ?: false)
         assertTrue("No data available in encrypted file", generatedTestFile?.length()?.let { it > 0 } ?: false)
-        //generatedTestFile.delete()                                        // clear generated test file
+        // generatedTestFile.delete()                                        // clear generated test file
     }
 
     @Test

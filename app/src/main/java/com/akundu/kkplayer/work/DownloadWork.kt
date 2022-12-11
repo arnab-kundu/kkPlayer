@@ -15,6 +15,8 @@ import com.akundu.kkplayer.provider.FileAccessPermissionProvider
 import com.akundu.kkplayer.storage.AppFileManager
 import com.akundu.kkplayer.storage.FileLocationCategory.MEDIA_DIRECTORY
 import com.akundu.kkplayer.storage.FileManager
+import java.io.File
+import java.io.InputStream
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
@@ -23,9 +25,6 @@ import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import java.io.File
-import java.io.InputStream
-
 
 class DownloadWork(val context: Context, workerParameters: WorkerParameters) :
     CoroutineWorker(context, workerParameters) {
@@ -36,7 +35,7 @@ class DownloadWork(val context: Context, workerParameters: WorkerParameters) :
         val movie = inputData.getString("movie") ?: ""
         val notificationID = inputData.getInt("notificationID", 0)
 
-        //downloadFileAndSaveInAppDirectory(fileName, movie, notificationID)
+        // downloadFileAndSaveInAppDirectory(fileName, movie, notificationID)
         downloadFileAndSaveInScopedStorage(fileName, movie, notificationID)
 
         return Result.success()
@@ -155,7 +154,7 @@ class DownloadWork(val context: Context, workerParameters: WorkerParameters) :
     }
 
     private fun getDrawable(movie: String): Int {
-        return when(movie) {
+        return when (movie) {
             "Bajrangi Bhaijaan" -> R.drawable.bajrangi_bhaijaan
             "Bhool Bhulaiyaa"   -> R.drawable.bhool_bhulaiyaa
             "Crook"             -> R.drawable.crook

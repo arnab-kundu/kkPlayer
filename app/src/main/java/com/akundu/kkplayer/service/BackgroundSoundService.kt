@@ -48,7 +48,7 @@ class BackgroundSoundService : Service() {
             player?.start()
             player?.setOnCompletionListener { mediaPlayer: MediaPlayer? -> stopSelf() }
 
-            //Log.i(TAG, "Playing: " + uriString.split("Music/").toTypedArray()[1])
+            // Log.i(TAG, "Playing: " + uriString.split("Music/").toTypedArray()[1])
 
             runAsForeground()
         }
@@ -111,7 +111,7 @@ class BackgroundSoundService : Service() {
             .setContentTitle(songTitle)
             .addAction(android.R.drawable.ic_media_play, "Play/Pause", pauseServicePendingIntent)
             .addAction(android.R.drawable.ic_menu_close_clear_cancel, "Stop", stopServicePendingIntent)
-            //.setContentText("Replace with your text")
+            // .setContentText("Replace with your text")
             .setSilent(true)
             .setContentIntent(pendingIntent)
         startForeground(12345, notification.build())

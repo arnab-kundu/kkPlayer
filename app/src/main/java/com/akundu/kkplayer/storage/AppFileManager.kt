@@ -107,7 +107,7 @@ class AppFileManager : FileManager, ZipManager, EncryptionManager() {
     override fun createFile(context: Context, fileLocationCategory: FileLocationCategory, fileName: String, fileExtension: String?): File {
 
         /** Create path */
-        val folder: File? = when(fileLocationCategory) {
+        val folder: File? = when (fileLocationCategory) {
             CACHE_DIRECTORY          -> context.cacheDir
             DATA_DIRECTORY           -> context.dataDir
             FILES_DIRECTORY          -> context.filesDir
@@ -300,9 +300,9 @@ class AppFileManager : FileManager, ZipManager, EncryptionManager() {
             var ze: ZipEntry?
             while (zin.nextEntry.also { ze = it } != null) {
 
-                //create dir if required while unzipping
+                // create dir if required while unzipping
                 if (ze!!.isDirectory) {
-                    //TODO dirChecker(ze.getName());
+                    // TODO dirChecker(ze.getName());
                 } else {
                     val fout = FileOutputStream(extractLocationPath + ze!!.name)
                     var c = zin.read()
@@ -384,7 +384,7 @@ class AppFileManager : FileManager, ZipManager, EncryptionManager() {
         try {
             /** Create Folder and file */
             createFolder("decrypt", encryptedFilePath)
-            decryptedOutputFile = createFile(context, MEDIA_DIRECTORY, outputFileName,null)
+            decryptedOutputFile = createFile(context, MEDIA_DIRECTORY, outputFileName, null)
 
             decryptToFile(
                 keyStr = "keyLength16digit",

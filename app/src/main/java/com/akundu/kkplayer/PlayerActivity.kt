@@ -293,7 +293,7 @@ fun PlayerController(
 }
 
 private fun getDrawable(movie: String): Int {
-    return when(movie) {
+    return when (movie) {
         "Bajrangi Bhaijaan" -> R.drawable.bajrangi_bhaijaan
         "EK THA TIGER"      -> R.drawable.ek_tha_tiger
         "Gangster"          -> R.drawable.gangster

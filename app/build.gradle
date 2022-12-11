@@ -53,7 +53,7 @@ android {
 }
 
 // Automatically format code using ktLint before run the project
-// tasks.findByPath("preBuild").dependsOn("ktlintFormat")
+tasks.findByPath("preBuild").dependsOn("ktlintFormat")
 
 // ktLint (https://www.youtube.com/watch?v=hSgPNbEcX98)
 ktlint {

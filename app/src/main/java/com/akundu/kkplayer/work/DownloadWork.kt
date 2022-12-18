@@ -32,11 +32,12 @@ class DownloadWork(val context: Context, workerParameters: WorkerParameters) :
     override suspend fun doWork(): Result {
 
         val fileName = inputData.getString("fileName") ?: ""
+        val url = inputData.getString("url") ?: ""
         val movie = inputData.getString("movie") ?: ""
         val notificationID = inputData.getInt("notificationID", 0)
 
         // downloadFileAndSaveInAppDirectory(fileName, movie, notificationID)
-        downloadFileAndSaveInScopedStorage(fileName, movie, notificationID)
+        downloadFileAndSaveInScopedStorage(fileName, url, movie, notificationID)
 
         return Result.success()
     }
@@ -47,16 +48,17 @@ class DownloadWork(val context: Context, workerParameters: WorkerParameters) :
      * Use Coroutines
      *
      * @param fileName (required)
+     * @param url (required)
      * @param movie (required) for displaying in notification
      * @param notificationID (required) for canceling on going downloading notification
      */
-    private suspend fun downloadFileAndSaveInScopedStorage(fileName: String, movie: String, notificationID: Int) {
+    private suspend fun downloadFileAndSaveInScopedStorage(fileName: String, url: String, movie: String, notificationID: Int) {
 
         val apiRequest = RetrofitRequest.getRetrofitInstance().create(ApiRequest::class.java)
 
         withContext(Dispatchers.IO) {
             val deferred: Deferred<Response<ResponseBody>> = async {
-                apiRequest.downloadSong(fileName = fileName).execute()
+                apiRequest.downloadSongByUrl(url = url).execute()
             }
             val response = deferred.await()
             Logg.i("StatusCode: ${response.code()}")
@@ -121,7 +123,7 @@ class DownloadWork(val context: Context, workerParameters: WorkerParameters) :
     private fun downloadFileAndSaveInAppDirectory(fileName: String, movie: String, notificationID: Int) {
         val apiRequest = RetrofitRequest.getRetrofitInstance().create(ApiRequest::class.java)
         apiRequest.downloadSong(fileName = fileName).enqueue(object : Callback<ResponseBody> {
-            override fun onResponse(call: Call<ResponseBody>, response: retrofit2.Response<ResponseBody>) {
+            override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
                 Logg.i("StatusCode: ${response.code()}")
 
                 if (response.isSuccessful) {

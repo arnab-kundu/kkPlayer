@@ -20,6 +20,7 @@ public class RetrofitRequest {
             //okHttpClient.readTimeout(3000, TimeUnit.MILLISECONDS);
             //okHttpClient.connectTimeout(3000, TimeUnit.MILLISECONDS);
             okHttpClient.addInterceptor(interceptor);
+            //okHttpClient.retryOnConnectionFailure(true);
 
             retrofit = new Retrofit.Builder()
                     .baseUrl(BASE_URL)

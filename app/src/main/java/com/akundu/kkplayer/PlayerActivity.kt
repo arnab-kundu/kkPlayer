@@ -299,6 +299,7 @@ private fun getDrawable(movie: String): Int {
         "Gangster"          -> R.drawable.gangster
         "Jannat"            -> R.drawable.jannat
         "Jism"              -> R.drawable.jism
+        "Kabir Singh (2019)" -> R.drawable.kabir_singh
         "Kites"             -> R.drawable.kites
         "Laali Ki Shaadi"   -> R.drawable.laali_ki_shaadi
         "Musafir"           -> R.drawable.musafir

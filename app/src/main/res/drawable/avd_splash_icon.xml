@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<animated-vector xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt"
+    android:drawable="@drawable/ic_launcher_foreground">
+
+    <target android:name="K1">
+        <aapt:attr name="android:animation">
+            <set android:ordering="sequentially">
+                <objectAnimator
+                    android:duration="300"
+                    android:propertyName="translateX"
+                    android:startOffset="500"
+                    android:valueFrom="-45"
+                    android:valueTo="0"
+                    android:valueType="floatType" />
+            </set>
+        </aapt:attr>
+    </target>
+
+    <target android:name="K2">
+        <aapt:attr name="android:animation">
+            <set android:ordering="sequentially">
+                <objectAnimator
+                    android:duration="300"
+                    android:propertyName="translateX"
+                    android:startOffset="1000"
+                    android:valueFrom="35"
+                    android:valueTo="0"
+                    android:valueType="floatType" />
+            </set>
+        </aapt:attr>
+    </target>
+
+    <target android:name="Music up">
+        <aapt:attr name="android:animation">
+            <set android:ordering="sequentially">
+                <objectAnimator
+                    android:duration="100"
+                    android:propertyName="translateY"
+                    android:startOffset="1500"
+                    android:valueFrom="-50"
+                    android:valueTo="0"
+                    android:valueType="floatType" />
+                <objectAnimator
+                    android:duration="100"
+                    android:propertyName="translateY"
+                    android:repeatCount="5"
+                    android:repeatMode="reverse"
+                    android:startOffset="100"
+                    android:valueFrom="-1.5"
+                    android:valueTo="0"
+                    android:valueType="floatType" />
+            </set>
+        </aapt:attr>
+    </target>
+
+    <target android:name="Music down">
+        <aapt:attr name="android:animation">
+            <set android:ordering="sequentially">
+                <objectAnimator
+                    android:duration="100"
+                    android:propertyName="translateY"
+                    android:startOffset="1500"
+                    android:valueFrom="50"
+                    android:valueTo="0"
+                    android:valueType="floatType" />
+                <objectAnimator
+                    android:duration="100"
+                    android:propertyName="translateY"
+                    android:repeatCount="5"
+                    android:repeatMode="reverse"
+                    android:startOffset="100"
+                    android:valueFrom="1.5"
+                    android:valueTo="0"
+                    android:valueType="floatType" />
+            </set>
+        </aapt:attr>
+    </target>
+
+</animated-vector>

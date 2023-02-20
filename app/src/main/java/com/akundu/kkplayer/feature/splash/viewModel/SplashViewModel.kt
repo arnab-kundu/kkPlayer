@@ -1,4 +1,4 @@
-package com.akundu.kkplayer
+package com.akundu.kkplayer.feature.splash.viewModel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 
-class MainViewModel : ViewModel() {
+class SplashViewModel : ViewModel() {
 
     // region How to create delay in splashScreen viewModel using StateFlow
     private val _isLoading = MutableStateFlow(true)
@@ -16,7 +16,7 @@ class MainViewModel : ViewModel() {
 
     init {
         viewModelScope.launch {
-            delay(3000)
+            delay(2500)
             _isLoading.value = false
         }
     }

@@ -34,7 +34,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.work.Constraints
 import androidx.work.Data
 import androidx.work.OneTimeWorkRequest.Builder
@@ -53,27 +52,8 @@ import java.io.FileNotFoundException
 
 class MainActivity : ComponentActivity() {
 
-    private lateinit var viewModel: MainViewModel
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        viewModel = MainViewModel()
-
-        // Splash screen loading
-        installSplashScreen().apply {
-
-            // Conditional delay in SplashScreen. SplashScreen will remain until this condition gets succeeded
-            setKeepOnScreenCondition {
-                viewModel.isLoading.value
-            }
-
-            // Animation works for Android 12 and later versions
-            // After complete SplashScreen animation, resume Main/UI Thread operation.
-            setOnExitAnimationListener {
-                startActivity(Intent(this@MainActivity, MainActivity::class.java))
-            }
-        }
 
         setContent {
             KkPlayerTheme {
@@ -83,6 +63,7 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
+
         // ActivityCompat.requestPermissions(this@MainActivity, arrayOf(READ_EXTERNAL_STORAGE, WRITE_EXTERNAL_STORAGE), 111)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             askNotificationPermission(this, requestPermissionLauncher)

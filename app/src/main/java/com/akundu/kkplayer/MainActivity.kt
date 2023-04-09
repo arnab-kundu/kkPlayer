@@ -46,6 +46,8 @@ import com.akundu.kkplayer.service.ServiceTools
 import com.akundu.kkplayer.storage.Constants.INTERNAL_MEDIA_PATH
 import com.akundu.kkplayer.ui.theme.KkPlayerTheme
 import com.akundu.kkplayer.work.DownloadWork
+import com.google.android.material.snackbar.Snackbar
+import es.dmoral.toasty.Toasty
 import java.io.File
 import java.io.FileNotFoundException
 
@@ -82,6 +84,13 @@ class MainActivity : ComponentActivity() {
             // settings in an effort to convince the user to change their
             // decision.
         }
+    }
+
+    fun internetAvailable(context: Context) {
+        Toasty.success(context, "Online!", Snackbar.LENGTH_SHORT).show()
+    }
+    fun noInternet(context: Context) {
+        Toasty.error(context, "No Internet!", Snackbar.LENGTH_SHORT).show()
     }
 }
 

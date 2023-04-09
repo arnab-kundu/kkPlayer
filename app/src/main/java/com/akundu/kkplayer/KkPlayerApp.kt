@@ -1,6 +1,7 @@
 package com.akundu.kkplayer
 
 import android.app.Application
+import com.akundu.kkplayer.network.ConnectionStateMonitor
 
 class KkPlayerApp : Application() {
 
@@ -21,5 +22,6 @@ class KkPlayerApp : Application() {
             channelDescription = "Playing song notification"
         )
 
+        ConnectionStateMonitor().enable(this)
     }
 }

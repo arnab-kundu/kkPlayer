@@ -4,6 +4,13 @@ object SongDataProvider {
 
     val kkSongList: List<Song> = listOf(
         Song(
+            title = "Om Deva deva -  Arijit Singh",
+            artist = "Arijit Singh",
+            fileName = "Om Deva deva.mp3",
+            url = "https://pagalnew.com/download128/32137",
+            movie = "--"
+        ),
+        Song(
             title = "Tu Mera Na Hoke Bhi -  Arijit Singh",
             artist = "Arijit Singh",
             fileName = "Tu Mera Na Hoke Bhi.mp3",

@@ -4,6 +4,13 @@ object SongDataProvider {
 
     val kkSongList: List<Song> = listOf(
         Song(
+            title = "Tu Mera Na Hoke Bhi -  Arijit Singh",
+            artist = "Arijit Singh",
+            fileName = "Tu Mera Na Hoke Bhi.mp3",
+            url = "https://pagalworldl.com/files/download/id/14896",
+            movie = "--"
+        ),
+        Song(
             title = "Bekhayali - Kabir Singh",
             artist = "Sachet Tandon, Sachet Parampara",
             fileName = "Bekhayali - Kabir Singh.mp3",

@@ -40,6 +40,7 @@ import androidx.work.OneTimeWorkRequest.Builder
 import androidx.work.WorkManager
 import com.akundu.kkplayer.data.Song
 import com.akundu.kkplayer.data.SongDataProvider
+import com.akundu.kkplayer.download.AndroidDownloader
 import com.akundu.kkplayer.permission.RuntimePermission.askNotificationPermission
 import com.akundu.kkplayer.service.BackgroundSoundService
 import com.akundu.kkplayer.service.ServiceTools
@@ -89,6 +90,7 @@ class MainActivity : ComponentActivity() {
     fun internetAvailable(context: Context) {
         Toasty.success(context, "Online!", Snackbar.LENGTH_SHORT).show()
     }
+
     fun noInternet(context: Context) {
         Toasty.error(context, "No Internet!", Snackbar.LENGTH_SHORT).show()
     }
@@ -128,7 +130,12 @@ fun SongItem(song: Song, index: Int) {
         }
         IconButton(
             onClick = {
-                if (isFileExists(fileName = song.fileName)) playSong(context, song.title, song.fileName, index) else download(context, song.fileName, song.url, song.movie)
+                val downloadUsingAndroidDownloaderAPI = false
+                if (!downloadUsingAndroidDownloaderAPI) {
+                    if (isFileExists(fileName = song.fileName)) playSong(context, song.title, song.fileName, index) else download(context, song.fileName, song.url, song.movie)
+                } else {
+                    if (isFileExists(fileName = song.fileName)) playSong(context, song.title, song.fileName, index) else downloadUsingAndroidDownloadManagerAPI(context, song.fileName, song.url, song.movie)
+                }
             }
         ) {
             Icon(
@@ -238,6 +245,21 @@ fun download(context: Context, fileName: String, url: String, movie: String) {
         bigText = "",
         notificationId = notificationID,
         drawableId = getDrawable(movie)
+    )
+}
+
+/**
+ * Download file using new - **Android DownloadManager API**.
+ *
+ *
+ *  - Downloaded file will be saved in **Public Downloads Folder**
+ *  - This API have build-in feature for showing notifications of in-progress-downloads and download-completion
+ */
+fun downloadUsingAndroidDownloadManagerAPI(context: Context, fileName: String, url: String, movie: String) {
+    val downloader = AndroidDownloader(context = context)
+    downloader.downloadFile(
+        url = url,
+        fileName = fileName
     )
 }
 

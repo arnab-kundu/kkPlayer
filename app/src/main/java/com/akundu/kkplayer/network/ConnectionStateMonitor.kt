@@ -45,7 +45,7 @@ class ConnectionStateMonitor : NetworkCallback() {
     }
 
     override fun onUnavailable() {
-        Log.w(TAG, "onUnavailable: No getting called onUnavailable() os issue.", )
+        Log.w(TAG, "onUnavailable: No getting called onUnavailable() os issue")
         super.onUnavailable()
         val mainHandler: Handler = Handler(context.mainLooper)
 

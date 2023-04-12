@@ -7,6 +7,14 @@ import android.os.Environment
 import androidx.annotation.RequiresApi
 import androidx.core.net.toUri
 
+
+/**
+ * Download file using new - **Android DownloadManager API**.
+ *
+ *
+ *  - Downloaded file will be saved in **Public Downloads Folder**
+ *  - This API have build-in feature for showing notifications of in-progress-downloads and download-completion
+ */
 @RequiresApi(VERSION_CODES.M)
 class AndroidDownloader(context: Context) : Downloader {
 

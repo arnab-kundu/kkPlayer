@@ -206,10 +206,8 @@ class AppFileManager : FileManager, ZipManager, EncryptionManager() {
      * Zip all the files available in provided path
      */
     override fun zipFiles(srcFolderPath: String, destZipFilePath: String): File {
-        var zip: ZipOutputStream? = null
-        var fileWriter: FileOutputStream? = null
-        fileWriter = FileOutputStream(destZipFilePath)
-        zip = ZipOutputStream(fileWriter)
+        val fileWriter: FileOutputStream = FileOutputStream(destZipFilePath)
+        val zip: ZipOutputStream = ZipOutputStream(fileWriter)
         addFolderToZip("", srcFolderPath, zip)
         zip.flush()
         zip.close()
@@ -326,7 +324,7 @@ class AppFileManager : FileManager, ZipManager, EncryptionManager() {
     private fun addFolderToZip(path: String, srcFolder: String, zip: ZipOutputStream) {
         val folder = File(srcFolder)
         if (folder.list() != null)
-            for (fileName in folder.list()) {
+            for (fileName in folder.list()!!) {
                 if (path == "") {
                     addFileToZip(folder.name, "$srcFolder/$fileName", zip)
                 } else {
@@ -379,7 +377,7 @@ class AppFileManager : FileManager, ZipManager, EncryptionManager() {
 
     @RequiresApi(VERSION_CODES.N)
     override fun decryptFile(context: Context, encryptedFilePath: String, outputFileName: String): File? {
-        var decryptedOutputFile: File? = null
+        val decryptedOutputFile: File?
         val mInputStream: InputStream = FileInputStream(encryptedFilePath)
         try {
             /** Create Folder and file */

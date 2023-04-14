@@ -23,14 +23,14 @@ import okhttp3.ResponseBody
 
 /**
  * @author Arnab Kundu
- * @param context Context required for API level R
+ * Context required for API level R
  */
 
-// @Suppress("unused")
+@Suppress("unused", "UNUSED_ANONYMOUS_PARAMETER", "RedundantExplicitType", "UNUSED_PARAMETER")
 object FolderFiles {
 
     private const val TAG = "FolderFiles"
-    const val PARENT_DIRECTORY_NAME = "kkPlayer"
+    private const val PARENT_DIRECTORY_NAME = "kkPlayer"
 
     /**
      * Generic method to Create folder
@@ -83,11 +83,12 @@ object FolderFiles {
             return null
         }
     }
+
     fun createFileAtPath(context: Context, path: String, fileName: String = "", fileExtension: String? = null): File {
 
         val file: File =
             if (fileExtension == null)
-                File(path, "$fileName")
+                File(path, fileName)
             else
                 File(path, "$fileName.$fileExtension")
 
@@ -99,7 +100,7 @@ object FolderFiles {
             }
         }
         // Without MediaScan file not visible to in PC after connecting via USB
-        MediaScannerConnection.scanFile(context, arrayOf(file.toString()), null) { path, uri ->
+        MediaScannerConnection.scanFile(context, arrayOf(file.toString()), null) { _path, uri ->
 
         }
         Log.d(TAG, "File path: ${file.absolutePath}")
@@ -177,7 +178,7 @@ object FolderFiles {
 
 
     /**
-     * createLogFile() this method specfic to this project to save logs
+     * createLogFile() this method specific to this project to save logs
      * @param context Context required for API level R
      * @param folderName
      * @param fileName
@@ -273,12 +274,8 @@ object FolderFiles {
             } catch (e: IOException) {
                 false
             } finally {
-                if (inputStream != null) {
-                    inputStream.close()
-                }
-                if (outputStream != null) {
-                    outputStream.close()
-                }
+                inputStream?.close()
+                outputStream?.close()
             }
         } catch (e: IOException) {
             false

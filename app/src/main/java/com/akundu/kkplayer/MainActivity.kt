@@ -164,9 +164,9 @@ fun isFileExists(fileName: String): Boolean {
     val songFile = File(uriString)
     val isFileExist = songFile.exists()
     if (isFileExist) {
-        // Logg.i("Is file exists: $isFileExist. Filename: $fileName")
+         Logg.i("Is file exists: $isFileExist. Filename: $fileName")
     } else {
-        // Logg.e("Is file exists: $isFileExist. Filename: $fileName")
+         Logg.e("Is file exists: $isFileExist. Filename: $fileName")
     }
     return isFileExist
 }
@@ -255,6 +255,7 @@ fun download(context: Context, fileName: String, url: String, movie: String) {
  *  - Downloaded file will be saved in **Public Downloads Folder**
  *  - This API have build-in feature for showing notifications of in-progress-downloads and download-completion
  */
+@Suppress("UNUSED_PARAMETER")
 fun downloadUsingAndroidDownloadManagerAPI(context: Context, fileName: String, url: String, movie: String) {
     val downloader = AndroidDownloader(context = context)
     downloader.downloadFile(

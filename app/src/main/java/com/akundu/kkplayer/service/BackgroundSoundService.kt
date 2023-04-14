@@ -55,10 +55,11 @@ class BackgroundSoundService : Service() {
         return START_STICKY
     }
 
+    @Deprecated("Deprecated in Java")
     override fun onStart(intent: Intent, startId: Int) {}
 
     fun onUnBind(arg0: Intent?): IBinder? {
-        // TO DO Auto-generated method
+        // TODO Auto-generated method
         return null
     }
 

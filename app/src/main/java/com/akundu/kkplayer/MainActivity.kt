@@ -45,6 +45,7 @@ import com.akundu.kkplayer.permission.RuntimePermission.askNotificationPermissio
 import com.akundu.kkplayer.service.BackgroundSoundService
 import com.akundu.kkplayer.service.ServiceTools
 import com.akundu.kkplayer.storage.Constants.INTERNAL_MEDIA_PATH
+import com.akundu.kkplayer.ui.theme.Blue
 import com.akundu.kkplayer.ui.theme.KkPlayerTheme
 import com.akundu.kkplayer.work.DownloadWork
 import com.google.android.material.snackbar.Snackbar
@@ -101,7 +102,7 @@ fun SongItem(song: Song, index: Int) {
     val context = LocalContext.current
     Row(
         modifier = Modifier
-            .background(Color(0xFFF3D3C8))
+            .background(MaterialTheme.colors.background)
             .clickable { playSong(context, song.title, song.fileName, index) },
         verticalAlignment = Alignment.CenterVertically,
     ) {
@@ -152,7 +153,7 @@ fun SongItem(song: Song, index: Int) {
                     .clip(CircleShape)
                     .padding(8.dp),
                 tint = if (isFileExists(fileName = song.fileName)) Color(0xFF0C610C) else {
-                    Color.Blue
+                    Blue
                 }
             )
         }
@@ -164,9 +165,9 @@ fun isFileExists(fileName: String): Boolean {
     val songFile = File(uriString)
     val isFileExist = songFile.exists()
     if (isFileExist) {
-         Logg.i("Is file exists: $isFileExist. Filename: $fileName")
+        Logg.i("Is file exists: $isFileExist. Filename: $fileName")
     } else {
-         Logg.e("Is file exists: $isFileExist. Filename: $fileName")
+        Logg.e("Is file exists: $isFileExist. Filename: $fileName")
     }
     return isFileExist
 }

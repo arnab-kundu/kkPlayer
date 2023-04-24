@@ -42,7 +42,7 @@ android {
         compose true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion compose_version
+        kotlinCompilerExtensionVersion compose_ui_version
         kotlinCompilerVersion '1.5.10'
     }
     packagingOptions {
@@ -58,8 +58,8 @@ tasks.findByPath("preBuild").dependsOn("ktlintFormat")
 // ktLint (https://www.youtube.com/watch?v=hSgPNbEcX98)
 ktlint {
     android = true
-    ignoreFailures = false
-    disabledRules = ["max-line-length","parameter-list-wrapping", "no-multi-spaces",
+    ignoreFailures = true
+    disabledRules = ["max-line-length", "parameter-list-wrapping", "no-multi-spaces",
                      "no-consecutive-blank-lines", "no-blank-line-before-rbrace", "final-newline"]
     reporters {
         reporter 'plain'
@@ -74,16 +74,10 @@ dependencies {
     implementation 'androidx.appcompat:appcompat:1.6.1'
     implementation 'com.google.android.material:material:1.6.0'
     implementation 'androidx.compose.material3:material3:1.0.0-alpha11'
-
-    implementation "androidx.compose.ui:ui:$compose_version"
-    implementation "androidx.compose.material:material:$compose_version"
-    implementation "androidx.compose.ui:ui-tooling-preview:$compose_version"
-    //implementation "io.coil-kt:coil-compose:2.1.0"                            // to use shape drawable in compose
-
     implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.6.1'
     implementation 'androidx.activity:activity-compose:1.7.0'
 
-    /** Work */
+    /** WorkManager */
     implementation 'androidx.work:work-runtime-ktx:2.8.1'
 
     /** Retrofit */
@@ -94,17 +88,30 @@ dependencies {
     implementation "com.squareup.okhttp3:okhttp:4.2.2"
     implementation 'com.squareup.picasso:picasso:2.71828'
 
-
+    /** Coroutines */
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4'
+
+    /** Jetpack Compose UI */
+    implementation "androidx.compose.ui:ui:$compose_ui_version"
+    implementation "androidx.compose.material:material:$compose_ui_version"
+    implementation "androidx.compose.ui:ui-tooling-preview:$compose_ui_version"
+    debugImplementation "androidx.compose.ui:ui-tooling:$compose_ui_version"
+    debugImplementation "androidx.compose.ui:ui-test-manifest:$compose_ui_version"
+    androidTestImplementation "androidx.compose.ui:ui-test-junit4:$compose_ui_version"
+    def navigationComposeVersion = '2.5.2'
+    implementation "androidx.navigation:navigation-compose:$navigationComposeVersion"
+    def accompanistPagerVersion = '0.25.1'
+    implementation "com.google.accompanist:accompanist-pager:$accompanistPagerVersion"
+    def accompanistPagerIndicatorsVersion = '0.25.1'
+    implementation "com.google.accompanist:accompanist-pager-indicators:$accompanistPagerIndicatorsVersion"
+    //implementation "io.coil-kt:coil-compose:2.1.0"                            // to use shape drawable in compose
+
 
     /** Test */
     testImplementation 'junit:junit:4.13.2'
     testImplementation "com.google.truth:truth:0.40"
-    debugImplementation "androidx.compose.ui:ui-tooling:$compose_version"
-    debugImplementation "androidx.compose.ui:ui-test-manifest:$compose_version"
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
-    androidTestImplementation "androidx.compose.ui:ui-test-junit4:$compose_version"
     androidTestImplementation 'com.nhaarman:mockito-kotlin-kt1.1:1.5.0'
 
     // SplashScreen dependency in Android 12

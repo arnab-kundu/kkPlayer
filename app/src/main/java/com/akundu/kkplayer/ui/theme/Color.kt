@@ -2,12 +2,21 @@ package com.akundu.kkplayer.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
-val Purple200 = Color(0xFFBB86FC)
-val Purple500 = Color(0xFF6200EE)
-val Purple700 = Color(0xFF3700B3)
-val Teal200 = Color(0xFF03DAC5)
-val Blue = Color(0x9C0ECADB)
+val LightPrimary = Color(0xFF26C9EB)
+val DarkPrimary = Color(0xFFDA88D3)
 
-val StatusBar = Color(0xFFDF8769)
-val Pink = Color(0xFFF3D3C8)
-val DarkGray = Color(0xFF696969)
+val LightSecondary = Color(0xFF26C9EB)
+val DarkSecondary = Color(0xFF26C9EB)
+
+val LightBackground = Color(0xFF696969)
+val DarkBackground = Color(0xFF696969)
+
+val LightSurface = Color(0xFF02325E)
+val LightOnSurface = Color(0xFF00172C)
+val DarkSurface = Color(0xFFE91E63)
+val DarkOnSurface = Color(0xFF00172C)
+
+val LightThemeFontColor = Color(0xFF000000)
+val DarkThemeFontColor = Color(0xFFFFFFFF)
+
+val Blue = Color(0x9C0ECADB)

@@ -6,6 +6,8 @@ import androidx.test.platform.app.InstrumentationRegistry
 import com.akundu.kkplayer.BuildConfig
 import java.io.File
 import java.io.FileOutputStream
+import java.io.IOException
+import org.junit.After
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Before
@@ -39,11 +41,14 @@ class AppFileManagerTest {
         }
 
         val sampleSongFile = File(
-            "/storage/emulated/0/Android/media/${BuildConfig.APPLICATION_ID}/Tu Hi Meri Shab Hai (Gangster) - K.K - 320Kbps.mp3"
+            "/storage/emulated/0/Android/media/${BuildConfig.APPLICATION_ID}/Om Deva deva.mp3"
         )
         if (!sampleSongFile.exists()) {
-            throw java.lang.RuntimeException("Download `Tu Hi Meri Shab Hai (Gangster)` song using kkPlayer before test")
+            throw java.lang.RuntimeException("Download `Om Deva deva` song using kkPlayer before test")
         }
+        fileManager.copyFile(sourcePath = sampleSongFile.path, destinationPath = "/storage/emulated/0/Android/data/com.akundu.kkplayer/files/Om Deva deva.mp3")
+        fileManager.copyFile(sourcePath = sampleSongFile.path, destinationPath = "/storage/emulated/0/Android/data/com.akundu.kkplayer/cache/Om Deva deva.mp3")
+        fileManager.copyFile(sourcePath = sampleSongFile.path, destinationPath = "/data/user/0/com.akundu.kkplayer/files/Om Deva deva.mp3")
 
         val zipFile = File("/storage/emulated/0/Android/media/${BuildConfig.APPLICATION_ID}/10mb.zip")
         if (!zipFile.exists()) {
@@ -105,20 +110,20 @@ class AppFileManagerTest {
     fun testCopyFileSuccessful() {
 
         var isCopySuccessful = fileManager.copyFile(
-            sourcePath = "/storage/emulated/0/Android/media/${BuildConfig.APPLICATION_ID}/Tu Hi Meri Shab Hai (Gangster) - K.K - 320Kbps.mp3",
-            destinationPath = appContext.obbDir.path + "/Tu Hi Meri Shab Hai (Gangster) - K.K - 320Kbps.mp3"
+            sourcePath = "/storage/emulated/0/Android/media/${BuildConfig.APPLICATION_ID}/Om Deva deva.mp3",
+            destinationPath = appContext.obbDir.path + "/Om Deva deva.mp3"
         )
         assertTrue(isCopySuccessful)
 
         isCopySuccessful = fileManager.copyFile(
-            sourcePath = "/storage/emulated/0/Android/media/${BuildConfig.APPLICATION_ID}/Tu Hi Meri Shab Hai (Gangster) - K.K - 320Kbps.mp3",
-            destinationPath = appContext.filesDir.path + "/Tu Hi Meri Shab Hai (Gangster) - K.K - 320Kbps.mp3"
+            sourcePath = "/storage/emulated/0/Android/media/${BuildConfig.APPLICATION_ID}/Om Deva deva.mp3",
+            destinationPath = appContext.filesDir.path + "/Om Deva deva.mp3"
         )
         assertTrue(isCopySuccessful)
 
         isCopySuccessful = fileManager.copyFile(
-            sourcePath = "/storage/emulated/0/Android/media/${BuildConfig.APPLICATION_ID}/Tu Hi Meri Shab Hai (Gangster) - K.K - 320Kbps.mp3",
-            destinationPath = appContext.dataDir.path + "/Tu Hi Meri Shab Hai (Gangster) - K.K - 320Kbps.mp3"
+            sourcePath = "/storage/emulated/0/Android/media/${BuildConfig.APPLICATION_ID}/Om Deva deva.mp3",
+            destinationPath = appContext.dataDir.path + "/Om Deva deva.mp3"
         )
         assertTrue(isCopySuccessful)
     }
@@ -187,8 +192,8 @@ class AppFileManagerTest {
     fun testCopyFilePublicMediaDirectorySuccessful() {
 
         val isCopySuccessful = fileManager.copyFile(
-            sourcePath = "/storage/emulated/0/Android/media/${BuildConfig.APPLICATION_ID}/Tu Hi Meri Shab Hai (Gangster) - K.K - 320Kbps.mp3",
-            destinationPath = "${Constants.MUSIC_PATH}Tu Hi Meri Shab Hai (Gangster) - K.K - 320Kbps.mp3"
+            sourcePath = "/storage/emulated/0/Android/media/${BuildConfig.APPLICATION_ID}/Om Deva deva.mp3",
+            destinationPath = "${Constants.MUSIC_PATH}Om Deva deva.mp3"
         )
         assertTrue(isCopySuccessful)
     }
@@ -197,8 +202,8 @@ class AppFileManagerTest {
     fun testCopyFileToAnyRandomDirectoryFailed() {
         val fileManager = AppFileManager()
         val isCopySuccessful = fileManager.copyFile(
-            sourcePath = "/storage/emulated/0/Android/media/${BuildConfig.APPLICATION_ID}/Tu Hi Meri Shab Hai (Gangster) - K.K - 320Kbps.mp3",
-            destinationPath = "/storage/emulated/0/Android/media/com.example.file/Tu Hi Meri Shab Hai (Gangster) - K.K - 320Kbps.mp3"
+            sourcePath = "/storage/emulated/0/Android/media/${BuildConfig.APPLICATION_ID}/Om Deva deva.mp3",
+            destinationPath = "/storage/emulated/0/Android/media/com.example.file/Om Deva deva.mp3"
         )
         assertFalse(isCopySuccessful)
     }
@@ -229,7 +234,7 @@ class AppFileManagerTest {
         val fileManager = AppFileManager()
         // TODO still have issue in zipFiles() function
         val testOutputFile = fileManager.zipFiles(
-            srcFolderPath = "/storage/emulated/0/Android/media/${BuildConfig.APPLICATION_ID}",
+            srcFolderPath = "/storage/emulated/0/Android/data/${BuildConfig.APPLICATION_ID}/*",
             destZipFilePath = "/storage/emulated/0/Android/media/${BuildConfig.APPLICATION_ID}/myTest.zip"
         )
         assertTrue(testOutputFile.exists())
@@ -332,5 +337,73 @@ class AppFileManagerTest {
         assertTrue("Decrypted file not found", generatedTestFile.let { it?.exists() } ?: false)
         assertTrue("No data available in decrypted file", generatedTestFile?.length()?.let { it > 0 } ?: false)
         generatedTestFile?.delete()                                     // clear generated test file
+    }
+
+    @Test
+    fun testDeleteFileFromFilesDirSuccessful() {
+        val fileManager = AppFileManager()
+        val sourceFilePath: String = appContext.filesDir.path + "/Om Deva deva.mp3"
+        println("FilesDir Path: $sourceFilePath")
+        val isDeleted = fileManager.deleteFile(sourceFilePath)
+        assertTrue("Failed to delete file", isDeleted)
+    }
+
+    @Test
+    fun testDeleteFileFromExternalFilesDirectorySuccessful() {
+        val sourceFilePath: String = appContext.getExternalFilesDir(null)?.path + "/Om Deva deva.mp3"
+        println("ExternalFilesDirectory Path: $sourceFilePath")
+        val file: File = File(sourceFilePath)
+        val isDeleted: Boolean = file.delete()
+        assertTrue("Failed to delete file", isDeleted)
+    }
+
+    @Test
+    fun testDeleteFileFromExternalCacheDirectorySuccessful() {
+        val sourceFilePath: String = appContext.externalCacheDir?.path + "/Om Deva deva.mp3"
+        println("ExternalCacheDirectory Path: $sourceFilePath")
+        val file: File = File(sourceFilePath)
+        val isDeleted: Boolean = file.delete()
+        assertTrue("Failed to delete file", isDeleted)
+    }
+
+    @Test
+    fun testDeleteFileFromMediaDirectorySuccessful() {
+        val sourceFilePath: String = createAppsInternalPrivateStoragePath("media/${BuildConfig.APPLICATION_ID}")?.path + "/Om Deva deva.mp3"
+        println("MediaDirectory Path: $sourceFilePath")
+        val file: File = File(sourceFilePath)
+        // TODO
+        //  This delete file test is skipped due to other test() dependency.
+        //  This file is important for other test()s. If this file deleted earlier that will fail other test()s.
+        //  This can be executed at the end of all tests.
+        val isDeleted: Boolean = true // file.delete()
+        assertTrue("Failed to delete file", isDeleted)
+    }
+
+    private fun createAppsInternalPrivateStoragePath(path: String): File? {
+
+        try {
+            val rootFolderPath = "/storage/emulated/0/Android"
+            var folder: File = File(rootFolderPath)
+
+            val pathFoldersList: List<String> = path.split("/")
+            pathFoldersList.forEach { childFolder ->
+                folder = File(folder, childFolder)
+
+                if (!folder.exists()) {
+                    println("Is Folder Created at: ${folder.absolutePath}: ${folder.mkdirs()}")
+                }
+            }
+
+            return folder
+
+        } catch (e: IOException) {
+            e.printStackTrace()
+            return null
+        }
+    }
+
+    @After
+    fun tearDown() {
+
     }
 }

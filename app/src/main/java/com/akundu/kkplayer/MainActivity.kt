@@ -116,7 +116,7 @@ fun SongItem(song: Song, index: Int) {
                 .padding(12.dp)
         )
         Column(modifier = Modifier.weight(1f)) {
-            Text(text = song.title, style = MaterialTheme.typography.h6)
+            Text(text = song.title, style = MaterialTheme.typography.h6,  color = Color.DarkGray)
             Row() {
                 Text(
                     stringResource(id = R.string.artist),

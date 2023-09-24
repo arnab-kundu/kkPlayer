@@ -49,7 +49,7 @@ object SongDataProvider {
             title = "Tu Hi Meri Shab Hai",
             artist = "K.K",
             fileName = "Tu Hi Meri Shab Hai (Gangster) - K.K - 320Kbps.mp3",
-            url = "https://pwdown.info/11981/Tu Hi Meri Shab Hai (Gangster) - K.K - 320Kbps.mp3",
+            url = "https://cdn.pagalworld.us/songs/bollywood/Gangster 2006 - Tu Hi Meri Shab Hai.mp3",
             movie = "Gangster"
         ),
         Song(

@@ -3,18 +3,33 @@ package com.akundu.kkplayer.data
 object SongDataProvider {
 
     val kkSongList: List<Song> = listOf(
+
+        Song(
+            title = "Bhole Shankar",
+            artist = "Hansraj Raghuwanshi",
+            fileName = "Bhole Shankar.mp3",
+            url = "https://www.pagalworldl.com/files/download/id/2829",
+            movie = "OMG 2"
+        ),
         Song(
             title = "Om Deva deva -  Arijit Singh",
             artist = "Arijit Singh",
-            fileName = "Om Deva deva.mp3",
-            url = "https://pagalnew.com/download128/32137",
+            fileName = "Om Deva deva-djmaza.mp3",
+            url = "https://djmaza.live/files/download/type/320/id/4825",
+            movie = "djmaza"
+        ),
+        Song(
+            title = "Unstoppable",
+            artist = "Sia",
+            fileName = "Unstoppable.mp3",
+            url = "https://pagalworld.cool/files/download/type/320/id/905",
             movie = "--"
         ),
         Song(
             title = "Tu Mera Na Hoke Bhi -  Arijit Singh",
             artist = "Arijit Singh",
             fileName = "Tu Mera Na Hoke Bhi.mp3",
-            url = "https://pagalworldl.com/files/download/id/14896",
+            url = "https://pagaliworld.com/files/download/id/12969",
             movie = "--"
         ),
         Song(

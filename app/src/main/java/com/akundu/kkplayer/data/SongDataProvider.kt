@@ -36,35 +36,35 @@ object SongDataProvider {
             title = "Bekhayali - Kabir Singh",
             artist = "Sachet Tandon, Sachet Parampara",
             fileName = "Bekhayali - Kabir Singh.mp3",
-            url = "https://pwdown.info/14697/Bekhayali%20-%20Kabir%20Singh.mp3",
+            url = "https://pwdown.info/14697/variation/190K/Bekhayali%20-%20Kabir%20Singh.mp3",
             movie = "Kabir Singh (2019)"
         ),
         Song(
             title = "Tujhe Kitna Chahne Lage - Kabir Singh",
             artist = "Arijit Singh",
             fileName = "Tujhe Kitna Chahne Lage - Kabir Singh.mp3",
-            url = "https://pwdown.info/14697/Tujhe%20Kitna%20Chahne%20Lage%20-%20Kabir%20Singh.mp3",
+            url = "https://pwdown.info/14697/variation/190K/Tujhe%20Kitna%20Chahne%20Lage%20-%20Kabir%20Singh.mp3",
             movie = "Kabir Singh (2019)"
         ),
         Song(
             title = "Kaise Hua - Kabir Singh",
             artist = "Vishal Mishra",
             fileName = "Kaise Hua - Kabir Singh",
-            url = "https://pwdown.info/14697/Kaise%20Hua%20-%20Kabir%20Singh.mp3",
+            url = "https://pwdown.info/14697/variation/190K/Kaise%20Hua%20-%20Kabir%20Singh.mp3",
             movie = "Kabir Singh (2019)"
         ),
         Song(
             title = "Tujhe Kitna Chahein Aur - Kabir Singh",
             artist = "Jubin Nautiyal",
             fileName = "Tujhe Kitna Chahein Aur - Jubin.mp3",
-            url = "https://pwdown.info/14697/Tujhe%20Kitna%20Chahein%20Aur%20-%20Jubin.mp3",
+            url = "https://pwdown.info/14697/variation/190K/Tujhe%20Kitna%20Chahein%20Aur%20-%20Jubin.mp3",
             movie = "Kabir Singh (2019)"
         ),
         Song(
             title = "Tu Hi Meri Shab Hai",
             artist = "K.K",
             fileName = "Tu Hi Meri Shab Hai (Gangster) - K.K - 320Kbps.mp3",
-            url = "https://cdn.pagalworld.us/songs/bollywood/Gangster 2006 - Tu Hi Meri Shab Hai.mp3",
+            url = "https://pwdown.info/14156/variation/190K/Tu%20Hi%20Meri%20Shab%20Hai%20-%20Gangster%20320Kbps.mp3",
             movie = "Gangster"
         ),
         Song(

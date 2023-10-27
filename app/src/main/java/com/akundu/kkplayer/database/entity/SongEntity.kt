@@ -9,9 +9,9 @@ import androidx.room.PrimaryKey
 @Entity(tableName = "SongsTable", indices = [Index(value = ["fileName"], unique = true)])
 data class SongEntity(
 
-    @PrimaryKey
+    @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "id")
-    var id: String,
+    var id: Long = 0L,
 
     @ColumnInfo(name = "title")
     var title: String?,
@@ -29,6 +29,6 @@ data class SongEntity(
     var movie: String,
 
     @ColumnInfo(name = "isDownloaded")
-    var isDownloaded: Boolean
+    var isDownloaded: Boolean = false
 
 )

@@ -57,7 +57,7 @@ android {
 }
 
 // Automatically format code using ktLint before run the project
-tasks.findByPath("preBuild").dependsOn("ktlintFormat")
+tasks.findByPath("preBuild")//.dependsOn("ktlintFormat") // TODO causing test fail issue
 
 // ktLint (https://www.youtube.com/watch?v=hSgPNbEcX98)
 ktlint {

@@ -1,6 +1,5 @@
 package com.akundu.kkplayer.database.dao
 
-import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
@@ -12,21 +11,29 @@ import com.akundu.kkplayer.database.entity.SongEntity
 interface SongDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun addSong(song: SongEntity): Boolean
+    fun addSong(song: SongEntity)
 
-    @Query("SELECT * FROM SongsTable")
-    fun getAllSongs(): LiveData<List<SongEntity>>
+    @Query("SELECT * FROM SongsTable WHERE 1 = 1")
+    fun getAllSongs(): List<SongEntity>
 
     @Query("SELECT * FROM SongsTable WHERE id = :id")
-    suspend fun findSongById(id: Long): SongEntity
+    fun findSongById(id: Long): SongEntity
 
     @Query("SELECT * FROM SongsTable WHERE title LIKE :title ")
-    suspend fun searchSongByName(title: String?): LiveData<List<SongEntity>>
+    fun searchSongByName(title: String?): List<SongEntity>
 
     @Query("SELECT * FROM SongsTable WHERE title LIKE '%' || :title || '%'")
-    suspend fun searchSongByTitle(title: String?): LiveData<List<SongEntity>>
+    fun searchSongByTitle(title: String?): List<SongEntity>
 
     @Query("UPDATE SongsTable SET isDownloaded = :isDownloaded WHERE id = :id")
-    suspend fun updateSongDownloadInfo(id: Long, isDownloaded: Boolean): Boolean
+    fun updateSongDownloadInfo(id: Long, isDownloaded: Boolean): Int
 
+    @Query("SELECT COUNT(*) FROM SongsTable WHERE 1 = 1")
+    fun getTotalCount(): Int
+
+    @Query("DELETE FROM SongsTable WHERE id = :id")
+    fun deleteSong(id: Long)
+
+    @Query("DELETE FROM SongsTable WHERE 1 = 1")
+    fun truncateTable(): Int
 }

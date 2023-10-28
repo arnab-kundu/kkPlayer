@@ -1,5 +1,6 @@
 package com.akundu.kkplayer.database.dao
 
+import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
@@ -15,6 +16,9 @@ interface SongDao {
 
     @Query("SELECT * FROM SongsTable WHERE 1 = 1")
     fun getAllSongs(): List<SongEntity>
+
+    @Query("SELECT * FROM SongsTable WHERE 1 = 1")
+    fun getAllSongsLiveData(): LiveData<List<SongEntity>>
 
     @Query("SELECT * FROM SongsTable WHERE id = :id")
     fun findSongById(id: Long): SongEntity

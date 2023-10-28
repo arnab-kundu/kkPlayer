@@ -14,7 +14,7 @@ data class SongEntity(
     var id: Long = 0L,
 
     @ColumnInfo(name = "title")
-    var title: String?,
+    var title: String,
 
     @ColumnInfo(name = "artist")
     var artist: String,

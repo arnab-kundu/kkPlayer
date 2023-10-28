@@ -8,6 +8,7 @@ import com.akundu.kkplayer.AppsNotificationManager
 import com.akundu.kkplayer.Logg
 import com.akundu.kkplayer.MainActivity
 import com.akundu.kkplayer.R
+import com.akundu.kkplayer.database.SongDatabase
 import com.akundu.kkplayer.media.FolderFiles
 import com.akundu.kkplayer.network.ApiRequest
 import com.akundu.kkplayer.network.RetrofitRequest
@@ -15,8 +16,6 @@ import com.akundu.kkplayer.provider.FileAccessPermissionProvider
 import com.akundu.kkplayer.storage.AppFileManager
 import com.akundu.kkplayer.storage.FileLocationCategory.MEDIA_DIRECTORY
 import com.akundu.kkplayer.storage.FileManager
-import java.io.File
-import java.io.InputStream
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
@@ -25,19 +24,22 @@ import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.io.File
+import java.io.InputStream
 
 class DownloadWork(val context: Context, workerParameters: WorkerParameters) :
     CoroutineWorker(context, workerParameters) {
 
     override suspend fun doWork(): Result {
 
+        val id = inputData.getLong("id", 0L)
         val fileName = inputData.getString("fileName") ?: ""
         val url = inputData.getString("url") ?: ""
         val movie = inputData.getString("movie") ?: ""
         val notificationID = inputData.getInt("notificationID", 0)
 
         // downloadFileAndSaveInAppDirectory(fileName, movie, notificationID)
-        downloadFileAndSaveInScopedStorage(fileName, url, movie, notificationID)
+        downloadFileAndSaveInScopedStorage(id, fileName, url, movie, notificationID)
 
         return Result.success()
     }
@@ -52,7 +54,7 @@ class DownloadWork(val context: Context, workerParameters: WorkerParameters) :
      * @param movie (required) for displaying in notification
      * @param notificationID (required) for canceling on going downloading notification
      */
-    private suspend fun downloadFileAndSaveInScopedStorage(fileName: String, url: String, movie: String, notificationID: Int) {
+    private suspend fun downloadFileAndSaveInScopedStorage(id: Long, fileName: String, url: String, movie: String, notificationID: Int) {
 
         val apiRequest = RetrofitRequest.getRetrofitInstance().create(ApiRequest::class.java)
 
@@ -95,6 +97,8 @@ class DownloadWork(val context: Context, workerParameters: WorkerParameters) :
                     Logg.e("createFile: $e")
                 }
 
+                val database: SongDatabase = SongDatabase.getDatabase(context)
+                database.songDao().updateSongDownloadInfo(id, true)
             } else {
                 Logg.e("StatusCode: ${response.code()}")
             }

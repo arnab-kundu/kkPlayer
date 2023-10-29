@@ -36,35 +36,35 @@ object SongDataProvider {
             title = "Bekhayali - Kabir Singh",
             artist = "Sachet Tandon, Sachet Parampara",
             fileName = "Bekhayali - Kabir Singh.mp3",
-            url = "https://www.pagalworld.us/db/file.php?list=24750&kbps=192",
+            url = "https://pagalfree.com/musics/128-Bekhayali%20-%20Kabir%20Singh%20128%20Kbps.mp3",
             movie = "Kabir Singh (2019)"
         ),
         Song(
             title = "Tujhe Kitna Chahne Lage - Kabir Singh",
             artist = "Arijit Singh",
             fileName = "Tujhe Kitna Chahne Lage - Kabir Singh.mp3",
-            url = "https://www.pagalworld.us/db/file.php?list=24739&kbps=192",
+            url = "https://pagalfree.com/musics/128-Tujhe%20Kitna%20Chahne%20Lage%20-%20Kabir%20Singh%20128%20Kbps.mp3",
             movie = "Kabir Singh (2019)"
         ),
         Song(
             title = "Kaise Hua - Kabir Singh",
             artist = "Vishal Mishra",
             fileName = "Kaise Hua - Kabir Singh",
-            url = "https://www.pagalworld.us/db/file.php?list=24791&kbps=192",
+            url = "https://pagalfree.com/musics/128-Kaise%20Hua%20-%20Kabir%20Singh%20128%20Kbps.mp3",
             movie = "Kabir Singh (2019)"
         ),
         Song(
             title = "Tujhe Kitna Chahein Aur - Kabir Singh",
             artist = "Jubin Nautiyal",
             fileName = "Tujhe Kitna Chahein Aur - Jubin.mp3",
-            url = "https://www.pagalworld.us/db/file.php?list=24799&kbps=192",
+            url = "https://pagalfree.com/musics/128-Tujhe%20Kitna%20Chahein%20Aur%20(Film%20Version)%20-%20Kabir%20Singh%20128%20Kbps.mp3",
             movie = "Kabir Singh (2019)"
         ),
         Song(
             title = "Tu Hi Meri Shab Hai",
             artist = "K.K",
             fileName = "Tu Hi Meri Shab Hai (Gangster) - K.K - 320Kbps.mp3",
-            url = "https://www.pagalworld.us/db/file.php?list=11703&kbps=128",
+            url = "https://pagalfree.com/musics/128-Tu%20Hi%20Meri%20Shab%20Hai%20-%20Gangster%20128%20Kbps.mp3",
             movie = "Gangster"
         ),
         Song(

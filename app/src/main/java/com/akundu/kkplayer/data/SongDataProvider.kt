@@ -36,63 +36,63 @@ object SongDataProvider {
             title = "Bekhayali - Kabir Singh",
             artist = "Sachet Tandon, Sachet Parampara",
             fileName = "Bekhayali - Kabir Singh.mp3",
-            url = "https://pwdown.info/14697/variation/190K/Bekhayali%20-%20Kabir%20Singh.mp3",
+            url = "https://www.pagalworld.us/db/file.php?list=24750&kbps=192",
             movie = "Kabir Singh (2019)"
         ),
         Song(
             title = "Tujhe Kitna Chahne Lage - Kabir Singh",
             artist = "Arijit Singh",
             fileName = "Tujhe Kitna Chahne Lage - Kabir Singh.mp3",
-            url = "https://pwdown.info/14697/variation/190K/Tujhe%20Kitna%20Chahne%20Lage%20-%20Kabir%20Singh.mp3",
+            url = "https://www.pagalworld.us/db/file.php?list=24739&kbps=192",
             movie = "Kabir Singh (2019)"
         ),
         Song(
             title = "Kaise Hua - Kabir Singh",
             artist = "Vishal Mishra",
             fileName = "Kaise Hua - Kabir Singh",
-            url = "https://pwdown.info/14697/variation/190K/Kaise%20Hua%20-%20Kabir%20Singh.mp3",
+            url = "https://www.pagalworld.us/db/file.php?list=24791&kbps=192",
             movie = "Kabir Singh (2019)"
         ),
         Song(
             title = "Tujhe Kitna Chahein Aur - Kabir Singh",
             artist = "Jubin Nautiyal",
             fileName = "Tujhe Kitna Chahein Aur - Jubin.mp3",
-            url = "https://pwdown.info/14697/variation/190K/Tujhe%20Kitna%20Chahein%20Aur%20-%20Jubin.mp3",
+            url = "https://www.pagalworld.us/db/file.php?list=24799&kbps=192",
             movie = "Kabir Singh (2019)"
         ),
         Song(
             title = "Tu Hi Meri Shab Hai",
             artist = "K.K",
             fileName = "Tu Hi Meri Shab Hai (Gangster) - K.K - 320Kbps.mp3",
-            url = "https://pwdown.info/14156/variation/190K/Tu%20Hi%20Meri%20Shab%20Hai%20-%20Gangster%20320Kbps.mp3",
+            url = "https://www.pagalworld.us/db/file.php?list=11703&kbps=128",
             movie = "Gangster"
         ),
         Song(
             title = "Tujhe Sochta Hoon",
             artist = "K.K",
             fileName = "Tujhe Sochta Hoon (Jannat ) - K.K - 320Kbps.mp3",
-            url = "https://pwdown.info/11981/Tujhe Sochta Hoon (Jannat ) - K.K - 320Kbps.mp3",
+            url = "https://www.pagalworld.us/db/file.php?list=20473&kbps=128",
             movie = "Jannat"
         ),
         Song(
             title = "Jannatein Kahan",
             artist = "K.K",
             fileName = "Jannatein Kahan (Jannat ) - K.K - 320Kbps.mp3",
-            url = "https://pwdown.info/11981/Jannatein Kahan (Jannat ) - K.K - 320Kbps.mp3",
+            url = "https://www.pagalworld.us/db/file.php?list=20622&kbps=128",
             movie = "Jannat"
         ),
         Song(
             title = "Kya Mujhe Pyar Hai",
             artist = "K.K",
             fileName = "Kya Mujhe Pyar Hai (Woh Lamhe) - K.K - 320Kbps.mp3",
-            url = "https://pwdown.info/11981/Kya Mujhe Pyar Hai (Woh Lamhe) - K.K - 320Kbps.mp3",
+            url = "https://www.pagalworld.us/db/file.php?list=4211&kbps=128",
             movie = "Woh Lamhe"
         ),
         Song(
             title = "Zara Se",
             artist = "K.K",
             fileName = "Zara Se (Jannat) - K.K - 320Kbps.mp3",
-            url = "https://pwdown.info/11981/Zara Se (Jannat) - K.K - 320Kbps.mp3",
+            url = "https://www.pagalworld.us/db/file.php?list=2640&kbps=128",
             movie = "Jannat"
         ),
         Song(

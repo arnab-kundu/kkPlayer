@@ -13,6 +13,7 @@ import android.os.IBinder
 import android.util.Log
 import androidx.core.app.NotificationCompat
 import com.akundu.kkplayer.R
+import com.akundu.kkplayer.database.SongDatabase
 
 class BackgroundSoundService : Service() {
 
@@ -39,20 +40,53 @@ class BackgroundSoundService : Service() {
     override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
         uriString = intent.extras?.getString("uri") ?: ""
         songTitle = intent.extras?.getString("songTitle") ?: ""
-        Log.d(TAG, "onStartCommand: $uriString")
+        val id = intent.extras?.getInt("id", 0) ?: 0
+        Log.d(TAG, "onStartCommand: $uriString, $id")
         self = this
         player = MediaPlayer.create(this, Uri.parse(uriString))
         if (player != null) {
             player?.isLooping = false // Set looping
             player?.setVolume(100f, 100f)
             player?.start()
-            player?.setOnCompletionListener { mediaPlayer: MediaPlayer? -> stopSelf() }
+            //TODO
+            player?.setOnCompletionListener { mediaPlayer: MediaPlayer? ->
+                //stopSelf()
+                nextSong(id)
+            }
 
             // Log.i(TAG, "Playing: " + uriString.split("Music/").toTypedArray()[1])
 
             runAsForeground()
         }
         return START_STICKY
+    }
+
+    private fun nextSong(previousSongId: Int) {
+
+        val database = SongDatabase.getDatabase(this)
+        val nextSongId = previousSongId + 1
+        val songEntity = database.songDao().findSongById(nextSongId.toLong())
+        songTitle = songEntity.title
+
+        if (player != null) {
+            player?.stop()
+            player?.release()
+        }
+        player = MediaPlayer.create(this, Uri.parse(songEntity.url))
+        if (player != null) {
+            player?.isLooping = false // Set looping
+            player?.setVolume(100f, 100f)
+            player?.start()
+            //TODO
+            player?.setOnCompletionListener { mediaPlayer: MediaPlayer? ->
+                //stopSelf()
+                nextSong(nextSongId)
+            }
+
+            // Log.i(TAG, "Playing: " + uriString.split("Music/").toTypedArray()[1])
+
+            runAsForeground()
+        }
     }
 
     @Deprecated("Deprecated in Java")

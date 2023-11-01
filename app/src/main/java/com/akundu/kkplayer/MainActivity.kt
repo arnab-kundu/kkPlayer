@@ -308,6 +308,7 @@ class MainActivity : ComponentActivity() {
                 val svc = Intent(context, BackgroundSoundService::class.java)
                 svc.putExtra("uri", uriString)
                 svc.putExtra("songTitle", title)
+                svc.putExtra("id", index)
                 context.startService(svc)
 
                 val intent = Intent(context, PlayerActivity::class.java)

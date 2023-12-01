@@ -31,9 +31,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.layout.layoutId
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -216,6 +220,7 @@ class MainActivity : ComponentActivity() {
         val context = LocalContext.current
         Row(
             modifier = Modifier
+                .semantics { contentDescription = "songItem" }
                 .background(MaterialTheme.colors.background)
                 .clickable { playSong(context, song.title, song.fileName, song.id.toInt()) },
             verticalAlignment = Alignment.CenterVertically,
@@ -410,7 +415,7 @@ class MainActivity : ComponentActivity() {
     @Composable
     fun SongListCompose(
         songList: List<SongEntity>,
-        modifier: Modifier = Modifier
+        modifier: Modifier = Modifier.semantics { contentDescription = "songsList" }
     ) {
         LazyColumn(modifier = modifier) {
             itemsIndexed(songList) { index, song ->

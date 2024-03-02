@@ -68,6 +68,13 @@ object SongDataProvider {
             movie = "Gangster"
         ),
         Song(
+            title = "Mujhe kaise pata na chala",
+            artist = "Papon",
+            fileName = "mujhe-kaise-pata-na-chala.mp3",
+            url = "https://pagalworld.co.uk/files/download/id/331",
+            movie = "NA"
+        ),
+        Song(
             title = "Tujhe Sochta Hoon",
             artist = "K.K",
             fileName = "Tujhe Sochta Hoon (Jannat ) - K.K - 320Kbps.mp3",

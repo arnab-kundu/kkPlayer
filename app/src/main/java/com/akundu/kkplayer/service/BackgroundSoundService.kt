@@ -16,6 +16,7 @@ import androidx.core.app.NotificationCompat
 import com.akundu.kkplayer.R
 import com.akundu.kkplayer.database.SongDatabase
 import com.akundu.kkplayer.storage.AppFileManager
+import com.akundu.kkplayer.storage.FileLocationCategory
 import com.akundu.kkplayer.storage.FileManager
 import java.io.File
 
@@ -78,7 +79,7 @@ class BackgroundSoundService : Service() {
         }
         player = if (songEntity.isDownloaded) {
             // Retrieve song/media file from storage
-            MediaPlayer.create(this, Uri.parse(File("/storage/emulated/0/Android/media/com.akundu.kkplayer/" + songEntity.fileName).toString()))
+            MediaPlayer.create(this, Uri.parse(File("${FileLocationCategory.MEDIA_DIRECTORY}/${songEntity.fileName}").toString()))
         } else {
             // Retrieve song/media from cloud / network
             MediaPlayer.create(this, Uri.parse(songEntity.url))

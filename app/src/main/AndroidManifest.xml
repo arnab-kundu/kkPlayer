@@ -53,8 +53,8 @@
 
         <service
             android:name=".service.BackgroundSoundService"
-            android:foregroundServiceType="mediaPlayback"
-            android:enabled="true" />
+            android:enabled="true"
+            android:foregroundServiceType="mediaPlayback" />
 
         <receiver
             android:name=".service.StopServiceReceiver"

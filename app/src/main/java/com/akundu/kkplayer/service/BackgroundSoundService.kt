@@ -11,9 +11,13 @@ import android.net.Uri
 import android.os.Build
 import android.os.IBinder
 import android.util.Log
+import android.widget.Toast
 import androidx.core.app.NotificationCompat
 import com.akundu.kkplayer.R
 import com.akundu.kkplayer.database.SongDatabase
+import com.akundu.kkplayer.storage.AppFileManager
+import com.akundu.kkplayer.storage.FileManager
+import java.io.File
 
 class BackgroundSoundService : Service() {
 
@@ -72,7 +76,13 @@ class BackgroundSoundService : Service() {
             player?.stop()
             player?.release()
         }
-        player = MediaPlayer.create(this, Uri.parse(songEntity.url))
+        player = if (songEntity.isDownloaded) {
+            // Retrieve song/media file from storage
+            MediaPlayer.create(this, Uri.parse(File("/storage/emulated/0/Android/media/com.akundu.kkplayer/" + songEntity.fileName).toString()))
+        } else {
+            // Retrieve song/media from cloud / network
+            MediaPlayer.create(this, Uri.parse(songEntity.url))
+        }
         if (player != null) {
             player?.isLooping = false // Set looping
             player?.setVolume(100f, 100f)
@@ -90,7 +100,8 @@ class BackgroundSoundService : Service() {
     }
 
     @Deprecated("Deprecated in Java")
-    override fun onStart(intent: Intent, startId: Int) {}
+    override fun onStart(intent: Intent, startId: Int) {
+    }
 
     fun onUnBind(arg0: Intent?): IBinder? {
         // TODO Auto-generated method

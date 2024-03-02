@@ -53,6 +53,7 @@
 
         <service
             android:name=".service.BackgroundSoundService"
+            android:foregroundServiceType="mediaPlayback"
             android:enabled="true" />
 
         <receiver

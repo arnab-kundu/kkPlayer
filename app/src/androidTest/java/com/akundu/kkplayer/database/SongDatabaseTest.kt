@@ -45,9 +45,8 @@ class SongDatabaseTest {
 
     @Test
     fun testAddSong() {
-        var totalCount = 0
         dao.addSong(mockEntity)
-        totalCount = dao.getTotalCount()
+        var totalCount = dao.getTotalCount()
         assertEquals("TEST FAILED: testAddSong()", 1, totalCount)
     }
 

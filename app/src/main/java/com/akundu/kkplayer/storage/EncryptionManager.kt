@@ -62,7 +62,7 @@ abstract class EncryptionManager {
             val c = Cipher.getInstance(ALGO_IMAGE_ENCRYPTOR)
             c.init(Cipher.ENCRYPT_MODE, keySpec, iv)
             out = CipherOutputStream(out, c)
-            var count = 0
+            var count: Int
             val buffer = ByteArray(READ_WRITE_BLOCK_BUFFER)
             while (inputStream.read(buffer).also { count = it } > 0) {
                 out.write(buffer, 0, count)
@@ -96,7 +96,7 @@ abstract class EncryptionManager {
             val c = Cipher.getInstance(ALGO_IMAGE_ENCRYPTOR)
             c.init(Cipher.DECRYPT_MODE, keySpec, iv)
             out = CipherOutputStream(out, c)
-            var count = 0
+            var count: Int
             val buffer = ByteArray(READ_WRITE_BLOCK_BUFFER)
             while (inputStream.read(buffer).also { count = it } > 0) {
                 out.write(buffer, 0, count)

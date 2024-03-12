@@ -1,6 +1,6 @@
 package com.akundu.kkplayer.download
 
-@Suppress("UNUSED")
+@Suppress("UNUSED", "UNUSED_PARAMETER")
 enum class MimeType(type: String) {
     AUDIO("audio/mpeg"),
     DOCUMENT("application/msword"),

@@ -73,7 +73,7 @@ class AppFileManager : FileManager, ZipManager, EncryptionManager() {
     }
 
     override fun deleteFolder(directory: File) {
-        for (file in directory.listFiles()) {
+        for (file in directory.listFiles()!!) {
             if (!file.isDirectory) {
                 file.delete()
             }

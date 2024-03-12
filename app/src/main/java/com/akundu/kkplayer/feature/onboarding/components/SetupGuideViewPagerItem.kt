@@ -25,6 +25,7 @@ fun ViewPagerItemPreview() {
 
 
 @Composable
+@Suppress("UNUSED_PARAMETER")
 fun ViewPagerItem(modifier: Modifier, fontColor: Color) {
     Column(modifier = Modifier.background(color = Color.Transparent)) {
         Text(

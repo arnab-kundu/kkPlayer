@@ -15,11 +15,12 @@ import com.akundu.kkplayer.ui.theme.KkPlayerTheme
 @Composable
 fun BackgroundGradientPreview() {
     KkPlayerTheme {
-        BackgroundGradient(modifier = Modifier, startColor =  Color(0xFF02325E), endColor = Color(0xFF00172C))
+        BackgroundGradient(modifier = Modifier, startColor = Color(0xFF02325E), endColor = Color(0xFF00172C))
     }
 }
 
 @Composable
+@Suppress("UNUSED_PARAMETER")
 fun BackgroundGradient(modifier: Modifier, startColor: Color, endColor: Color) {
     Box(
         modifier = Modifier

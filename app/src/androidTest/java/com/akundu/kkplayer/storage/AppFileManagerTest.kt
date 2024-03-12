@@ -366,6 +366,7 @@ class AppFileManagerTest {
         assertTrue("Failed to delete file", isDeleted)
     }
 
+    @Suppress("UNUSED_VARIABLE", "RedundantExplicitType")
     @Test
     fun testDeleteFileFromMediaDirectorySuccessful() {
         val sourceFilePath: String = createAppsInternalPrivateStoragePath("media/${BuildConfig.APPLICATION_ID}")?.path + "/Om Deva deva.mp3"

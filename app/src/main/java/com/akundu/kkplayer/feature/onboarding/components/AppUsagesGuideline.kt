@@ -29,6 +29,7 @@ fun AppUsagesGuidelinePreview() {
 }
 
 
+@Suppress("UNUSED_PARAMETER")
 @Composable
 fun AppUsagesGuideline(modifier: Modifier = Modifier, color: Color = Color.White) {
     Row(

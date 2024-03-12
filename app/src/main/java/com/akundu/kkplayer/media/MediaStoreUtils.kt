@@ -194,6 +194,7 @@ object MediaStoreUtils {
     /**
      * Returns a [FileResource] if it finds its [Uri] in MediaStore.
      */
+    @Suppress("UNUSED_VARIABLE")
     suspend fun getResourceByUri(context: Context, uri: Uri): FileResource {
         return withContext(Dispatchers.IO) {
             // Convert generic media uri to content uri to get FileColumns.MEDIA_TYPE value

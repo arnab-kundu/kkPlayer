@@ -81,7 +81,7 @@ class MainActivity : ComponentActivity() {
         dao = database.songDao()
         if (dao.getTotalCount() == 0) {
             var songEntity: SongEntity
-            kkSongList.forEachIndexed { index, song ->
+            kkSongList.forEachIndexed { _, song ->
                 songEntity = SongEntity(
                     title = song.title,
                     artist = song.artist,
@@ -418,7 +418,7 @@ class MainActivity : ComponentActivity() {
         modifier: Modifier = Modifier.semantics { contentDescription = "songsList" }
     ) {
         LazyColumn(modifier = modifier) {
-            itemsIndexed(songList) { index, song ->
+            itemsIndexed(songList) { _, song ->
                 SongItem(song = song)
             }
         }

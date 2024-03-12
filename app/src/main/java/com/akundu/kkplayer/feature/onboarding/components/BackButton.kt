@@ -31,6 +31,7 @@ fun BackButtonPreview() {
 
 
 @Composable
+@Suppress("UNUSED_PARAMETER")
 fun BackButton(modifier: Modifier, color: Color) {
     Row(modifier = Modifier.size(width = 120.dp, height = 48.dp), verticalAlignment = Alignment.CenterVertically) {
         Image(

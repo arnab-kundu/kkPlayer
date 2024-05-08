@@ -18,11 +18,11 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import androidx.compose.runtime.livedata.observeAsState
@@ -31,9 +31,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.layout.layoutId
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
@@ -46,7 +44,6 @@ import androidx.work.Data
 import androidx.work.OneTimeWorkRequest.Builder
 import androidx.work.WorkManager
 import com.akundu.kkplayer.data.Song
-import com.akundu.kkplayer.data.SongDataProvider
 import com.akundu.kkplayer.data.SongDataProvider.kkSongList
 import com.akundu.kkplayer.database.SongDatabase
 import com.akundu.kkplayer.database.dao.SongDao
@@ -70,9 +67,9 @@ import java.io.FileNotFoundException
 class MainActivity : ComponentActivity() {
 
     lateinit var database: SongDatabase
-    lateinit var dao: SongDao
-    lateinit var songList: List<SongEntity>
-    lateinit var viewModel: MainViewModel
+    private lateinit var dao: SongDao
+    private lateinit var songList: List<SongEntity>
+    private lateinit var viewModel: MainViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -145,6 +142,7 @@ class MainActivity : ComponentActivity() {
         val context = LocalContext.current
         Row(
             modifier = Modifier
+                .padding(horizontal = 6.dp, vertical = 3.dp)
                 .background(MaterialTheme.colors.background)
                 .clickable { playSong(context, song.title, song.fileName, index) },
             verticalAlignment = Alignment.CenterVertically,
@@ -160,7 +158,7 @@ class MainActivity : ComponentActivity() {
             )
             Column(modifier = Modifier.weight(1f)) {
                 Text(text = song.title, style = MaterialTheme.typography.h6, color = Color.DarkGray)
-                Row() {
+                Row {
                     Text(
                         stringResource(id = R.string.artist),
                         style = MaterialTheme.typography.body2,
@@ -236,7 +234,7 @@ class MainActivity : ComponentActivity() {
             )
             Column(modifier = Modifier.weight(1f)) {
                 Text(text = song.title, style = MaterialTheme.typography.h6, color = Color.DarkGray)
-                Row() {
+                Row {
                     Text(
                         stringResource(id = R.string.artist),
                         style = MaterialTheme.typography.body2,
@@ -284,7 +282,7 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-    fun isFileExists(fileName: String): Boolean {
+    private fun isFileExists(fileName: String): Boolean {
         val uriString: String = File("$INTERNAL_MEDIA_PATH$fileName").toString()
         val songFile = File(uriString)
         val isFileExist = songFile.exists()
@@ -296,7 +294,7 @@ class MainActivity : ComponentActivity() {
         return isFileExist
     }
 
-    fun playSong(context: Context, title: String, fileName: String, index: Int) {
+    private fun playSong(context: Context, title: String, fileName: String, index: Int) {
 
         Logg.i("FileName: $fileName")
 
@@ -383,7 +381,7 @@ class MainActivity : ComponentActivity() {
      *  - This API have build-in feature for showing notifications of in-progress-downloads and download-completion
      */
     @Suppress("UNUSED_PARAMETER")
-    fun downloadUsingAndroidDownloadManagerAPI(context: Context, fileName: String, url: String, movie: String) {
+    private fun downloadUsingAndroidDownloadManagerAPI(context: Context, fileName: String, url: String, movie: String) {
         val downloader = AndroidDownloader(context = context)
         downloader.downloadFile(
             url = url,
@@ -394,7 +392,7 @@ class MainActivity : ComponentActivity() {
     @Preview
     @Composable
     fun SongItemPreview() {
-        SongItem(SongDataProvider.kkSongList[0], 0)
+        SongItem(kkSongList[0], 0)
     }
 
 

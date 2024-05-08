@@ -1,16 +1,16 @@
 package com.akundu.kkplayer.ui.theme
 
 import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.darkColors
-import androidx.compose.material.lightColors
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.darkColorScheme
+import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 
-private val DarkColorPalette = darkColors(
+private val DarkColorPalette = darkColorScheme(
     primary = DarkPrimary,
     onPrimary = DarkPrimary,
-    primaryVariant = DarkPrimary,
+    primaryContainer = DarkPrimary,
 
     secondary = DarkSecondary,
     onSecondary = DarkSecondary,
@@ -24,10 +24,10 @@ private val DarkColorPalette = darkColors(
     onError = Color.Red
 )
 
-private val LightColorPalette = lightColors(
+private val LightColorPalette = lightColorScheme(
     primary = LightPrimary,
     onPrimary = LightPrimary,
-    primaryVariant = LightPrimary,
+    primaryContainer = LightPrimary,
 
     secondary = LightSecondary,
     onSecondary = LightSecondary,
@@ -42,7 +42,7 @@ private val LightColorPalette = lightColors(
 )
 
 @Composable
-fun KkPlayerTheme(darkTheme: Boolean = isSystemInDarkTheme(), content: @Composable() () -> Unit) {
+fun KkPlayerTheme(darkTheme: Boolean = isSystemInDarkTheme(), content: @Composable () -> Unit) {
     val colors = if (darkTheme) {
         DarkColorPalette
     } else {
@@ -50,9 +50,9 @@ fun KkPlayerTheme(darkTheme: Boolean = isSystemInDarkTheme(), content: @Composab
     }
 
     MaterialTheme(
-        colors = colors,
         typography = Typography,
         shapes = Shapes,
-        content = content
+        content = content,
+        colorScheme = colors
     )
 }

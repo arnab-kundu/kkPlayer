@@ -36,8 +36,11 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.font.FontWeight.Companion
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.work.Constraints
 import androidx.work.Data
@@ -54,8 +57,10 @@ import com.akundu.kkplayer.permission.RuntimePermission.askNotificationPermissio
 import com.akundu.kkplayer.service.BackgroundSoundService
 import com.akundu.kkplayer.service.ServiceTools
 import com.akundu.kkplayer.storage.Constants.INTERNAL_MEDIA_PATH
+import com.akundu.kkplayer.ui.theme.AlleanaFontFamily
 import com.akundu.kkplayer.ui.theme.Blue
 import com.akundu.kkplayer.ui.theme.KkPlayerTheme
+import com.akundu.kkplayer.ui.theme.NeonFontFamily
 import com.akundu.kkplayer.work.DownloadWork
 import com.google.android.material.snackbar.Snackbar
 import com.plcoding.manualdependencyinjection.presentation.viewModelFactory
@@ -233,7 +238,9 @@ class MainActivity : ComponentActivity() {
                     .padding(12.dp)
             )
             Column(modifier = Modifier.weight(1f)) {
-                Text(text = song.title, style = MaterialTheme.typography.h6, color = Color.DarkGray)
+                Text(text = song.title, style = MaterialTheme.typography.h6, color = Color.Red,
+                    fontFamily = NeonFontFamily, fontSize = 14.sp,
+                    fontWeight = FontWeight.Bold)
                 Row {
                     Text(
                         stringResource(id = R.string.artist),
@@ -242,7 +249,7 @@ class MainActivity : ComponentActivity() {
                     )
                     Text(
                         text = song.artist, style = MaterialTheme.typography.body2,
-                        color = Color.DarkGray
+                        color = Color.DarkGray, fontFamily = AlleanaFontFamily
                     )
                 }
             }

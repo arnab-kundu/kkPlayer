@@ -249,7 +249,7 @@ class MainActivity : ComponentActivity() {
                     )
                     Text(
                         text = song.artist, style = MaterialTheme.typography.body2,
-                        color = Color.DarkGray, fontFamily = AlleanaFontFamily
+                        color = Color.DarkGray, fontFamily = AlleanaFontFamily, fontSize = 18.sp,
                     )
                 }
             }

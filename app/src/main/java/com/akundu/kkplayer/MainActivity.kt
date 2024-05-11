@@ -72,6 +72,7 @@ import com.akundu.kkplayer.work.DownloadWork
 import com.google.android.material.snackbar.Snackbar
 import com.plcoding.manualdependencyinjection.presentation.viewModelFactory
 import es.dmoral.toasty.Toasty
+import wseemann.media.FFmpegMediaMetadataRetriever
 import java.io.File
 import java.io.FileNotFoundException
 
@@ -251,7 +252,7 @@ class MainActivity : ComponentActivity() {
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 Image(
-                    painterResource(id = getDrawable(song.movie)),
+                    bitmap = mediaMetaDataRetriever(song.fileName, song.movie),
                     contentDescription = null,
                     contentScale = ContentScale.FillBounds,
                     modifier = Modifier
@@ -494,6 +495,27 @@ class MainActivity : ComponentActivity() {
             "Woh Lamhe" -> R.drawable.woh_lamhe
             "Zeher" -> R.drawable.zeher
             else -> R.drawable.ic_music
+        }
+    }
+
+    private fun mediaMetaDataRetriever(fileName: String, movie: String): ImageBitmap {
+        val bitmap: Bitmap
+        try {
+            val uri: String = Uri.parse(File("/storage/emulated/0/Android/media/com.akundu.kkplayer/${fileName}").toString()).toString()
+            val retriever: FFmpegMediaMetadataRetriever = FFmpegMediaMetadataRetriever()
+            retriever.setDataSource(uri)
+            val data: ByteArray = retriever.embeddedPicture
+
+            // convert the byte array to a bitmap
+            bitmap = BitmapFactory.decodeByteArray(data, 0, data.size)
+
+            // do something with the image ...
+            // mImageView.setImageBitmap(bitmap);
+            retriever.release()
+            return bitmap.asImageBitmap()
+        } catch (e: Exception) {
+            val icon: Bitmap = ContextCompat.getDrawable(this, getDrawable(movie))!!.toBitmap()
+            return icon.asImageBitmap()
         }
     }
 

@@ -2,6 +2,9 @@ package com.akundu.kkplayer
 
 import android.content.Context
 import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.widget.Toast
@@ -11,6 +14,7 @@ import androidx.activity.result.contract.ActivityResultContracts.RequestPermissi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
@@ -30,6 +34,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -37,10 +43,11 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.font.FontWeight.Companion
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.content.ContextCompat
+import androidx.core.graphics.drawable.toBitmap
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.work.Constraints
 import androidx.work.Data
@@ -145,74 +152,84 @@ class MainActivity : ComponentActivity() {
     @Composable
     fun SongItem(song: Song, index: Int) {
         val context = LocalContext.current
-        Row(
+        Box(
             modifier = Modifier
-                .padding(horizontal = 6.dp, vertical = 3.dp)
-                .background(MaterialTheme.colors.background)
-                .clickable { playSong(context, song.title, song.fileName, index) },
-            verticalAlignment = Alignment.CenterVertically,
+                .background(MaterialTheme.colors.error)
+                .padding(2.dp, 2.dp, 2.dp, 0.dp)
         ) {
-            Image(
-                painterResource(id = getDrawable(song.movie)),
-                contentDescription = null,
-                contentScale = ContentScale.FillBounds,
+            Row(
                 modifier = Modifier
-                    .size(88.dp)
-                    // .clip(CircleShape)
-                    .padding(12.dp)
-            )
-            Column(modifier = Modifier.weight(1f)) {
-                Text(text = song.title, style = MaterialTheme.typography.h6, color = Color.DarkGray)
-                Row {
-                    Text(
-                        stringResource(id = R.string.artist),
-                        style = MaterialTheme.typography.body2,
-                        color = Color.DarkGray
-                    )
-                    Text(
-                        text = song.artist, style = MaterialTheme.typography.body2,
-                        color = Color.DarkGray
-                    )
-                }
-            }
-            IconButton(
-                onClick = {
-                    val downloadUsingAndroidDownloaderAPI = false
-                    if (!downloadUsingAndroidDownloaderAPI) {
-                        if (isFileExists(fileName = song.fileName)) playSong(context, song.title, song.fileName, index) else download(
-                            context,
-                            0L,
-                            song.fileName,
-                            song.url,
-                            song.movie
-                        )
-                    } else {
-                        if (isFileExists(fileName = song.fileName)) playSong(context, song.title, song.fileName, index) else downloadUsingAndroidDownloadManagerAPI(
-                            context,
-                            song.fileName,
-                            song.url,
-                            song.movie
-                        )
-                    }
-                }
+                    .padding(horizontal = 6.dp, vertical = 3.dp)
+                    .background(MaterialTheme.colors.background)
+                    .clickable { playSong(context, song.title, song.fileName, index) },
+                verticalAlignment = Alignment.CenterVertically,
             ) {
-                Icon(
-                    painter = painterResource(
-                        id = if (isFileExists(fileName = song.fileName)) android.R.drawable.ic_media_play else {
-                            R.drawable.ic_download
-                        }
-                    ),
-                    contentDescription = if (isFileExists(fileName = song.fileName)) "Play" else {
-                        "Download"
-                    },
+                Image(
+                    painterResource(id = getDrawable(song.movie)),
+                    contentDescription = null,
+                    contentScale = ContentScale.FillBounds,
                     modifier = Modifier
-                        .size(48.dp)
-                        .clip(CircleShape)
-                        .padding(8.dp),
-                    tint = if (isFileExists(fileName = song.fileName)) Color(0xFF0C610C) else {
-                        Blue
-                    }
+                        .size(88.dp)
+                        // .clip(CircleShape)
+                        .padding(12.dp)
                 )
+                Column(modifier = Modifier.weight(1f)) {
+                    Text(
+                        text = song.title, style = MaterialTheme.typography.h6, color = Color.Red,
+                        fontFamily = NeonFontFamily, fontSize = 14.sp,
+                        fontWeight = FontWeight.Bold
+                    )
+                    Row {
+                        Text(
+                            stringResource(id = R.string.artist),
+                            style = MaterialTheme.typography.body2,
+                            color = Color.DarkGray
+                        )
+                        Text(
+                            text = song.artist, style = MaterialTheme.typography.body2,
+                            color = Color.DarkGray, fontFamily = AlleanaFontFamily, fontSize = 18.sp,
+                        )
+                    }
+                }
+                IconButton(
+                    onClick = {
+                        val downloadUsingAndroidDownloaderAPI = false
+                        if (!downloadUsingAndroidDownloaderAPI) {
+                            if (isFileExists(fileName = song.fileName)) playSong(context, song.title, song.fileName, index) else download(
+                                context,
+                                0L,
+                                song.fileName,
+                                song.url,
+                                song.movie
+                            )
+                        } else {
+                            if (isFileExists(fileName = song.fileName)) playSong(context, song.title, song.fileName, index) else downloadUsingAndroidDownloadManagerAPI(
+                                context,
+                                song.fileName,
+                                song.url,
+                                song.movie
+                            )
+                        }
+                    }
+                ) {
+                    Icon(
+                        painter = painterResource(
+                            id = if (isFileExists(fileName = song.fileName)) android.R.drawable.ic_media_play else {
+                                R.drawable.ic_download
+                            }
+                        ),
+                        contentDescription = if (isFileExists(fileName = song.fileName)) "Play" else {
+                            "Download"
+                        },
+                        modifier = Modifier
+                            .size(48.dp)
+                            .clip(CircleShape)
+                            .padding(8.dp),
+                        tint = if (isFileExists(fileName = song.fileName)) Color(0xFF0C610C) else {
+                            Blue
+                        }
+                    )
+                }
             }
         }
     }
@@ -221,70 +238,78 @@ class MainActivity : ComponentActivity() {
     @Composable
     fun SongItem(song: SongEntity) {
         val context = LocalContext.current
-        Row(
+        Box(
             modifier = Modifier
-                .semantics { contentDescription = "songItem" }
-                .background(MaterialTheme.colors.background)
-                .clickable { playSong(context, song.title, song.fileName, song.id.toInt()) },
-            verticalAlignment = Alignment.CenterVertically,
+                .background(MaterialTheme.colors.error)
+                .padding(2.dp, 2.dp, 2.dp, 0.dp)
         ) {
-            Image(
-                painterResource(id = getDrawable(song.movie)),
-                contentDescription = null,
-                contentScale = ContentScale.FillBounds,
+            Row(
                 modifier = Modifier
-                    .size(88.dp)
-                    // .clip(CircleShape)
-                    .padding(12.dp)
-            )
-            Column(modifier = Modifier.weight(1f)) {
-                Text(text = song.title, style = MaterialTheme.typography.h6, color = Color.Red,
-                    fontFamily = NeonFontFamily, fontSize = 14.sp,
-                    fontWeight = FontWeight.Bold)
-                Row {
+                    .semantics { contentDescription = "songItem" }
+                    .background(MaterialTheme.colors.background)
+                    .clickable { playSong(context, song.title, song.fileName, song.id.toInt()) },
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Image(
+                    painterResource(id = getDrawable(song.movie)),
+                    contentDescription = null,
+                    contentScale = ContentScale.FillBounds,
+                    modifier = Modifier
+                        .size(88.dp)
+                        // .clip(CircleShape)
+                        .padding(12.dp)
+                )
+                Column(modifier = Modifier.weight(1f)) {
                     Text(
-                        stringResource(id = R.string.artist),
-                        style = MaterialTheme.typography.body2,
-                        color = Color.DarkGray
+                        text = song.title, style = MaterialTheme.typography.h6, color = Color.Red,
+                        fontFamily = NeonFontFamily, fontSize = 14.sp,
+                        fontWeight = FontWeight.Bold
                     )
-                    Text(
-                        text = song.artist, style = MaterialTheme.typography.body2,
-                        color = Color.DarkGray, fontFamily = AlleanaFontFamily, fontSize = 18.sp,
-                    )
-                }
-            }
-            IconButton(
-                onClick = {
-                    val downloadUsingAndroidDownloaderAPI = false
-                    if (!downloadUsingAndroidDownloaderAPI) {
-                        if (isFileExists(fileName = song.fileName)) playSong(context, song.title, song.fileName, song.id.toInt()) else download(
-                            context,
-                            song.id,
-                            song.fileName,
-                            song.url,
-                            song.movie
+                    Row {
+                        Text(
+                            stringResource(id = R.string.artist),
+                            style = MaterialTheme.typography.body2,
+                            color = Color.DarkGray
                         )
-                    } else {
-                        if (isFileExists(fileName = song.fileName)) playSong(context, song.title, song.fileName, song.id.toInt()) else downloadUsingAndroidDownloadManagerAPI(
-                            context,
-                            song.fileName,
-                            song.url,
-                            song.movie
+                        Text(
+                            text = song.artist, style = MaterialTheme.typography.body2,
+                            color = Color.DarkGray, fontFamily = AlleanaFontFamily, fontSize = 18.sp,
                         )
                     }
-                    //TODO
-                    //viewModel.updateSongDownloadStatus(song.id)
                 }
-            ) {
-                Icon(
-                    painter = painterResource(id = if (song.isDownloaded) android.R.drawable.ic_media_play else R.drawable.ic_download),
-                    contentDescription = if (song.isDownloaded) "Play" else "Download",
-                    modifier = Modifier
-                        .size(48.dp)
-                        .clip(CircleShape)
-                        .padding(8.dp),
-                    tint = if (song.isDownloaded) Color(0xFF0C610C) else Blue
-                )
+                IconButton(
+                    onClick = {
+                        val downloadUsingAndroidDownloaderAPI = false
+                        if (!downloadUsingAndroidDownloaderAPI) {
+                            if (isFileExists(fileName = song.fileName)) playSong(context, song.title, song.fileName, song.id.toInt()) else download(
+                                context,
+                                song.id,
+                                song.fileName,
+                                song.url,
+                                song.movie
+                            )
+                        } else {
+                            if (isFileExists(fileName = song.fileName)) playSong(context, song.title, song.fileName, song.id.toInt()) else downloadUsingAndroidDownloadManagerAPI(
+                                context,
+                                song.fileName,
+                                song.url,
+                                song.movie
+                            )
+                        }
+                        //TODO
+                        //viewModel.updateSongDownloadStatus(song.id)
+                    }
+                ) {
+                    Icon(
+                        painter = painterResource(id = if (song.isDownloaded) android.R.drawable.ic_media_play else R.drawable.ic_download),
+                        contentDescription = if (song.isDownloaded) "Play" else "Download",
+                        modifier = Modifier
+                            .size(48.dp)
+                            .clip(CircleShape)
+                            .padding(8.dp),
+                        tint = if (song.isDownloaded) Color(0xFF0C610C) else Blue
+                    )
+                }
             }
         }
     }

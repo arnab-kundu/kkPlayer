@@ -155,7 +155,7 @@ class MainActivity : ComponentActivity() {
         val context = LocalContext.current
         Box(
             modifier = Modifier
-                .background(MaterialTheme.colors.error)
+                .background(Color.Gray)
                 .padding(2.dp, 2.dp, 2.dp, 0.dp)
         ) {
             Row(
@@ -170,8 +170,8 @@ class MainActivity : ComponentActivity() {
                     contentDescription = null,
                     contentScale = ContentScale.FillBounds,
                     modifier = Modifier
-                        .size(88.dp)
-                        // .clip(CircleShape)
+                        .size(90.dp)
+                        .clip(CircleShape)
                         .padding(12.dp)
                 )
                 Column(modifier = Modifier.weight(1f)) {
@@ -241,7 +241,7 @@ class MainActivity : ComponentActivity() {
         val context = LocalContext.current
         Box(
             modifier = Modifier
-                .background(MaterialTheme.colors.error)
+                .background(Color.Gray)
                 .padding(2.dp, 2.dp, 2.dp, 0.dp)
         ) {
             Row(
@@ -257,7 +257,7 @@ class MainActivity : ComponentActivity() {
                     contentScale = ContentScale.FillBounds,
                     modifier = Modifier
                         .size(88.dp)
-                        // .clip(CircleShape)
+                        .clip(CircleShape)
                         .padding(12.dp)
                 )
                 Column(modifier = Modifier.weight(1f)) {

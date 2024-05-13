@@ -68,13 +68,29 @@ object SongDataProvider {
             movie = "Gangster"
         ),
         Song(
+            title = "Labon Ko",
+            artist = "K.K",
+            fileName = "Labon Ko (Bhool Bhulaiyaa) - K.K - 320Kbps.mp3",
+            url = "https://ia801208.us.archive.org/6/items/labon-ko/LABON%20KO.mp3",
+            movie = "Bhool Bhulaiyaa"
+        ),
+        Song(
+            title = "Beete Lamhein",
+            artist = "K.K",
+            fileName = "Beete Lamhein (The Train) - K.K - 320Kbps.mp3",
+            url = "https://ia600302.us.archive.org/18/items/02BeeteLamhe1/02_beete_lamhe%5B1%5D.mp3",
+            movie = "The Train"
+        ),
+
+        /*
+        Song(
             title = "Mujhe kaise pata na chala",
             artist = "Papon",
             fileName = "mujhe-kaise-pata-na-chala.mp3",
             url = "https://pagalworld.co.uk/files/download/id/331",
             movie = "NA"
         ),
-        /*Song(
+        Song(
             title = "Tujhe Sochta Hoon",
             artist = "K.K",
             fileName = "Tujhe Sochta Hoon (Jannat ) - K.K - 320Kbps.mp3",
@@ -122,13 +138,6 @@ object SongDataProvider {
             fileName = "O Sanam (The Killer) - K.K - 320Kbps.mp3",
             url = "",
             movie = "The Killer"
-        ),
-        Song(
-            title = "Beetein Lamhein",
-            artist = "K.K",
-            fileName = "Beetein Lamhein (Live-The Train) - K.K - 320Kbps.mp3",
-            url = "",
-            movie = "Live-The Train"
         ),
         Song(
             title = "Zindagi Do Pal Ki",
@@ -257,13 +266,6 @@ object SongDataProvider {
             movie = "Dus"
         ),
         Song(
-            title = "Beete Lamhein",
-            artist = "K.K",
-            fileName = "Beete Lamhein (The Train) - K.K - 320Kbps.mp3",
-            url = "",
-            movie = "The Train"
-        ),
-        Song(
             title = "Piya Aaye Na",
             artist = "K.K",
             fileName = "Piya Aaye Na (Aashiqui ) - K.K - 320Kbps.mp3",
@@ -283,13 +285,6 @@ object SongDataProvider {
             fileName = "Sunn Zara - K.K - 320Kbps.mp3",
             url = "",
             movie = ""
-        ),
-        Song(
-            title = "Labon Ko *****",
-            artist = "K.K",
-            fileName = "Labon Ko (Bhool Bhulaiyaa) - K.K - 320Kbps.mp3",
-            url = "",
-            movie = "Bhool Bhulaiyaa"
         ),
         Song(
             title = "Soniye",

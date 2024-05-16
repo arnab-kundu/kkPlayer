@@ -8,8 +8,8 @@ val DarkPrimary = Color(0xFFDA88D3)
 val LightSecondary = Color(0xFF26C9EB)
 val DarkSecondary = Color(0xFF26C9EB)
 
-val LightBackground = Color(0xFFFFCDC9)
-val DarkBackground = Color(0xFF696969)
+val LightBackground = Color(0xFFFFFFFF)
+val DarkBackground = Color(0xFF444444)
 
 val LightSurface = Color(0xFF02325E)
 val LightOnSurface = Color(0xFF00172C)

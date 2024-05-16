@@ -1,5 +1,6 @@
 package com.akundu.kkplayer
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
@@ -22,9 +23,9 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.MaterialTheme
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -54,6 +55,7 @@ import androidx.work.Data
 import androidx.work.OneTimeWorkRequest.Builder
 import androidx.work.WorkManager
 import com.akundu.kkplayer.data.Song
+import com.akundu.kkplayer.data.SongDataProvider
 import com.akundu.kkplayer.data.SongDataProvider.kkSongList
 import com.akundu.kkplayer.database.SongDatabase
 import com.akundu.kkplayer.database.dao.SongDao
@@ -115,7 +117,7 @@ class MainActivity : ComponentActivity() {
                 viewModel.allSongsLiveData()
                 val songListState = viewModel.songList.observeAsState(null)
                 // A surface container using the 'background' color from the theme
-                Surface(color = MaterialTheme.colors.background) {
+                Surface(color = Color.Gray) {
                     SongListPreview(songListState)
                 }
             }
@@ -127,6 +129,7 @@ class MainActivity : ComponentActivity() {
         }
     }
 
+    @Suppress("RemoveExplicitTypeArguments")
     private val requestPermissionLauncher = registerForActivityResult<String, Boolean>(RequestPermission()) { isGranted: Boolean ->
         if (isGranted) {
             Logg.i("Callback: Permission is granted")
@@ -160,8 +163,7 @@ class MainActivity : ComponentActivity() {
         ) {
             Row(
                 modifier = Modifier
-                    .padding(horizontal = 6.dp, vertical = 3.dp)
-                    .background(MaterialTheme.colors.background)
+                    .background(MaterialTheme.colorScheme.background)
                     .clickable { playSong(context, song.title, song.fileName, index) },
                 verticalAlignment = Alignment.CenterVertically,
             ) {
@@ -176,19 +178,19 @@ class MainActivity : ComponentActivity() {
                 )
                 Column(modifier = Modifier.weight(1f)) {
                     Text(
-                        text = song.title, style = MaterialTheme.typography.h6, color = Color.Red,
+                        text = song.title, style = MaterialTheme.typography.bodySmall, color = Color.Red,
                         fontFamily = NeonFontFamily, fontSize = 14.sp,
                         fontWeight = FontWeight.Bold
                     )
                     Row {
                         Text(
                             stringResource(id = R.string.artist),
-                            style = MaterialTheme.typography.body2,
-                            color = Color.DarkGray
+                            style = MaterialTheme.typography.bodyLarge,
+                            color = MaterialTheme.colorScheme.onBackground
                         )
                         Text(
-                            text = song.artist, style = MaterialTheme.typography.body2,
-                            color = Color.DarkGray, fontFamily = AlleanaFontFamily, fontSize = 18.sp,
+                            text = song.artist, style = MaterialTheme.typography.bodyLarge,
+                            color = MaterialTheme.colorScheme.onBackground, fontFamily = AlleanaFontFamily, fontSize = 18.sp,
                         )
                     }
                 }
@@ -247,7 +249,7 @@ class MainActivity : ComponentActivity() {
             Row(
                 modifier = Modifier
                     .semantics { contentDescription = "songItem" }
-                    .background(MaterialTheme.colors.background)
+                    .background(MaterialTheme.colorScheme.background)
                     .clickable { playSong(context, song.title, song.fileName, song.id.toInt()) },
                 verticalAlignment = Alignment.CenterVertically,
             ) {
@@ -262,19 +264,19 @@ class MainActivity : ComponentActivity() {
                 )
                 Column(modifier = Modifier.weight(1f)) {
                     Text(
-                        text = song.title, style = MaterialTheme.typography.h6, color = Color.Red,
+                        text = song.title, style = MaterialTheme.typography.bodyLarge, color = Color.Red,
                         fontFamily = NeonFontFamily, fontSize = 14.sp,
                         fontWeight = FontWeight.Bold
                     )
                     Row {
                         Text(
                             stringResource(id = R.string.artist),
-                            style = MaterialTheme.typography.body2,
-                            color = Color.DarkGray
+                            style = MaterialTheme.typography.bodyLarge,
+                            color = MaterialTheme.colorScheme.onBackground
                         )
                         Text(
-                            text = song.artist, style = MaterialTheme.typography.body2,
-                            color = Color.DarkGray, fontFamily = AlleanaFontFamily, fontSize = 18.sp,
+                            text = song.artist, style = MaterialTheme.typography.bodyLarge,
+                            color = MaterialTheme.colorScheme.onBackground, fontFamily = AlleanaFontFamily, fontSize = 24.sp,
                         )
                     }
                 }
@@ -319,11 +321,7 @@ class MainActivity : ComponentActivity() {
         val uriString: String = File("$INTERNAL_MEDIA_PATH$fileName").toString()
         val songFile = File(uriString)
         val isFileExist = songFile.exists()
-        if (isFileExist) {
-            Logg.i("Is file exists: $isFileExist. Filename: $fileName")
-        } else {
-            Logg.e("Is file exists: $isFileExist. Filename: $fileName")
-        }
+        Logg.i("Is file exists: $isFileExist. Filename: $fileName")
         return isFileExist
     }
 
@@ -430,7 +428,7 @@ class MainActivity : ComponentActivity() {
 
 
     @Composable
-    fun SongListCompose1(
+    fun SongListComposeWithStaticData(
         songList: List<Song>,
         modifier: Modifier = Modifier
     ) {
@@ -446,6 +444,7 @@ class MainActivity : ComponentActivity() {
     @Composable
     fun SongListCompose(
         songList: List<SongEntity>,
+        @SuppressLint("ModifierParameter")
         modifier: Modifier = Modifier.semantics { contentDescription = "songsList" }
     ) {
         LazyColumn(modifier = modifier) {
@@ -459,7 +458,7 @@ class MainActivity : ComponentActivity() {
     //@Preview
     @Composable
     fun SongListPreview(songList: State<List<SongEntity>?>) {
-        //SongListCompose(SongDataProvider.kkSongList)
+        // SongListComposeWithStaticData(kkSongList)
         songList.value?.let { SongListCompose(songList = it) }
     }
 
@@ -498,6 +497,7 @@ class MainActivity : ComponentActivity() {
         }
     }
 
+    @Suppress("RedundantExplicitType")
     private fun mediaMetaDataRetriever(fileName: String, movie: String): ImageBitmap {
         val bitmap: Bitmap
         try {

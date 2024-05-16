@@ -16,7 +16,7 @@ private val DarkColorPalette = darkColorScheme(
     onSecondary = DarkSecondary,
 
     background = DarkBackground,
-    onBackground = DarkBackground,
+    onBackground = DarkThemeFontColor,
 
     surface = DarkSurface,
     onSurface = DarkOnSurface,
@@ -33,7 +33,7 @@ private val LightColorPalette = lightColorScheme(
     onSecondary = LightSecondary,
 
     background = LightBackground,
-    onBackground = LightBackground,
+    onBackground = LightThemeFontColor,
 
     surface = LightSurface,
     onSurface = LightOnSurface,

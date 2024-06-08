@@ -96,11 +96,11 @@ object SongDataProvider {
             movie = ""
         ),
         Song(
-            title = "Maahi%20Ve",
-            artist = "Saurabh",
+            title = "Maahi Ve",
+            artist = "A.R. Rahman",
             fileName = "Maahi Ve.mp3",
-            url = "https://pwdown.info/8964/Maahi%20Ve%20(Highway)%20DJ%20Saurabh%20Mix%20(PagalWorld.com).mp3",
-            movie = ""
+            url = "https://pagalnew.com/download128/5535",
+            movie = "Highway"
         ),
         Song(
             title = "Closer - The Chainsmokers",
@@ -167,7 +167,7 @@ object SongDataProvider {
         ),
 
         Song(
-            title = "lovestory",
+            title = "Love story",
             artist = "Taylor Swift",
             fileName = "lovestory.mp3",
             url = "https://ia903102.us.archive.org/24/items/lovestory_381/03-taylor_swift-love_story.mp3",

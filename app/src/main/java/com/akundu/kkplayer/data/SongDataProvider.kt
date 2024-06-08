@@ -81,6 +81,106 @@ object SongDataProvider {
             url = "https://ia600302.us.archive.org/18/items/02BeeteLamhe1/02_beete_lamhe%5B1%5D.mp3",
             movie = "The Train"
         ),
+        Song(
+            title = "Takin Back My Love",
+            artist = "Enrique Iglesias",
+            fileName = "Takin Back My Love.mp3",
+            url = "https://mdundo.com/dl/1963177",
+            movie = ""
+        ),
+        Song(
+            title = "Vaaste",
+            artist = "Dhvani Bhanushali",
+            fileName = "Vaaste - Dhvani Bhanushali Song Info.mp3",
+            url = "https://djmaza.live/files/download/id/10088",
+            movie = ""
+        ),
+        Song(
+            title = "Maahi%20Ve",
+            artist = "Saurabh",
+            fileName = "Maahi Ve.mp3",
+            url = "https://pwdown.info/8964/Maahi%20Ve%20(Highway)%20DJ%20Saurabh%20Mix%20(PagalWorld.com).mp3",
+            movie = ""
+        ),
+        Song(
+            title = "Closer - The Chainsmokers",
+            artist = "The Chainsmokers, Halsey",
+            fileName = "Closer - The Chainsmokers.mp3",
+            url = "https://djmaza.live/files/download/type/320/id/6453",
+            movie = ""
+        ),
+        Song(
+            title = "Love Me Like You Do",
+            artist = "Ellie Goulding",
+            fileName = "Love Me Like You Do.mp3",
+            url = "https://pagal-world.com.in/files/download/id/841",
+            movie = ""
+        ),
+        Song(
+            title = "Asatoma Sadgamaya",
+            artist = "Arijit Singh",
+            fileName = "Asatoma Sadgamaya.mp3",
+            url = "https://pagaliworld.com/files/download/id/6507",
+            movie = ""
+        ),
+        Song(
+            title = "Sooraj Dooba Hain",
+            artist = "Arijit Singh",
+            fileName = "Sooraj Dooba Hain.mp3",
+            url = "https://hindi2.djpunjab.app/load-hindi/rTmpRsc0gX9NQNkbuxKWLg==/Sooraj%20Dooba%20Hain.mp3",
+            movie = ""
+        ),
+        Song(
+            title = "In The End ",
+            artist = "Linkin Park (Remix) & Mellen Gi",
+            fileName = "In The End.mp3",
+            url = "https://files.ceenaija.com/wp-content/uploads/music/2021/06/Tommee_Profitt_-_In_The_End_Tried_So_Hard__CeeNaija.com_.mp3",
+            movie = ""
+        ),
+        Song(
+            title = "Wish you were here",
+            artist = "avril lavigne",
+            fileName = "wish you were here.mp3",
+            url = "https://ia600504.us.archive.org/6/items/WishYouWereHere-avrilLavigne/AvrilLavigne-WishYouWereHere-AcousticVersion.mp3",
+            movie = ""
+        ),
+        Song(
+            title = "Aahatein",
+            artist = "Amit Trivedi",
+            fileName = "Aahatein.mp3",
+            url = "https://hindi2.djpunjab.app/load-hindi/YrpaSlVFyCTCBt5-jluvsQ==/Aahatein.mp3",
+            movie = ""
+        ),
+        Song(
+            title = "Kuch-To-Hai",
+            artist = "Armaan Malik",
+            fileName = "Kuch-To-Hai.mp3",
+            url = "https://cdn.jattpendu.com/download/128k-axsth/Kuch-To-Hai.mp3",
+            movie = ""
+        ),
+        Song(
+            title = "Malang",
+            artist = "Ved Sharma",
+            fileName = "Malang.mp3",
+            url = "https://pagalfree.com/musics/192-Malang%20(Title%20Track)%20-%20Malang%20-%20Unleash%20The%20Madness%20192%20Kbps.mp3",
+            movie = ""
+        ),
+
+        Song(
+            title = "lovestory",
+            artist = "Taylor Swift",
+            fileName = "lovestory.mp3",
+            url = "https://ia903102.us.archive.org/24/items/lovestory_381/03-taylor_swift-love_story.mp3",
+            movie = ""
+        ),
+
+        Song(
+            title = "Wildest Dreams",
+            artist = "Taylor Swift",
+            fileName = "Wildest Dreams.mp3",
+            url = "https://ia800505.us.archive.org/2/items/07.20Taylor20Swift2020Wildest20Dreams2020www.SongsLover.cc/07.%2520Taylor%2520Swift%2520-%2520Wildest%2520Dreams%2520-%2520%28www.SongsLover.cc%29.mp3",
+            movie = ""
+        ),
 
         /*
         Song(

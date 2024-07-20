@@ -35,23 +35,23 @@ jobs:
           name: app
           path: app/build/outputs/apk/debug/*.apk
           
-    - name: Firebase App Distribution Action
-      # You may pin to the exact commit or the version.
-      # uses: hasretsariyer/firebase-app-distribution-github-action@1efdc61b2aecd54be4072edb5dd527be26571943
-      uses: hasretsariyer/firebase-app-distribution-github-action@v1.0
-      with:
-        # Firebase App ID. You can find it in the Firebase console, on the General Settings page.
-        app_id: 1:676533197787:android:0cb27c472edeccebd3e5fe
+    # - name: Firebase App Distribution Action
+    #   # You may pin to the exact commit or the version.
+    #   # uses: hasretsariyer/firebase-app-distribution-github-action@1efdc61b2aecd54be4072edb5dd527be26571943
+    #   uses: hasretsariyer/firebase-app-distribution-github-action@v1.0
+    #   with:
+    #     # Firebase App ID. You can find it in the Firebase console, on the General Settings page.
+    #     app_id: 1:676533197787:android:0cb27c472edeccebd3e5fe
       
-        # Path of IPA or APK file to distribution.
-        app_file: app/build/outputs/apk/debug/app-debug.apk
+    #     # Path of IPA or APK file to distribution.
+    #     app_file: app/build/outputs/apk/debug/app-debug.apk
       
-        # 'Firebase access token. You can create it by `firebase login:ci` on your local machine.
-        #  Visit [cli-ci-systems](https://firebase.google.com/docs/cli#cli-ci-systems) for more detail'
-        firebase_token: "1//0gpQKDtLHF-wjCgYIARAAGBASNwF-L9IrNV6OgT1odeWo1m7KXf4jCodNPoamcWLgqFEW2o4CS6WPmaFRG2ZkVNC0vHaXZQ9mCkA"
+    #     # 'Firebase access token. You can create it by `firebase login:ci` on your local machine.
+    #     #  Visit [cli-ci-systems](https://firebase.google.com/docs/cli#cli-ci-systems) for more detail'
+    #     firebase_token: "1//0gpQKDtLHF-wjCgYIARAAGBASNwF-L9IrNV6OgT1odeWo1m7KXf4jCodNPoamcWLgqFEW2o4CS6WPmaFRG2ZkVNC0vHaXZQ9mCkA"
       
-        # Distribution groups
-        tester_groups: androidTesters
+    #     # Distribution groups
+    #     tester_groups: androidTesters
       
-        # Release notes for this build.
-        release_notes: ${{ github.event.head_commit.message }}
+    #     # Release notes for this build.
+    #     release_notes: ${{ github.event.head_commit.message }}

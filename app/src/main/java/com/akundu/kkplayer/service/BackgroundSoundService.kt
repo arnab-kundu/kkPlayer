@@ -14,6 +14,7 @@ import android.util.Log
 import androidx.core.app.NotificationCompat
 import com.akundu.kkplayer.R
 import com.akundu.kkplayer.database.SongDatabase
+import com.akundu.kkplayer.database.entity.SongEntity
 import java.io.File
 
 class BackgroundSoundService : Service() {
@@ -66,7 +67,7 @@ class BackgroundSoundService : Service() {
 
         val database = SongDatabase.getDatabase(this)
         val nextSongId = previousSongId + 1
-        val songEntity = database.songDao().findSongById(nextSongId.toLong())
+        val songEntity: SongEntity = database.songDao().findSongById(nextSongId.toLong())
         songTitle = songEntity.title
 
         if (player != null) {

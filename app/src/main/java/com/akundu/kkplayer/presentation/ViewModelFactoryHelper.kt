@@ -1,4 +1,4 @@
-package com.plcoding.manualdependencyinjection.presentation
+package com.akundu.kkplayer.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider

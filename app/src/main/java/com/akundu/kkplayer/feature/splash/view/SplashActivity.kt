@@ -5,7 +5,6 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
-import com.akundu.kkplayer.MainActivity
 import com.akundu.kkplayer.feature.splash.viewModel.SplashViewModel
 
 @SuppressLint("CustomSplashScreen")
@@ -29,7 +28,7 @@ class SplashActivity : AppCompatActivity() {
             // Animation works for Android 12 and later versions
             // After complete SplashScreen animation, resume Main/UI Thread operation.
             setOnExitAnimationListener {
-                startActivity(Intent(this@SplashActivity, MainActivity::class.java))
+                startActivity(Intent(this@SplashActivity, Splash2Activity::class.java))
                 finish()
             }
         }

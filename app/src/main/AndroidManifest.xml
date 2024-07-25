@@ -43,6 +43,12 @@
             </intent-filter>
         </activity>
 
+         <activity
+            android:name=".feature.splash.view.Splash2Activity"
+            android:exported="false"
+            android:label="@string/app_name"
+            android:theme="@style/Theme.KkPlayer.NoActionBar" />
+
         <activity
             android:name=".MainActivity"
             android:exported="false"

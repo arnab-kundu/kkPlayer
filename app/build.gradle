@@ -79,7 +79,7 @@ dependencies {
 
     implementation 'androidx.core:core-ktx:1.13.1'
     implementation 'androidx.appcompat:appcompat:1.7.0'
-    implementation 'com.google.android.material:material:1.12.0'
+    // implementation 'com.google.android.material:material:1.12.0'
     implementation 'androidx.compose.material3:material3:1.2.1'
     implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.8.3'
     implementation 'androidx.activity:activity-compose:1.9.0'
@@ -139,4 +139,10 @@ dependencies {
     implementation "androidx.room:room-runtime:$room_version"           // Room DB basic dependency
     implementation "androidx.room:room-ktx:$room_version"               // Androidx Kotlin
     ksp "androidx.room:room-compiler:$room_version"                     // Room compiler for Kotlin
+
+    implementation 'com.github.arnab-kundu:Storage:1.0.5'
+
+    implementation 'com.github.arnab-kundu:ESCPOS-ThermalPrinter-Android:v3.4.0'
+
+
 }

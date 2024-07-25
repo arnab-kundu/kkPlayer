@@ -71,7 +71,6 @@ import com.akundu.kkplayer.ui.theme.Blue
 import com.akundu.kkplayer.ui.theme.KkPlayerTheme
 import com.akundu.kkplayer.ui.theme.NeonFontFamily
 import com.akundu.kkplayer.work.DownloadWork
-import com.google.android.material.snackbar.Snackbar
 import es.dmoral.toasty.Toasty
 import wseemann.media.FFmpegMediaMetadataRetriever
 import java.io.File
@@ -144,11 +143,11 @@ class MainActivity : ComponentActivity() {
     }
 
     fun internetAvailable(context: Context) {
-        Toasty.success(context, "Online!", Snackbar.LENGTH_SHORT).show()
+        Toasty.success(context, "Online!", Toast.LENGTH_SHORT).show()
     }
 
     fun noInternet(context: Context) {
-        Toasty.error(context, "No Internet!", Snackbar.LENGTH_SHORT).show()
+        Toasty.error(context, "No Internet!", Toast.LENGTH_SHORT).show()
     }
 
 

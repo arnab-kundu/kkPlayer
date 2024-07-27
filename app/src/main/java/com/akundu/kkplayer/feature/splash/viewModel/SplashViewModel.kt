@@ -1,5 +1,6 @@
 package com.akundu.kkplayer.feature.splash.viewModel
 
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.delay
@@ -21,5 +22,14 @@ class SplashViewModel : ViewModel() {
         }
     }
     // endregion
+
+    val isAnimationEndLiveData = MutableLiveData(true)
+    fun reverseAnimation() {
+        viewModelScope.launch {
+            isAnimationEndLiveData.value = (isAnimationEndLiveData.value)?.not()
+            delay(2500)
+            reverseAnimation()
+        }
+    }
 
 }

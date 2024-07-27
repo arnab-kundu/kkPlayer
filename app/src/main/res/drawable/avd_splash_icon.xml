@@ -10,7 +10,7 @@
                     android:duration="300"
                     android:propertyName="translateX"
                     android:startOffset="500"
-                    android:valueFrom="-50"
+                    android:valueFrom="-70"
                     android:valueTo="0"
                     android:valueType="floatType" />
             </set>
@@ -24,7 +24,7 @@
                     android:duration="300"
                     android:propertyName="translateX"
                     android:startOffset="1000"
-                    android:valueFrom="40"
+                    android:valueFrom="70"
                     android:valueTo="0"
                     android:valueType="floatType" />
             </set>
@@ -38,7 +38,7 @@
                     android:duration="300"
                     android:propertyName="translateY"
                     android:startOffset="1500"
-                    android:valueFrom="-50"
+                    android:valueFrom="-70"
                     android:valueTo="-1.5"
                     android:valueType="floatType" />
                 <objectAnimator
@@ -61,7 +61,7 @@
                     android:duration="300"
                     android:propertyName="translateY"
                     android:startOffset="1500"
-                    android:valueFrom="55"
+                    android:valueFrom="70"
                     android:valueTo="1.5"
                     android:valueType="floatType" />
                 <objectAnimator

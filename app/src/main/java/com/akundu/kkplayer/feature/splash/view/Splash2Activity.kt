@@ -8,17 +8,22 @@ import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
 import com.akundu.kkplayer.BuildConfig
 import com.akundu.kkplayer.MainActivity
+import com.akundu.kkplayer.feature.splash.viewModel.SplashViewModel
 import com.akundu.kkplayer.ui.theme.KkPlayerTheme
 
 class Splash2Activity : AppCompatActivity() {
 
+    private lateinit var viewModel: SplashViewModel
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        viewModel = SplashViewModel()
+        viewModel.reverseAnimation()
         val version = BuildConfig.VERSION_NAME
         setContent {
             KkPlayerTheme {
-                SplashPage(version = version)
+                SplashPage(viewModel = viewModel, version = version)
             }
         }
 

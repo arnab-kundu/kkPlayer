@@ -5,6 +5,10 @@ import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.keyframes
 import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.animation.graphics.ExperimentalAnimationGraphicsApi
+import androidx.compose.animation.graphics.res.animatedVectorResource
+import androidx.compose.animation.graphics.res.rememberAnimatedVectorPainter
+import androidx.compose.animation.graphics.vector.AnimatedImageVector
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -23,6 +27,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -33,15 +38,21 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.akundu.kkplayer.R
+import com.akundu.kkplayer.feature.splash.viewModel.SplashViewModel
 
+@OptIn(ExperimentalAnimationGraphicsApi::class)
 @Composable
-fun SplashPage(version: String = "v1.0.0") {
+fun SplashPage(viewModel:SplashViewModel = SplashViewModel(), version: String = "v1.0.0") {
     Surface {
         Image(painter = painterResource(id = R.drawable.background), contentDescription = null, contentScale = ContentScale.FillBounds)
         Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
             Spacer(modifier = Modifier.height(60.dp))
-            Image(painter = painterResource(id = R.drawable.ic_launcher_foreground), contentDescription = "Logo", modifier = Modifier.clip(CircleShape))
+
+            val drawable = AnimatedImageVector.animatedVectorResource(R.drawable.avd_splash_icon)
+            Image(painter = rememberAnimatedVectorPainter(animatedImageVector = drawable, atEnd = viewModel.isAnimationEndLiveData.observeAsState(true).value), contentDescription = "Logo", modifier = Modifier.clip(CircleShape))
+            // Image(painter = painterResource(id = R.drawable.ic_launcher_foreground), contentDescription = "Logo", modifier = Modifier.clip(CircleShape))
             Spacer(modifier = Modifier.height(15.dp))
             Text(text = "Powered by @k music industries", color = Color.Gray)
             Spacer(modifier = Modifier.height(21.dp))
@@ -50,7 +61,7 @@ fun SplashPage(version: String = "v1.0.0") {
             Text(text = version, color = Color.DarkGray)
 
             Spacer(modifier = Modifier.weight(1F))
-            Text(text = "©2024 @k music industries. All rights reserved.", color = Color.DarkGray, modifier = Modifier.padding(0.dp,0.dp,0.dp,20.dp))
+            Text(text = "©2024 @k music industries. All rights reserved.", color = Color.DarkGray, modifier = Modifier.padding(0.dp, 0.dp, 0.dp, 20.dp), fontSize = 12.sp)
         }
     }
 }
@@ -114,7 +125,6 @@ fun DotsPulsing() {
         Dot(scale3)
     }
 }
-
 
 
 @Composable

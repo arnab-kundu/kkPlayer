@@ -7,7 +7,7 @@ import android.os.Looper
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
 import com.akundu.kkplayer.BuildConfig
-import com.akundu.kkplayer.MainActivity
+import com.akundu.kkplayer.feature.main.view.MainActivity
 import com.akundu.kkplayer.feature.splash.viewModel.SplashViewModel
 import com.akundu.kkplayer.ui.theme.KkPlayerTheme
 
@@ -30,7 +30,7 @@ class Splash2Activity : AppCompatActivity() {
         Handler(Looper.getMainLooper()).postDelayed({
             startActivity(Intent(this@Splash2Activity, MainActivity::class.java))
             finish()
-        }, 20000)
+        }, 5000)
 
     }
 }

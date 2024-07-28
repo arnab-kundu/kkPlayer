@@ -6,7 +6,7 @@ import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import com.akundu.kkplayer.AppsNotificationManager
 import com.akundu.kkplayer.Logg
-import com.akundu.kkplayer.MainActivity
+import com.akundu.kkplayer.feature.main.view.MainActivity
 import com.akundu.kkplayer.R
 import com.akundu.kkplayer.database.SongDatabase
 import com.akundu.kkplayer.media.FolderFiles

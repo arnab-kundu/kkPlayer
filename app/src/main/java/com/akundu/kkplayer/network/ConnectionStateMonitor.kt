@@ -9,7 +9,7 @@ import android.net.NetworkRequest
 import android.net.NetworkRequest.Builder
 import android.os.Handler
 import android.util.Log
-import com.akundu.kkplayer.MainActivity
+import com.akundu.kkplayer.feature.main.view.MainActivity
 
 
 @Suppress("JoinDeclarationAndAssignment")

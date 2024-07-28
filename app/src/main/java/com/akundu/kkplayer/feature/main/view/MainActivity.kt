@@ -1,4 +1,4 @@
-package com.akundu.kkplayer
+package com.akundu.kkplayer.feature.main.view
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -55,6 +55,10 @@ import androidx.work.Constraints
 import androidx.work.Data
 import androidx.work.OneTimeWorkRequest.Builder
 import androidx.work.WorkManager
+import com.akundu.kkplayer.AppsNotificationManager
+import com.akundu.kkplayer.KkPlayerApp
+import com.akundu.kkplayer.Logg
+import com.akundu.kkplayer.R
 import com.akundu.kkplayer.data.Song
 import com.akundu.kkplayer.data.SongDataProvider.kkSongList
 import com.akundu.kkplayer.database.SongDatabase
@@ -62,6 +66,7 @@ import com.akundu.kkplayer.database.dao.SongDao
 import com.akundu.kkplayer.database.entity.SongEntity
 import com.akundu.kkplayer.download.AndroidDownloader
 import com.akundu.kkplayer.feature.main.viewModel.MainViewModel
+import com.akundu.kkplayer.feature.player.view.PlayerActivity
 import com.akundu.kkplayer.permission.RuntimePermission.askNotificationPermission
 import com.akundu.kkplayer.presentation.viewModelFactory
 import com.akundu.kkplayer.service.BackgroundSoundService
@@ -344,8 +349,8 @@ class MainActivity : ComponentActivity() {
                 context.startService(svc)
 
                 val intent = Intent(context, PlayerActivity::class.java)
-                intent.putExtra("index", index)
-                // context.startActivity(intent)
+                intent.putExtra("index", index-1)
+                context.startActivity(intent)
 
             } else {
                 Logg.e("File exist: false")

@@ -23,7 +23,7 @@ android {
         versionCode project.ext.version.major * 100 + project.ext.version.minor * 10 + project.ext.version.build
         versionName "${project.ext.version.major}.${project.ext.version.minor}.${project.ext.version.build}"
 
-        // setProperty('archivesBaseName', "$rootProject.name-v$versionName")
+        setProperty('archivesBaseName', "$rootProject.name-v$versionName")
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {

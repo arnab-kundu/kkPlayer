@@ -43,6 +43,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -69,7 +70,6 @@ import com.akundu.kkplayer.storage.Constants.INTERNAL_MEDIA_PATH
 import com.akundu.kkplayer.ui.theme.AlleanaFontFamily
 import com.akundu.kkplayer.ui.theme.Blue
 import com.akundu.kkplayer.ui.theme.KkPlayerTheme
-import com.akundu.kkplayer.ui.theme.NeonFontFamily
 import com.akundu.kkplayer.work.DownloadWork
 import es.dmoral.toasty.Toasty
 import wseemann.media.FFmpegMediaMetadataRetriever
@@ -143,7 +143,7 @@ class MainActivity : ComponentActivity() {
     }
 
     fun internetAvailable(context: Context) {
-        Toasty.success(context, "Online!", Toast.LENGTH_SHORT).show()
+        // Toasty.success(context, "Online!", Toast.LENGTH_SHORT).show()
     }
 
     fun noInternet(context: Context) {
@@ -177,7 +177,7 @@ class MainActivity : ComponentActivity() {
                 Column(modifier = Modifier.weight(1f)) {
                     Text(
                         text = song.title, style = MaterialTheme.typography.bodySmall, color = Color.Red,
-                        fontFamily = NeonFontFamily, fontSize = 14.sp,
+                        fontFamily = FontFamily.Cursive, fontSize = 14.sp,
                         fontWeight = FontWeight.Bold
                     )
                     Row {
@@ -237,7 +237,7 @@ class MainActivity : ComponentActivity() {
 
 
     @Composable
-    fun SongItem(song: SongEntity) {
+    fun SongItem(song: SongEntity = SongEntity(id = 1L, title = "", artist = "", fileName = "", url = "", isDownloaded = true, movie = "")) {
         val context = LocalContext.current
         Box(
             modifier = Modifier
@@ -263,7 +263,7 @@ class MainActivity : ComponentActivity() {
                 Column(modifier = Modifier.weight(1f)) {
                     Text(
                         text = song.title, style = MaterialTheme.typography.bodyLarge, color = Color.Red,
-                        fontFamily = NeonFontFamily, fontSize = 14.sp,
+                        fontFamily = FontFamily.Cursive, fontSize = 14.sp,
                         fontWeight = FontWeight.Bold
                     )
                     Row {

@@ -5,6 +5,7 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.material3.Surface
@@ -16,6 +17,7 @@ import androidx.core.graphics.drawable.toBitmap
 import com.akundu.kkplayer.R
 import com.akundu.kkplayer.data.SongDataProvider
 import com.akundu.kkplayer.feature.player.ui.PlayerPage
+import com.akundu.kkplayer.feature.player.viewModel.PlayerViewModel
 import com.akundu.kkplayer.ui.theme.KkPlayerTheme
 import wseemann.media.FFmpegMediaMetadataRetriever
 import java.io.File
@@ -25,10 +27,12 @@ private const val TAG = "PlayerActivity"
 class PlayerActivity : ComponentActivity() {
 
     private var songIndex = 0
+    private lateinit var viewModel: PlayerViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        viewModel = PlayerViewModel()
         val bundle = intent.extras
         songIndex = bundle?.getInt("index") ?: 0
 
@@ -38,8 +42,21 @@ class PlayerActivity : ComponentActivity() {
                 Surface(color = Color.Gray) {
                     val song = SongDataProvider.kkSongList[songIndex]
                     PlayerPage(
+                        viewModel = viewModel,
                         song = song,
-                        bitmap = mediaMetaDataRetriever(fileName = song.fileName, movie = song.movie, context = this)
+                        bitmap = mediaMetaDataRetriever(fileName = song.fileName, movie = song.movie, context = this),
+                        playClick = {
+                            viewModel.playPauseToggle()
+                        },
+                        pauseClick = {
+                            viewModel.playPauseToggle()
+                        },
+                        nextClick = {
+                            Log.i(TAG, "nextClick: ")
+                        },
+                        previousClick = {
+                            Log.i(TAG, "previousClick: ")
+                        },
                     )
                 }
             }

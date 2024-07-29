@@ -4,9 +4,8 @@ import android.content.Context
 import android.graphics.BitmapFactory
 import android.media.MediaPlayer
 import android.net.Uri
-import android.util.Log
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -14,20 +13,16 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.Slider
 import androidx.compose.material3.SliderDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asImageBitmap
@@ -40,6 +35,7 @@ import androidx.compose.ui.unit.sp
 import com.akundu.kkplayer.R
 import com.akundu.kkplayer.data.Song
 import com.akundu.kkplayer.data.SongDataProvider
+import com.akundu.kkplayer.feature.player.viewModel.PlayerViewModel
 import com.akundu.kkplayer.storage.Constants
 import java.io.File
 
@@ -48,11 +44,15 @@ var playProgress: Float = 50.0F
 @Preview
 @Composable
 fun PlayerPagePreview(song: Song = SongDataProvider.kkSongList[8]) {
-    PlayerPage(song = song)
+    PlayerPage(song = song, playClick = {}, pauseClick = {}, nextClick = {}, previousClick = {})
 }
 
 @Composable
-fun PlayerPage(song: Song, bitmap: ImageBitmap = BitmapFactory.decodeResource(LocalContext.current.resources, R.drawable.gangster).asImageBitmap()) {
+fun PlayerPage(
+    viewModel: PlayerViewModel = PlayerViewModel(),
+    song: Song, bitmap: ImageBitmap = BitmapFactory.decodeResource(LocalContext.current.resources, R.drawable.gangster).asImageBitmap(),
+    playClick: () -> Unit, pauseClick: () -> Unit, nextClick: () -> Unit, previousClick: () -> Unit
+) {
     Image(painter = painterResource(id = R.drawable.background), contentDescription = null, contentScale = ContentScale.FillBounds)
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
         AlbumArt(
@@ -76,12 +76,17 @@ fun PlayerPage(song: Song, bitmap: ImageBitmap = BitmapFactory.decodeResource(Lo
             modifier = Modifier.padding(horizontal = 16.dp)
         )
         Spacer(modifier = Modifier.height(16.dp))
-        PlayerButtons()
+        MediaControllerButtons(
+            viewModel = viewModel,
+            playClick = playClick,
+            pauseClick = pauseClick,
+            nextClick = nextClick,
+            previousClick = previousClick
+        )
         Spacer(modifier = Modifier.height(16.dp))
     }
 }
 
-@Preview
 @Composable
 fun AlbumArt(bitmap: ImageBitmap = BitmapFactory.decodeResource(LocalContext.current.resources, R.drawable.gangster).asImageBitmap(), songTitle: String = "Tu hi meri sab hay") {
     Column(modifier = Modifier.padding(24.dp), horizontalAlignment = Alignment.CenterHorizontally) {
@@ -99,102 +104,36 @@ fun AlbumArt(bitmap: ImageBitmap = BitmapFactory.decodeResource(LocalContext.cur
     }
 }
 
-
-@Preview
 @Composable
-fun PlayerButtons(song: Song = SongDataProvider.kkSongList[1]) {
-
-    val context = LocalContext.current
-    val index = remember { mutableStateOf(0) }
-    val isPlaying = remember { mutableStateOf(false) }
-
-    val length = remember { mutableStateOf(0) }
-
-    Row(
-        modifier = Modifier
-            .size(width = 200.dp, height = 96.dp)
-            .fillMaxWidth(1F),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-
-        IconButton(
-            onClick = {
-                Log.d("TAG", "playerController: Previous")
-
-                if (index.value > 0) index.value--
-                else index.value = SongDataProvider.kkSongList.size - 1
-
-                playSong(context = context, SongDataProvider.kkSongList[index.value])
-            }
-        ) {
-            Icon(
-                painterResource(id = android.R.drawable.ic_media_previous),
-                contentDescription = "Previous",
-                modifier = Modifier
-                    .clip(CircleShape)
-                ,
-                tint = Color.White,
-            )
-        }
-        Spacer(modifier = Modifier.weight(1F))
-
-
-        if (isPlaying.value) {
-            IconButton(
-                onClick = {
-                    Log.d("TAG", "playerController: Pause")
-                    isPlaying.value = false
-                }
-            ) {
-                Icon(
-                    painterResource(id = android.R.drawable.ic_media_pause),
-                    contentDescription = "Pause",
-                    modifier = Modifier
-                        .clip(CircleShape)
-                    ,
-                    tint = Color.White
-                )
-            }
+fun MediaControllerButtons(
+    viewModel: PlayerViewModel,
+    playClick: () -> Unit,
+    pauseClick: () -> Unit,
+    nextClick: () -> Unit,
+    previousClick: () -> Unit
+) {
+    Row {
+        MediaButton(drawableResId = android.R.drawable.ic_media_previous, previousClick)
+        Spacer(modifier = Modifier.width(16.dp))
+        if (viewModel.isPlaying.observeAsState(true).value) {
+            MediaButton(drawableResId = R.drawable.ic_play_circle, playClick)
         } else {
-
-            IconButton(
-                onClick = {
-                    Log.d("TAG", "playerController: Play")
-                    isPlaying.value = true
-                }
-            ) {
-                Icon(
-                    painterResource(id = R.drawable.ic_play_circle),
-                    contentDescription = "Play",
-                    modifier = Modifier
-                        .size(48.dp)
-                        .clip(CircleShape)
-                        .shadow(elevation = 5.dp, shape = CircleShape, ambientColor = Color.White, spotColor = Color.White),
-                    tint = Color.White
-                )
-            }
+            MediaButton(drawableResId = R.drawable.ic_pause_circle, pauseClick)
         }
-
-Spacer(modifier = Modifier.weight(1F))
-        IconButton(
-            onClick = {
-                Log.d("TAG", "playerController: Next")
-
-                if (index.value < SongDataProvider.kkSongList.size - 1) index.value++
-                else index.value = 0
-                playSong(context = context, SongDataProvider.kkSongList[index.value])
-            }
-        ) {
-            Icon(
-                painterResource(id = android.R.drawable.ic_media_next),
-                contentDescription = "Next",
-                modifier = Modifier
-                    .size(48.dp)
-                    .clip(CircleShape),
-                tint = Color.White
-            )
-        }
+        Spacer(modifier = Modifier.width(16.dp))
+        MediaButton(drawableResId = android.R.drawable.ic_media_next, nextClick)
     }
+}
+
+@Composable
+fun MediaButton(drawableResId: Int = R.drawable.ic_play_circle, buttonClick: () -> Unit) {
+    Image(
+        painter = painterResource(id = drawableResId),
+        contentDescription = null,
+        modifier = Modifier
+            .size(64.dp)
+            .clickable { buttonClick.invoke() }
+    )
 }
 
 private fun playSong(context: Context, song: Song) {

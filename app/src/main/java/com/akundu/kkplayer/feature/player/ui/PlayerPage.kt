@@ -61,14 +61,14 @@ fun PlayerPage(
         )
         Spacer(modifier = Modifier.weight(1F))
         Slider(
-            value = playProgress,
+            value = viewModel.progressPercent.observeAsState(initial = 0F).value,
             onValueChange = { playProgress = it },
             valueRange = 0f..100f,
             onValueChangeFinished = {
                 // launch some business logic update with the state you hold
                 // viewModel.updateSelectedSliderValue(sliderPosition)
             },
-            steps = 5,
+            steps = 100,
             colors = SliderDefaults.colors(
                 thumbColor = Color.DarkGray,
                 activeTrackColor = Color.Gray

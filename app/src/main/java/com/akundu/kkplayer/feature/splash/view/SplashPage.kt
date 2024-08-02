@@ -11,6 +11,7 @@ import androidx.compose.animation.graphics.res.rememberAnimatedVectorPainter
 import androidx.compose.animation.graphics.vector.AnimatedImageVector
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -22,12 +23,25 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.BottomSheetScaffold
+import androidx.compose.material.BottomSheetState
+import androidx.compose.material.BottomSheetValue.Expanded
+import androidx.compose.material.Button
+import androidx.compose.material.ButtonDefaults
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.rememberBottomSheetScaffoldState
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -36,6 +50,9 @@ import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -44,14 +61,18 @@ import com.akundu.kkplayer.feature.splash.viewModel.SplashViewModel
 
 @OptIn(ExperimentalAnimationGraphicsApi::class)
 @Composable
-fun SplashPage(viewModel:SplashViewModel = SplashViewModel(), version: String = "v1.0.0") {
+fun SplashPage(viewModel: SplashViewModel = SplashViewModel(), version: String = "v1.0.0") {
     Surface {
         Image(painter = painterResource(id = R.drawable.background), contentDescription = null, contentScale = ContentScale.FillBounds)
         Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
             Spacer(modifier = Modifier.height(60.dp))
 
             val drawable = AnimatedImageVector.animatedVectorResource(R.drawable.avd_splash_icon)
-            Image(painter = rememberAnimatedVectorPainter(animatedImageVector = drawable, atEnd = viewModel.isAnimationEndLiveData.observeAsState(true).value), contentDescription = "Logo", modifier = Modifier.clip(CircleShape))
+            Image(
+                painter = rememberAnimatedVectorPainter(animatedImageVector = drawable, atEnd = viewModel.isAnimationEndLiveData.observeAsState(true).value),
+                contentDescription = "Logo",
+                modifier = Modifier.clip(CircleShape)
+            )
             // Image(painter = painterResource(id = R.drawable.ic_launcher_foreground), contentDescription = "Logo", modifier = Modifier.clip(CircleShape))
             Spacer(modifier = Modifier.height(15.dp))
             Text(text = "Powered by @k music industries", color = Color.Gray)
@@ -63,6 +84,7 @@ fun SplashPage(viewModel:SplashViewModel = SplashViewModel(), version: String = 
             Spacer(modifier = Modifier.weight(1F))
             Text(text = "©2024 @k music industries. All rights reserved.", color = Color.DarkGray, modifier = Modifier.padding(0.dp, 0.dp, 0.dp, 20.dp), fontSize = 12.sp)
         }
+        LoginLayout()
     }
 }
 
@@ -72,6 +94,98 @@ fun SplashPagePreview() {
     SplashPage()
 }
 
+@Preview
+@Composable
+fun LoginLayout() {
+
+    val email = remember { mutableStateOf(TextFieldValue()) }
+    val password = remember { mutableStateOf(TextFieldValue()) }
+    val biometric = remember { mutableStateOf(false) }
+    val isVisible = remember { mutableStateOf(true) }
+
+    if (isVisible.value) {
+        Column {
+            Spacer(modifier = Modifier.weight(1F))
+            Column(
+                modifier = Modifier
+                    .background(color = Color.White)
+                    .padding(16.dp)
+            ) {
+                Spacer(modifier = Modifier.height(9.dp))
+                Text(text = "PLEASE LOGIN:", color = Color.Black)
+                Spacer(modifier = Modifier.height(16.dp))
+
+                TextField(
+                    label = { Text(text = "Email") },
+                    value = email.value,
+                    onValueChange = { email.value = it },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(color = Color.White),
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password, imeAction = ImeAction.Next),
+                )
+                Spacer(modifier = Modifier.height(16.dp))
+
+                TextField(
+                    label = { Text(text = "Password") },
+                    value = password.value,
+                    onValueChange = { password.value = it },
+                    modifier = Modifier.fillMaxWidth(),
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password, imeAction = ImeAction.Done),
+                )
+                Spacer(modifier = Modifier.height(16.dp))
+
+
+                // Biometric
+                Row(modifier = Modifier.height(48.dp), verticalAlignment = Alignment.CenterVertically) {
+                    Image(painter = painterResource(id = android.R.drawable.ic_menu_info_details), contentDescription = null)
+                    Text(text = "Set up Biometric")
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Image(painter = painterResource(id = android.R.drawable.ic_dialog_info), contentDescription = null, modifier = Modifier.clickable { /*TODO*/ })
+                    Spacer(modifier = Modifier.weight(1F))
+                    Switch(checked = biometric.value, onCheckedChange = { biometric.value = it })
+                }
+                Spacer(modifier = Modifier.height(16.dp))
+
+
+                Button(
+                    onClick = { isVisible.value = false },
+                    modifier = Modifier
+                        .height(48.dp)
+                        .width(180.dp)
+                        .align(Alignment.CenterHorizontally),
+                    colors = ButtonDefaults.buttonColors(backgroundColor = Color.Black)
+                ) {
+                    Text(text = "LOGIN", modifier = Modifier, color = Color.White)
+                }
+                Spacer(modifier = Modifier.height(16.dp))
+
+                Text(text = "Forgot password?", color = Color(0xFF999999), modifier = Modifier
+                    .clickable { /*TODO*/ }
+                    .align(Alignment.CenterHorizontally))
+                Spacer(modifier = Modifier.height(8.dp))
+
+            }
+        }
+    }
+}
+
+@ExperimentalMaterialApi
+@Composable
+private fun BottomSheet() {
+    val scaffoldState = rememberBottomSheetScaffoldState(bottomSheetState = BottomSheetState(Expanded))
+    val scope = rememberCoroutineScope()
+    BottomSheetScaffold(
+        modifier = Modifier.height(380.dp),
+        scaffoldState = scaffoldState,
+        sheetContent = {
+            // Sheet content
+            LoginLayout()
+        }
+    ) {
+        // Screen content
+    }
+}
 
 val dotSize = 6.dp // made it bigger for demo
 val delayUnit = 300 // you can change delay to change animation speed

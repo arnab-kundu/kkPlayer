@@ -23,14 +23,13 @@ class Splash2Activity : AppCompatActivity() {
         val version = BuildConfig.VERSION_NAME
         setContent {
             KkPlayerTheme {
-                SplashPage(viewModel = viewModel, version = version)
+                SplashPage(viewModel = viewModel, version = version, loginButtonClick = {
+                    Handler(Looper.getMainLooper()).postDelayed({
+                        startActivity(Intent(this@Splash2Activity, MainActivity::class.java))
+                        finish()
+                    }, 1500)
+                })
             }
         }
-
-        Handler(Looper.getMainLooper()).postDelayed({
-            startActivity(Intent(this@Splash2Activity, MainActivity::class.java))
-            finish()
-        }, 5000)
-
     }
 }

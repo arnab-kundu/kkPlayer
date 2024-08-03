@@ -24,6 +24,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.text.selection.TextSelectionColors
 import androidx.compose.material.BottomSheetScaffold
 import androidx.compose.material.BottomSheetState
 import androidx.compose.material.BottomSheetValue.Expanded
@@ -34,8 +35,10 @@ import androidx.compose.material.rememberBottomSheetScaffoldState
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Switch
+import androidx.compose.material3.SwitchColors
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldColors
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
@@ -48,10 +51,12 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -61,7 +66,7 @@ import com.akundu.kkplayer.feature.splash.viewModel.SplashViewModel
 
 @OptIn(ExperimentalAnimationGraphicsApi::class)
 @Composable
-fun SplashPage(viewModel: SplashViewModel = SplashViewModel(), version: String = "v1.0.0") {
+fun SplashPage(viewModel: SplashViewModel = SplashViewModel(), version: String = "v1.0.0", loginButtonClick: () -> Unit = {}) {
     Surface {
         Image(painter = painterResource(id = R.drawable.background), contentDescription = null, contentScale = ContentScale.FillBounds)
         Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
@@ -84,7 +89,7 @@ fun SplashPage(viewModel: SplashViewModel = SplashViewModel(), version: String =
             Spacer(modifier = Modifier.weight(1F))
             Text(text = "©2024 @k music industries. All rights reserved.", color = Color.DarkGray, modifier = Modifier.padding(0.dp, 0.dp, 0.dp, 20.dp), fontSize = 12.sp)
         }
-        LoginLayout()
+        LoginLayout(loginButtonClick = loginButtonClick)
     }
 }
 
@@ -96,7 +101,7 @@ fun SplashPagePreview() {
 
 @Preview
 @Composable
-fun LoginLayout() {
+fun LoginLayout(loginButtonClick: () -> Unit = {}) {
 
     val email = remember { mutableStateOf(TextFieldValue()) }
     val password = remember { mutableStateOf(TextFieldValue()) }
@@ -111,60 +116,189 @@ fun LoginLayout() {
                     .background(color = Color.White)
                     .padding(16.dp)
             ) {
-                Spacer(modifier = Modifier.height(9.dp))
+                Spacer(modifier = Modifier.height(0.dp))
                 Text(text = "PLEASE LOGIN:", color = Color.Black)
                 Spacer(modifier = Modifier.height(16.dp))
 
                 TextField(
-                    label = { Text(text = "Email") },
+                    label = { Text(text = "Email Address", color = Color(0xFF999999)) },
                     value = email.value,
                     onValueChange = { email.value = it },
                     modifier = Modifier
                         .fillMaxWidth()
                         .background(color = Color.White),
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password, imeAction = ImeAction.Next),
+                    singleLine = true,
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email, imeAction = ImeAction.Next),
+                    colors = TextFieldColors(
+                        focusedTextColor = Color.Black,
+                        unfocusedTextColor = Color.Black,
+                        disabledTextColor = Color.Black,
+                        errorTextColor = Color.Black,
+                        focusedContainerColor = Color.White,
+                        unfocusedContainerColor = Color.White,
+                        disabledContainerColor = Color.Black,
+                        errorContainerColor = Color.Black,
+                        cursorColor = Color.Black,
+                        errorCursorColor = Color.Black,
+                        textSelectionColors = TextSelectionColors(handleColor = Color.Black, backgroundColor = Color.White),
+                        focusedIndicatorColor = Color.Black,
+                        unfocusedIndicatorColor = Color.Black,
+                        disabledIndicatorColor = Color.Black,
+                        errorIndicatorColor = Color.Black,
+                        focusedLeadingIconColor = Color.Black,
+                        unfocusedLeadingIconColor = Color.Black,
+                        disabledLeadingIconColor = Color.Black,
+                        errorLeadingIconColor = Color.Black,
+                        focusedTrailingIconColor = Color.Black,
+                        unfocusedTrailingIconColor = Color.Black,
+                        disabledTrailingIconColor = Color.Black,
+                        errorTrailingIconColor = Color.Black,
+                        focusedLabelColor = Color.Black,
+                        unfocusedLabelColor = Color.Black,
+                        disabledLabelColor = Color.Black,
+                        errorLabelColor = Color.Black,
+                        focusedPlaceholderColor = Color.Black,
+                        unfocusedPlaceholderColor = Color.Black,
+                        disabledPlaceholderColor = Color.Black,
+                        errorPlaceholderColor = Color.Black,
+                        focusedSupportingTextColor = Color.Black,
+                        unfocusedSupportingTextColor = Color.Black,
+                        disabledSupportingTextColor = Color.Black,
+                        errorSupportingTextColor = Color.Black,
+                        focusedPrefixColor = Color.Black,
+                        unfocusedPrefixColor = Color.Black,
+                        disabledPrefixColor = Color.Black,
+                        errorPrefixColor = Color.Black,
+                        focusedSuffixColor = Color.Black,
+                        unfocusedSuffixColor = Color.Black,
+                        disabledSuffixColor = Color.Black,
+                        errorSuffixColor = Color.Black,
+                    )
                 )
                 Spacer(modifier = Modifier.height(16.dp))
 
                 TextField(
-                    label = { Text(text = "Password") },
+                    label = { Text(text = "Password", color = Color(0xFF999999)) },
                     value = password.value,
                     onValueChange = { password.value = it },
                     modifier = Modifier.fillMaxWidth(),
+                    singleLine = true,
+                    visualTransformation = PasswordVisualTransformation(),
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password, imeAction = ImeAction.Done),
+                    colors = TextFieldColors(
+                        focusedTextColor = Color.Black,
+                        unfocusedTextColor = Color.Black,
+                        disabledTextColor = Color.Black,
+                        errorTextColor = Color.Black,
+                        focusedContainerColor = Color.White,
+                        unfocusedContainerColor = Color.White,
+                        disabledContainerColor = Color.Black,
+                        errorContainerColor = Color.Black,
+                        cursorColor = Color.Black,
+                        errorCursorColor = Color.Black,
+                        textSelectionColors = TextSelectionColors(handleColor = Color.Black, backgroundColor = Color.White),
+                        focusedIndicatorColor = Color.Black,
+                        unfocusedIndicatorColor = Color.Black,
+                        disabledIndicatorColor = Color.Black,
+                        errorIndicatorColor = Color.Black,
+                        focusedLeadingIconColor = Color.Black,
+                        unfocusedLeadingIconColor = Color.Black,
+                        disabledLeadingIconColor = Color.Black,
+                        errorLeadingIconColor = Color.Black,
+                        focusedTrailingIconColor = Color.Black,
+                        unfocusedTrailingIconColor = Color.Black,
+                        disabledTrailingIconColor = Color.Black,
+                        errorTrailingIconColor = Color.Black,
+                        focusedLabelColor = Color.Black,
+                        unfocusedLabelColor = Color.Black,
+                        disabledLabelColor = Color.Black,
+                        errorLabelColor = Color.Black,
+                        focusedPlaceholderColor = Color.Black,
+                        unfocusedPlaceholderColor = Color.Black,
+                        disabledPlaceholderColor = Color.Black,
+                        errorPlaceholderColor = Color.Black,
+                        focusedSupportingTextColor = Color.Black,
+                        unfocusedSupportingTextColor = Color.Black,
+                        disabledSupportingTextColor = Color.Black,
+                        errorSupportingTextColor = Color.Black,
+                        focusedPrefixColor = Color.Black,
+                        unfocusedPrefixColor = Color.Black,
+                        disabledPrefixColor = Color.Black,
+                        errorPrefixColor = Color.Black,
+                        focusedSuffixColor = Color.Black,
+                        unfocusedSuffixColor = Color.Black,
+                        disabledSuffixColor = Color.Black,
+                        errorSuffixColor = Color.Black,
+                    )
                 )
-                Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(26.dp))
 
 
                 // Biometric
                 Row(modifier = Modifier.height(48.dp), verticalAlignment = Alignment.CenterVertically) {
-                    Image(painter = painterResource(id = android.R.drawable.ic_menu_info_details), contentDescription = null)
-                    Text(text = "Set up Biometric")
+                    Image(painter = painterResource(id = R.drawable.ic_fingerprint), contentDescription = null)
                     Spacer(modifier = Modifier.width(8.dp))
-                    Image(painter = painterResource(id = android.R.drawable.ic_dialog_info), contentDescription = null, modifier = Modifier.clickable { /*TODO*/ })
+                    Text(text = "Set up Biometric", color = Color(0xFF2C2C2C))
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Image(
+                        painter = painterResource(id = android.R.drawable.ic_dialog_info),
+                        contentDescription = null,
+                        modifier = Modifier
+                            .size(16.dp)
+                            .clickable { /*TODO*/ },
+                        colorFilter = ColorFilter.tint(
+                            Color(
+                                0xFF2196F3
+                            )
+                        )
+                    )
                     Spacer(modifier = Modifier.weight(1F))
-                    Switch(checked = biometric.value, onCheckedChange = { biometric.value = it })
+                    Switch(checked = biometric.value,
+                        colors = SwitchColors(
+                            checkedThumbColor = Color.DarkGray,
+                            checkedTrackColor = Color.White,
+                            checkedBorderColor = Color.Gray,
+                            checkedIconColor = Color.Black,
+                            uncheckedThumbColor = Color.Gray,
+                            uncheckedTrackColor = Color.Black,
+                            uncheckedBorderColor = Color.Transparent,
+                            uncheckedIconColor = Color.Black,
+                            disabledCheckedThumbColor = Color.Black,
+                            disabledCheckedTrackColor = Color.Black,
+                            disabledCheckedBorderColor = Color.Black,
+                            disabledCheckedIconColor = Color.Black,
+                            disabledUncheckedThumbColor = Color.Black,
+                            disabledUncheckedTrackColor = Color.Black,
+                            disabledUncheckedBorderColor = Color.Black,
+                            disabledUncheckedIconColor = Color.Black
+                        ),
+                        onCheckedChange = { biometric.value = it })
                 }
                 Spacer(modifier = Modifier.height(16.dp))
 
 
                 Button(
-                    onClick = { isVisible.value = false },
+                    onClick = {
+                        isVisible.value = false
+                        loginButtonClick.invoke()
+                    },
                     modifier = Modifier
                         .height(48.dp)
                         .width(180.dp)
                         .align(Alignment.CenterHorizontally),
-                    colors = ButtonDefaults.buttonColors(backgroundColor = Color.Black)
+                    colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFF2C2C2C))
                 ) {
-                    Text(text = "LOGIN", modifier = Modifier, color = Color.White)
+                    Text(text = "LOGIN", modifier = Modifier, color = Color.White, fontSize = 12.sp)
                 }
-                Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(12.dp))
 
-                Text(text = "Forgot password?", color = Color(0xFF999999), modifier = Modifier
-                    .clickable { /*TODO*/ }
-                    .align(Alignment.CenterHorizontally))
-                Spacer(modifier = Modifier.height(8.dp))
-
+                Text(
+                    text = "Forgot password?",
+                    color = Color(0xFF999999),
+                    modifier = Modifier
+                        .clickable { /*TODO*/ }
+                        .align(Alignment.CenterHorizontally),
+                    fontSize = 13.sp)
             }
         }
     }

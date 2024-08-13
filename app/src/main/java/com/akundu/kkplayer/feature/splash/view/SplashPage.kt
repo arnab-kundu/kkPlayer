@@ -1,5 +1,6 @@
 package com.akundu.kkplayer.feature.splash.view
 
+import android.util.Log
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.infiniteRepeatable
@@ -41,7 +42,6 @@ import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldColors
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -62,11 +62,18 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.akundu.kkplayer.R
+import com.akundu.kkplayer.feature.splash.model.SplashUiState
 import com.akundu.kkplayer.feature.splash.viewModel.SplashViewModel
 
 @OptIn(ExperimentalAnimationGraphicsApi::class)
 @Composable
-fun SplashPage(viewModel: SplashViewModel = SplashViewModel(), version: String = "v1.0.0", loginButtonClick: () -> Unit = {}) {
+fun SplashPage(
+    viewModel: SplashViewModel = SplashViewModel(),
+    version: String = "v1.0.0",
+    isAnimationEndFlow: Boolean = false,
+    uiState: SplashUiState = SplashUiState(),
+    loginButtonClick: () -> Unit = {}
+) {
     Surface {
         Image(painter = painterResource(id = R.drawable.background), contentDescription = null, contentScale = ContentScale.FillBounds)
         Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
@@ -74,7 +81,7 @@ fun SplashPage(viewModel: SplashViewModel = SplashViewModel(), version: String =
 
             val drawable = AnimatedImageVector.animatedVectorResource(R.drawable.avd_splash_icon)
             Image(
-                painter = rememberAnimatedVectorPainter(animatedImageVector = drawable, atEnd = viewModel.isAnimationEndLiveData.observeAsState(true).value),
+                painter = rememberAnimatedVectorPainter(animatedImageVector = drawable, atEnd = isAnimationEndFlow),
                 contentDescription = "Logo",
                 modifier = Modifier.clip(CircleShape)
             )
@@ -82,14 +89,18 @@ fun SplashPage(viewModel: SplashViewModel = SplashViewModel(), version: String =
             Spacer(modifier = Modifier.height(15.dp))
             Text(text = "Powered by @k music industries", color = Color.Gray)
             Spacer(modifier = Modifier.height(21.dp))
-            DotsFlashing()
+            if (uiState.isLoadingDotsVisible) {
+                DotsFlashing()
+            } else {
+                Spacer(modifier = Modifier.height(8.dp))
+            }
             Spacer(modifier = Modifier.height(15.dp))
             Text(text = version, color = Color.DarkGray)
 
             Spacer(modifier = Modifier.weight(1F))
             Text(text = "©2024 @k music industries. All rights reserved.", color = Color.DarkGray, modifier = Modifier.padding(0.dp, 0.dp, 0.dp, 20.dp), fontSize = 12.sp)
         }
-        LoginLayout(loginButtonClick = loginButtonClick)
+        LoginLayout(uiState = uiState, loginButtonClick = loginButtonClick)
     }
 }
 
@@ -101,14 +112,13 @@ fun SplashPagePreview() {
 
 @Preview
 @Composable
-fun LoginLayout(loginButtonClick: () -> Unit = {}) {
+fun LoginLayout(uiState: SplashUiState = SplashUiState(), loginButtonClick: () -> Unit = {}) {
 
     val email = remember { mutableStateOf(TextFieldValue()) }
     val password = remember { mutableStateOf(TextFieldValue()) }
     val biometric = remember { mutableStateOf(false) }
-    val isVisible = remember { mutableStateOf(true) }
 
-    if (isVisible.value) {
+    if (uiState.isLoginLayoutVisible) {
         Column {
             Spacer(modifier = Modifier.weight(1F))
             Column(
@@ -279,7 +289,7 @@ fun LoginLayout(loginButtonClick: () -> Unit = {}) {
 
                 Button(
                     onClick = {
-                        isVisible.value = false
+                        Log.d("SplashPage", "loginButtonClick: ")
                         loginButtonClick.invoke()
                     },
                     modifier = Modifier

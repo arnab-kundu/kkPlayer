@@ -6,10 +6,12 @@ import android.os.Handler
 import android.os.Looper
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
 import com.akundu.kkplayer.BuildConfig
 import com.akundu.kkplayer.feature.main.view.MainActivity
 import com.akundu.kkplayer.feature.splash.viewModel.SplashViewModel
 import com.akundu.kkplayer.ui.theme.KkPlayerTheme
+import kotlinx.coroutines.launch
 
 class Splash2Activity : AppCompatActivity() {
 
@@ -19,16 +21,24 @@ class Splash2Activity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         viewModel = SplashViewModel()
-        viewModel.reverseAnimation()
+        // viewModel.reverseAnimation()
         val version = BuildConfig.VERSION_NAME
-        setContent {
-            KkPlayerTheme {
-                SplashPage(viewModel = viewModel, version = version, loginButtonClick = {
-                    Handler(Looper.getMainLooper()).postDelayed({
-                        startActivity(Intent(this@Splash2Activity, MainActivity::class.java))
-                        finish()
-                    }, 1500)
-                })
+
+        lifecycleScope.launch {
+            viewModel.uiState.collect { uiState ->
+                setContent {
+                    KkPlayerTheme {
+                        SplashPage(viewModel = viewModel, version = version, isAnimationEndFlow = true, uiState = uiState, loginButtonClick = {
+                            viewModel.loginButtonClickStateChangeEvent()
+
+                            Handler(Looper.getMainLooper()).postDelayed({
+                                startActivity(Intent(this@Splash2Activity, MainActivity::class.java))
+                                finish()
+                            }, 1500)
+                        })
+                    }
+                }
+
             }
         }
     }

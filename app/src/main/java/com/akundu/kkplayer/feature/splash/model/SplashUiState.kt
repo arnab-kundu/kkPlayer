@@ -6,5 +6,7 @@ data class SplashUiState(
     val isLoginLayoutVisible: Boolean = true,
     val isBiometricEnabled: Boolean = false,
     val email: String = "",
-    val password: String = ""
+    val password: String = "",
+    val emailError: Boolean = false,
+    val passwordError: Boolean = false,
 )

@@ -25,7 +25,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.foundation.text.selection.TextSelectionColors
 import androidx.compose.material.BottomSheetScaffold
 import androidx.compose.material.BottomSheetState
 import androidx.compose.material.BottomSheetValue.Expanded
@@ -39,7 +38,6 @@ import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchColors
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
-import androidx.compose.material3.TextFieldColors
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -64,6 +62,7 @@ import androidx.compose.ui.unit.sp
 import com.akundu.kkplayer.R
 import com.akundu.kkplayer.feature.splash.model.SplashUiState
 import com.akundu.kkplayer.feature.splash.viewModel.SplashViewModel
+import com.akundu.kkplayer.ui.theme.AppTextFieldColors
 
 @OptIn(ExperimentalAnimationGraphicsApi::class)
 @Composable
@@ -100,7 +99,7 @@ fun SplashPage(
             Spacer(modifier = Modifier.weight(1F))
             Text(text = "©2024 @k music industries. All rights reserved.", color = Color.DarkGray, modifier = Modifier.padding(0.dp, 0.dp, 0.dp, 20.dp), fontSize = 12.sp)
         }
-        LoginLayout(uiState = uiState, loginButtonClick = loginButtonClick)
+        LoginLayout(viewModel = viewModel, uiState = uiState, loginButtonClick = loginButtonClick)
     }
 }
 
@@ -112,7 +111,7 @@ fun SplashPagePreview() {
 
 @Preview
 @Composable
-fun LoginLayout(uiState: SplashUiState = SplashUiState(), loginButtonClick: () -> Unit = {}) {
+fun LoginLayout(viewModel: SplashViewModel = SplashViewModel(), uiState: SplashUiState = SplashUiState(), loginButtonClick: () -> Unit = {}) {
 
     val email = remember { mutableStateOf(TextFieldValue()) }
     val password = remember { mutableStateOf(TextFieldValue()) }
@@ -132,115 +131,34 @@ fun LoginLayout(uiState: SplashUiState = SplashUiState(), loginButtonClick: () -
 
                 TextField(
                     label = { Text(text = "Email Address", color = Color(0xFF999999)) },
-                    value = email.value,
-                    onValueChange = { email.value = it },
+                    // value = email.value,
+                    value = uiState.email,
+                    // onValueChange = { email.value = it },
+                    onValueChange = { viewModel.typingEmail(it) },
                     modifier = Modifier
                         .fillMaxWidth()
                         .background(color = Color.White),
                     singleLine = true,
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email, imeAction = ImeAction.Next),
-                    colors = TextFieldColors(
-                        focusedTextColor = Color.Black,
-                        unfocusedTextColor = Color.Black,
-                        disabledTextColor = Color.Black,
-                        errorTextColor = Color.Black,
-                        focusedContainerColor = Color.White,
-                        unfocusedContainerColor = Color.White,
-                        disabledContainerColor = Color.Black,
-                        errorContainerColor = Color.Black,
-                        cursorColor = Color.Black,
-                        errorCursorColor = Color.Black,
-                        textSelectionColors = TextSelectionColors(handleColor = Color.Black, backgroundColor = Color.White),
-                        focusedIndicatorColor = Color.Black,
-                        unfocusedIndicatorColor = Color.Black,
-                        disabledIndicatorColor = Color.Black,
-                        errorIndicatorColor = Color.Black,
-                        focusedLeadingIconColor = Color.Black,
-                        unfocusedLeadingIconColor = Color.Black,
-                        disabledLeadingIconColor = Color.Black,
-                        errorLeadingIconColor = Color.Black,
-                        focusedTrailingIconColor = Color.Black,
-                        unfocusedTrailingIconColor = Color.Black,
-                        disabledTrailingIconColor = Color.Black,
-                        errorTrailingIconColor = Color.Black,
-                        focusedLabelColor = Color.Black,
-                        unfocusedLabelColor = Color.Black,
-                        disabledLabelColor = Color.Black,
-                        errorLabelColor = Color.Black,
-                        focusedPlaceholderColor = Color.Black,
-                        unfocusedPlaceholderColor = Color.Black,
-                        disabledPlaceholderColor = Color.Black,
-                        errorPlaceholderColor = Color.Black,
-                        focusedSupportingTextColor = Color.Black,
-                        unfocusedSupportingTextColor = Color.Black,
-                        disabledSupportingTextColor = Color.Black,
-                        errorSupportingTextColor = Color.Black,
-                        focusedPrefixColor = Color.Black,
-                        unfocusedPrefixColor = Color.Black,
-                        disabledPrefixColor = Color.Black,
-                        errorPrefixColor = Color.Black,
-                        focusedSuffixColor = Color.Black,
-                        unfocusedSuffixColor = Color.Black,
-                        disabledSuffixColor = Color.Black,
-                        errorSuffixColor = Color.Black,
-                    )
+                    colors = AppTextFieldColors,
+                    isError = uiState.emailError
                 )
                 Spacer(modifier = Modifier.height(16.dp))
 
                 TextField(
                     label = { Text(text = "Password", color = Color(0xFF999999)) },
-                    value = password.value,
-                    onValueChange = { password.value = it },
+                    // value = password.value,
+                    value = uiState.password,
+                    // onValueChange = { password.value = it },
+                    onValueChange = { viewModel.typingPassword(it) },
                     modifier = Modifier.fillMaxWidth(),
                     singleLine = true,
                     visualTransformation = PasswordVisualTransformation(),
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password, imeAction = ImeAction.Done),
-                    colors = TextFieldColors(
-                        focusedTextColor = Color.Black,
-                        unfocusedTextColor = Color.Black,
-                        disabledTextColor = Color.Black,
-                        errorTextColor = Color.Black,
-                        focusedContainerColor = Color.White,
-                        unfocusedContainerColor = Color.White,
-                        disabledContainerColor = Color.Black,
-                        errorContainerColor = Color.Black,
-                        cursorColor = Color.Black,
-                        errorCursorColor = Color.Black,
-                        textSelectionColors = TextSelectionColors(handleColor = Color.Black, backgroundColor = Color.White),
-                        focusedIndicatorColor = Color.Black,
-                        unfocusedIndicatorColor = Color.Black,
-                        disabledIndicatorColor = Color.Black,
-                        errorIndicatorColor = Color.Black,
-                        focusedLeadingIconColor = Color.Black,
-                        unfocusedLeadingIconColor = Color.Black,
-                        disabledLeadingIconColor = Color.Black,
-                        errorLeadingIconColor = Color.Black,
-                        focusedTrailingIconColor = Color.Black,
-                        unfocusedTrailingIconColor = Color.Black,
-                        disabledTrailingIconColor = Color.Black,
-                        errorTrailingIconColor = Color.Black,
-                        focusedLabelColor = Color.Black,
-                        unfocusedLabelColor = Color.Black,
-                        disabledLabelColor = Color.Black,
-                        errorLabelColor = Color.Black,
-                        focusedPlaceholderColor = Color.Black,
-                        unfocusedPlaceholderColor = Color.Black,
-                        disabledPlaceholderColor = Color.Black,
-                        errorPlaceholderColor = Color.Black,
-                        focusedSupportingTextColor = Color.Black,
-                        unfocusedSupportingTextColor = Color.Black,
-                        disabledSupportingTextColor = Color.Black,
-                        errorSupportingTextColor = Color.Black,
-                        focusedPrefixColor = Color.Black,
-                        unfocusedPrefixColor = Color.Black,
-                        disabledPrefixColor = Color.Black,
-                        errorPrefixColor = Color.Black,
-                        focusedSuffixColor = Color.Black,
-                        unfocusedSuffixColor = Color.Black,
-                        disabledSuffixColor = Color.Black,
-                        errorSuffixColor = Color.Black,
+                    colors = AppTextFieldColors,
+                    isError = uiState.passwordError,
+
                     )
-                )
                 Spacer(modifier = Modifier.height(26.dp))
 
 
@@ -289,7 +207,7 @@ fun LoginLayout(uiState: SplashUiState = SplashUiState(), loginButtonClick: () -
 
                 Button(
                     onClick = {
-                        Log.d("SplashPage", "loginButtonClick: ")
+                        Log.d("SplashPage", "login onClick = { ... } ")
                         loginButtonClick.invoke()
                     },
                     modifier = Modifier

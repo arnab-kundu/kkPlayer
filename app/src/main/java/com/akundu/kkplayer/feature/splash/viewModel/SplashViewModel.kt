@@ -103,7 +103,7 @@ class SplashViewModel : ViewModel() {
         } else {
             Log.w(TAG, "WARNING: Unknown")
         }
-        return false
+        return true // TODO false
     }
 
     fun typingEmail(email: String) {

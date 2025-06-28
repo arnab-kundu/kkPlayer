@@ -30,6 +30,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.akundu.kkplayer.R
@@ -50,7 +51,9 @@ fun PlayerPagePreview(song: Song = SongDataProvider.kkSongList[8]) {
 @Composable
 fun PlayerPage(
     viewModel: PlayerViewModel = PlayerViewModel(),
-    song: Song, bitmap: ImageBitmap = BitmapFactory.decodeResource(LocalContext.current.resources, R.drawable.gangster).asImageBitmap(),
+    song: Song,
+    duration: Int = 0,
+    bitmap: ImageBitmap = BitmapFactory.decodeResource(LocalContext.current.resources, R.drawable.gangster).asImageBitmap(),
     playClick: () -> Unit, pauseClick: () -> Unit, nextClick: () -> Unit, previousClick: () -> Unit
 ) {
     Image(painter = painterResource(id = R.drawable.background), contentDescription = null, contentScale = ContentScale.FillBounds)
@@ -63,14 +66,14 @@ fun PlayerPage(
         Slider(
             value = viewModel.progressPercent.observeAsState(initial = 0F).value,
             onValueChange = { playProgress = it },
-            valueRange = 0f..100f,
+            valueRange = 0f..duration.toFloat(),
             onValueChangeFinished = {
                 // launch some business logic update with the state you hold
                 // viewModel.updateSelectedSliderValue(sliderPosition)
             },
-            steps = 100,
+            steps = duration.toInt(),
             colors = SliderDefaults.colors(
-                thumbColor = Color.DarkGray,
+                // thumbColor = Color.DarkGray,
                 activeTrackColor = Color.Gray
             ),
             modifier = Modifier.padding(horizontal = 16.dp)
@@ -112,26 +115,26 @@ fun MediaControllerButtons(
     nextClick: () -> Unit,
     previousClick: () -> Unit
 ) {
-    Row {
-        MediaButton(drawableResId = android.R.drawable.ic_media_previous, previousClick)
-        Spacer(modifier = Modifier.width(16.dp))
+    Row(modifier = Modifier.height(64.dp), verticalAlignment = Alignment.CenterVertically) {
+        MediaButton(drawableResId = android.R.drawable.ic_media_previous, size = 32.dp, buttonClick = previousClick)
+        Spacer(modifier = Modifier.width(24.dp))
         if (viewModel.isPlaying.observeAsState(true).value) {
-            MediaButton(drawableResId = R.drawable.ic_play_circle, playClick)
+            MediaButton(drawableResId = R.drawable.ic_play_circle, buttonClick = playClick)
         } else {
-            MediaButton(drawableResId = R.drawable.ic_pause_circle, pauseClick)
+            MediaButton(drawableResId = R.drawable.ic_pause_circle, buttonClick = pauseClick)
         }
-        Spacer(modifier = Modifier.width(16.dp))
-        MediaButton(drawableResId = android.R.drawable.ic_media_next, nextClick)
+        Spacer(modifier = Modifier.width(24.dp))
+        MediaButton(drawableResId = android.R.drawable.ic_media_next, size = 32.dp, buttonClick = nextClick)
     }
 }
 
 @Composable
-fun MediaButton(drawableResId: Int = R.drawable.ic_play_circle, buttonClick: () -> Unit) {
+fun MediaButton(drawableResId: Int = R.drawable.ic_play_circle, size: Dp = 64.dp, buttonClick: () -> Unit) {
     Image(
         painter = painterResource(id = drawableResId),
         contentDescription = null,
         modifier = Modifier
-            .size(64.dp)
+            .size(size)
             .clickable { buttonClick.invoke() }
     )
 }

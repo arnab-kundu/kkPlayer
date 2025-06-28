@@ -3,6 +3,7 @@ package com.akundu.kkplayer.feature.player.view
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.media.MediaPlayer
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
@@ -41,9 +42,12 @@ class PlayerActivity : ComponentActivity() {
                 // A surface container using the 'background' color from the theme
                 Surface(color = Color.Gray) {
                     val song = SongDataProvider.kkSongList[songIndex]
+                    val mediaPlayer = MediaPlayer.create(this, Uri.parse(File("/storage/emulated/0/Android/media/com.akundu.kkplayer/${song.fileName}").toString()))
+                    Log.d(TAG, "onCreate: duration ${mediaPlayer.duration}")
                     PlayerPage(
                         viewModel = viewModel,
                         song = song,
+                        duration = mediaPlayer.duration / 1000,
                         bitmap = mediaMetaDataRetriever(fileName = song.fileName, movie = song.movie, context = this),
                         playClick = {
                             viewModel.playPauseToggle()

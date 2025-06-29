@@ -22,6 +22,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
@@ -56,7 +57,7 @@ fun PlayerPage(
     bitmap: ImageBitmap = BitmapFactory.decodeResource(LocalContext.current.resources, R.drawable.gangster).asImageBitmap(),
     playClick: () -> Unit, pauseClick: () -> Unit, nextClick: () -> Unit, previousClick: () -> Unit
 ) {
-    Image(painter = painterResource(id = R.drawable.background), contentDescription = null, contentScale = ContentScale.FillBounds)
+    Image(modifier = Modifier.blur(16.dp), painter = painterResource(id = R.drawable.background), contentDescription = null, contentScale = ContentScale.FillBounds)
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
         AlbumArt(
             bitmap = bitmap,

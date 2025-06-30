@@ -5,6 +5,13 @@ object SongDataProvider {
     val kkSongList: List<Song> = listOf(
 
         Song(
+            title = "Shri Hanuman Chalisa",
+            artist = "",
+            fileName = "hanumanchalisa.mp3",
+            url = "  https://ravalwebs.github.io/hanumanchalisa/mp3/Shri%20Hanuman%20Chalisa.mp3",
+            movie = ""
+        ),
+        Song(
             title = "Bhole Shankar",
             artist = "Hansraj Raghuwanshi",
             fileName = "Bhole Shankar.mp3",

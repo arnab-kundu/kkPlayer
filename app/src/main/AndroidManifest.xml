@@ -43,7 +43,7 @@
             </intent-filter>
         </activity>
 
-         <activity
+        <activity
             android:name=".feature.splash.view.Splash2Activity"
             android:exported="false"
             android:label="@string/app_name"
@@ -58,7 +58,8 @@
         <activity
             android:name=".feature.player.view.PlayerActivity"
             android:exported="false"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.KkPlayer.NoActionBar" />
 
         <service
             android:name=".service.BackgroundSoundService"

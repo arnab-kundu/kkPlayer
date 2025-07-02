@@ -27,8 +27,9 @@ android {
         vectorDrawables {
             useSupportLibrary = true
         }
-
-        resourceConfigurations.addAll(listOf("en", "en-rGB", "en-rIN"))
+        androidResources {
+            localeFilters.addAll(listOf("en", "en-rGB", "en-rIN"))
+        }
     }
 
     buildTypes {
@@ -57,10 +58,9 @@ android {
 
     composeOptions {
         kotlinCompilerExtensionVersion = "1.5.3"
-        kotlinCompilerVersion = "1.5.10"
     }
 
-    packagingOptions {
+    packaging {
         resources.excludes += setOf("/META-INF/{AL2.0,LGPL2.1}")
     }
 }
@@ -91,60 +91,60 @@ ktlint {
 }
 
 dependencies {
-    implementation("androidx.core:core-ktx:1.15.0")
-    implementation("androidx.appcompat:appcompat:1.7.0")
-    implementation("androidx.compose.material3:material3:1.3.1")
-    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.8.7")
-    implementation("androidx.activity:activity-compose:1.10.1")
-    implementation("androidx.work:work-runtime-ktx:2.9.0")
-    implementation("androidx.constraintlayout:constraintlayout:2.2.1")
+    // Android Core
+    implementation(libs.androidx.core.ktx)
+    implementation(libs.androidx.appcompat)
+    implementation(libs.androidx.material3)
+    implementation(libs.androidx.lifecycle.runtime.ktx)
+    implementation(libs.androidx.activity.compose)
+    implementation(libs.androidx.work.runtime.ktx)
+    implementation(libs.androidx.constraintlayout)
+    implementation(libs.androidx.core.splashscreen)
 
-    val retrofitVersion = "2.10.0"
-    implementation("com.squareup.retrofit2:retrofit:$retrofitVersion")
-    implementation("com.squareup.retrofit2:converter-gson:$retrofitVersion")
-    implementation("com.squareup.okhttp3:logging-interceptor:4.9.1")
-    implementation("com.squareup.okhttp3:okhttp:4.12.0")
-    implementation("com.squareup.picasso:picasso:2.71828")
+    // Compose UI
+    implementation(libs.androidx.ui)
+    implementation(libs.androidx.material)
+    implementation(libs.androidx.ui.tooling.preview)
+    implementation(libs.androidx.runtime.livedata)
+    implementation(libs.androidx.animation.graphics)
+    implementation(libs.androidx.navigation.compose)
+    debugImplementation(libs.androidx.ui.tooling)
+    debugImplementation(libs.androidx.ui.test.manifest)
 
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.0")
+    // Coroutines
+    implementation(libs.kotlinx.coroutines.android)
 
-    val compose_ui_version = "1.5.3"
-    implementation("androidx.compose.ui:ui:$compose_ui_version")
-    implementation("androidx.compose.material:material:$compose_ui_version")
-    implementation("androidx.compose.ui:ui-tooling-preview:$compose_ui_version")
-    implementation("androidx.compose.runtime:runtime-livedata:1.7.8")
-    implementation("androidx.compose.animation:animation-graphics:1.7.8")
+    // Retrofit
+    implementation(libs.retrofit)
+    implementation(libs.converter.gson)
+    implementation(libs.logging.interceptor)
+    implementation(libs.okhttp)
+    implementation(libs.picasso)
 
-    debugImplementation("androidx.compose.ui:ui-tooling:$compose_ui_version")
-    debugImplementation("androidx.compose.ui:ui-test-manifest:1.7.8")
-    androidTestImplementation("androidx.compose.ui:ui-test-junit4:$compose_ui_version")
+    // Room Database
+    implementation(libs.androidx.room.runtime)
+    implementation(libs.androidx.room.ktx)
+    ksp(libs.androidx.room.compiler)
 
-    val navigationComposeVersion = "2.8.9"
-    implementation("androidx.navigation:navigation-compose:$navigationComposeVersion")
+    // Accompanist Pager
+    implementation(libs.accompanist.pager)
+    implementation(libs.accompanist.pager.indicators)
 
-    val accompanistPagerVersion = "0.25.1"
-    implementation("com.google.accompanist:accompanist-pager:$accompanistPagerVersion")
-    implementation("com.google.accompanist:accompanist-pager-indicators:$accompanistPagerVersion")
+    // Ffmpeg
+    implementation(libs.ffmpegmediametadataretriever.core)
+    implementation(libs.ffmpegmediametadataretriever.native)
 
-    implementation("com.github.wseemann:FFmpegMediaMetadataRetriever-core:1.0.19")
-    implementation("com.github.wseemann:FFmpegMediaMetadataRetriever-native:1.0.19")
+    // 3rd party dependencies
+    implementation(libs.toasty)
 
-    testImplementation("junit:junit:4.13.2")
-    androidTestImplementation("androidx.test.ext:junit:1.2.1")
-    androidTestImplementation("androidx.test.espresso:espresso-core:3.6.1")
-    androidTestImplementation("com.nhaarman:mockito-kotlin-kt1.1:1.5.0")
+    // Test Dependencies
+    testImplementation(libs.junit)
+    androidTestImplementation(libs.androidx.junit)
+    androidTestImplementation(libs.androidx.espresso.core)
+    androidTestImplementation(libs.mockito.kotlin.kt1.x)
+    androidTestImplementation(libs.androidx.ui.test.junit4)
 
-    implementation("androidx.core:core-splashscreen:1.0.1")
-    implementation("com.github.GrenderG:Toasty:1.5.2")
-
-    val roomVersion = "2.6.1"
-    implementation("androidx.room:room-runtime:$roomVersion")
-    implementation("androidx.room:room-ktx:$roomVersion")
-    ksp("androidx.room:room-compiler:$roomVersion")
-
+    // Jitpack.IO
     implementation("com.github.arnab-kundu:Storage:1.0.5")
-
     implementation("com.github.arnab-kundu:ESCPOS-ThermalPrinter-Android:v3.4.0")
-
-
 }

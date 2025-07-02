@@ -15,22 +15,21 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 
-
 @RunWith(AndroidJUnit4::class)
 class SongDatabaseTest {
-
     private val appContext: Context = InstrumentationRegistry.getInstrumentation().targetContext
     private lateinit var database: SongDatabase
     private lateinit var dao: SongDao
     private val kkSongList: List<Song> = SongDataProvider.kkSongList
-    private var mockEntity: SongEntity = SongEntity(
-        title = kkSongList[0].title,
-        artist = kkSongList[0].artist,
-        fileName = kkSongList[0].fileName,
-        url = kkSongList[0].url,
-        movie = kkSongList[0].movie,
-        isDownloaded = false
-    )
+    private var mockEntity: SongEntity =
+        SongEntity(
+            title = kkSongList[0].title,
+            artist = kkSongList[0].artist,
+            fileName = kkSongList[0].fileName,
+            url = kkSongList[0].url,
+            movie = kkSongList[0].movie,
+            isDownloaded = false,
+        )
 
     @Before
     fun setUp() {
@@ -46,7 +45,7 @@ class SongDatabaseTest {
     @Test
     fun testAddSong() {
         dao.addSong(mockEntity)
-        var totalCount = dao.getTotalCount()
+        val totalCount = dao.getTotalCount()
         assertEquals("TEST FAILED: testAddSong()", 1, totalCount)
     }
 
@@ -55,13 +54,14 @@ class SongDatabaseTest {
         var songEntity: SongEntity
         var count: Int = 0
         kkSongList.forEachIndexed { index, song ->
-            songEntity = SongEntity(
-                title = song.title,
-                artist = song.artist,
-                fileName = song.fileName,
-                url = song.url,
-                movie = song.movie
-            )
+            songEntity =
+                SongEntity(
+                    title = song.title,
+                    artist = song.artist,
+                    fileName = song.fileName,
+                    url = song.url,
+                    movie = song.movie,
+                )
             dao.addSong(songEntity)
             count = index + 1
         }

@@ -8,8 +8,7 @@ import org.junit.Before
 import org.junit.Test
 
 class AndroidDownloaderTest {
-
-    lateinit var instrumentationContext: Context
+    private lateinit var instrumentationContext: Context
 
     @Before
     fun setup() {
@@ -22,7 +21,6 @@ class AndroidDownloaderTest {
 
     @Test
     fun downloadFile() {
-
         // How to use AndroidDownloader
         val song = SongDataProvider.kkSongList[0]
         val downloader = AndroidDownloader(context = instrumentationContext)

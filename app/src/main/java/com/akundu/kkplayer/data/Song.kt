@@ -5,5 +5,5 @@ data class Song(
     val artist: String,
     val fileName: String,
     val url: String,
-    val movie: String
+    val movie: String,
 )

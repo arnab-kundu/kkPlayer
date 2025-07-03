@@ -239,7 +239,7 @@ class AppFileManagerTest {
         val testOutputFile =
             fileManager.zipFiles(
                 srcFolderPath = "/storage/emulated/0/Android/data/${BuildConfig.APPLICATION_ID}/*",
-                destZipFilePath = "/storage/emulated/0/Android/media/${BuildConfig.APPLICATION_ID}/myTest.zip"
+                destZipFilePath = "/storage/emulated/0/Android/media/${BuildConfig.APPLICATION_ID}/myTest.zip",
             )
         assertTrue(testOutputFile.exists())
         println("Zip file size: ${testOutputFile.length() / 1024F} kb")
@@ -335,7 +335,7 @@ class AppFileManagerTest {
         assertTrue("Failed to complete decryption in 1 second", decryptionTimeInMilliSeconds < 1000)
         assertTrue("Decrypted file not found", generatedTestFile.let { it?.exists() } ?: false)
         assertTrue("No data available in decrypted file", generatedTestFile?.length()?.let { it > 0 } ?: false)
-        generatedTestFile?.delete()                                     // clear generated test file
+        generatedTestFile?.delete() // clear generated test file
     }
 
     @Test
@@ -399,6 +399,6 @@ class AppFileManagerTest {
 
     @After
     fun tearDown() {
-
+        println("tearDown")
     }
 }

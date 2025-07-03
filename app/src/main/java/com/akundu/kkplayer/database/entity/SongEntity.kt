@@ -5,10 +5,8 @@ import androidx.room.Entity
 import androidx.room.Index
 import androidx.room.PrimaryKey
 
-
 @Entity(tableName = "SongsTable", indices = [Index(value = ["fileName"], unique = true)])
 data class SongEntity(
-
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "id")
     var id: Long = 0L,
@@ -29,6 +27,5 @@ data class SongEntity(
     var movie: String,
 
     @ColumnInfo(name = "isDownloaded")
-    var isDownloaded: Boolean = false
-
+    var isDownloaded: Boolean = false,
 )

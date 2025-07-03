@@ -7,12 +7,11 @@ import android.content.Intent
 import android.util.Log
 
 class DownloadCompletedReceiver : BroadcastReceiver() {
-
     private lateinit var downloadManager: DownloadManager
 
     override fun onReceive(context: Context?, intent: Intent?) {
         downloadManager = context?.getSystemService(DownloadManager::class.java)!!
-
+        // Check if the download is complete
         if (intent?.action == "android.intent.action.DOWNLOAD_COMPLETE") {
             val id = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1L)
             if (id != -1L) {

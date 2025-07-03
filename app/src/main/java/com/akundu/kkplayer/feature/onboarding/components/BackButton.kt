@@ -20,7 +20,6 @@ import androidx.compose.ui.unit.sp
 import com.akundu.kkplayer.R
 import com.akundu.kkplayer.ui.theme.KkPlayerTheme
 
-
 @Preview(showBackground = false)
 @Composable
 fun BackButtonPreview() {
@@ -28,7 +27,6 @@ fun BackButtonPreview() {
         BackButton(modifier = Modifier, color = Color.White)
     }
 }
-
 
 @Composable
 @Suppress("UNUSED_PARAMETER")
@@ -48,8 +46,7 @@ fun BackButton(modifier: Modifier, color: Color) {
             text = "Back",
             fontSize = 20.sp,
             fontWeight = FontWeight.Normal,
-            color = color
+            color = color,
         )
     }
 }
-

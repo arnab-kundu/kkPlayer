@@ -28,13 +28,12 @@ fun AppUsagesGuidelinePreview() {
     }
 }
 
-
 @Suppress("UNUSED_PARAMETER")
 @Composable
 fun AppUsagesGuideline(modifier: Modifier = Modifier, color: Color = Color.White) {
     Row(
         modifier = Modifier.size(width = 320.dp, height = 32.dp),
-        verticalAlignment = Alignment.CenterVertically
+        verticalAlignment = Alignment.CenterVertically,
     ) {
         Image(
             modifier = Modifier
@@ -49,7 +48,7 @@ fun AppUsagesGuideline(modifier: Modifier = Modifier, color: Color = Color.White
             text = "Follow the guide-lines before start",
             fontSize = 16.sp,
             fontWeight = FontWeight.Normal,
-            color = color
+            color = color,
         )
     }
 }

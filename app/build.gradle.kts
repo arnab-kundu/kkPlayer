@@ -81,7 +81,7 @@ ktlint {
             "no-consecutive-blank-lines",
             "no-blank-line-before-rbrace",
             "final-newline",
-        )
+        ),
     )
     reporters {
         reporter(org.jlleitschuh.gradle.ktlint.reporter.ReporterType.PLAIN)

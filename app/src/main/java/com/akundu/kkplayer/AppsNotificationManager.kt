@@ -14,9 +14,7 @@ import androidx.core.app.NotificationCompat.BigTextStyle
 import androidx.core.app.NotificationCompat.Builder
 import androidx.core.app.NotificationManagerCompat
 
-
 class AppsNotificationManager private constructor(private val context: Context) {
-
     private val notificationManagerCompat: NotificationManagerCompat = NotificationManagerCompat.from(context)
     private val notificationManager: NotificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
@@ -36,7 +34,7 @@ class AppsNotificationManager private constructor(private val context: Context) 
         text: String?,
         bigText: String?,
         notificationId: Int,
-        drawableId: Int
+        drawableId: Int,
     ) {
         val intent = Intent(context, targetNotificationActivity)
         intent.putExtra("count", title)
@@ -70,7 +68,7 @@ class AppsNotificationManager private constructor(private val context: Context) 
         channelId: String,
         notificationId: Int,
         pendingIntentFlag: Int,
-        drawableId: Int
+        drawableId: Int,
     ) {
         val intent = Intent(context, targetNotificationActivity)
         intent.putExtra("count", title)
@@ -103,5 +101,4 @@ class AppsNotificationManager private constructor(private val context: Context) 
             return instance
         }
     }
-
 }

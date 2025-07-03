@@ -7,10 +7,8 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.akundu.kkplayer.database.entity.SongEntity
 
-
 @Dao
 interface SongDao {
-
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun addSong(song: SongEntity)
 

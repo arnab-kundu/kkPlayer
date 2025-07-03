@@ -15,9 +15,7 @@ interface AppModule {
     val repository: Repository
 }
 
-class AppModuleImpl(
-    private val appContext: Context
-) : AppModule {
+class AppModuleImpl(private val appContext: Context) : AppModule {
     override val api: ApiRequest by lazy {
         Retrofit.Builder()
             .baseUrl("https://my-url.com")
@@ -25,9 +23,11 @@ class AppModuleImpl(
             .build()
             .create()
     }
+
     override val database: SongDatabase by lazy {
         SongDatabase.getDatabase(appContext)
     }
+
     override val repository: Repository by lazy {
         RepositoryImpl(api, database)
     }

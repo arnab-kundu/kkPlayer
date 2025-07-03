@@ -10,7 +10,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import com.akundu.kkplayer.ui.theme.KkPlayerTheme
 
-
 @Preview(showBackground = false)
 @Composable
 fun BackgroundGradientPreview() {

@@ -14,6 +14,7 @@ import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
 
+@Suppress("RedundantExplicitType")
 @RunWith(AndroidJUnit4::class)
 class AppFileManagerTest {
     private val appContext: Context = InstrumentationRegistry.getInstrumentation().targetContext
@@ -36,15 +37,22 @@ class AppFileManagerTest {
         if (!sampleImageFile.exists()) {
             throw java.lang.RuntimeException("Copy `testImage.jpeg` file into device Android/media/$yourPackage/ directory")
         }
-        val sampleSongFile = File(
-            "/storage/emulated/0/Android/media/${BuildConfig.APPLICATION_ID}/Om Deva deva.mp3"
-        )
+        val sampleSongFile = File("/storage/emulated/0/Android/media/${BuildConfig.APPLICATION_ID}/Om Deva deva.mp3")
         if (!sampleSongFile.exists()) {
             throw java.lang.RuntimeException("Download `Om Deva deva` song using kkPlayer before test")
         }
-        fileManager.copyFile(sourcePath = sampleSongFile.path, destinationPath = "/storage/emulated/0/Android/data/com.akundu.kkplayer/files/Om Deva deva.mp3")
-        fileManager.copyFile(sourcePath = sampleSongFile.path, destinationPath = "/storage/emulated/0/Android/data/com.akundu.kkplayer/cache/Om Deva deva.mp3")
-        fileManager.copyFile(sourcePath = sampleSongFile.path, destinationPath = "/data/user/0/com.akundu.kkplayer/files/Om Deva deva.mp3")
+        fileManager.copyFile(
+            sourcePath = sampleSongFile.path,
+            destinationPath = "/storage/emulated/0/Android/data/com.akundu.kkplayer/files/Om Deva deva.mp3",
+        )
+        fileManager.copyFile(
+            sourcePath = sampleSongFile.path,
+            destinationPath = "/storage/emulated/0/Android/data/com.akundu.kkplayer/cache/Om Deva deva.mp3",
+        )
+        fileManager.copyFile(
+            sourcePath = sampleSongFile.path,
+            destinationPath = "/data/user/0/com.akundu.kkplayer/files/Om Deva deva.mp3",
+        )
         val zipFile = File("/storage/emulated/0/Android/media/${BuildConfig.APPLICATION_ID}/10mb.zip")
         if (!zipFile.exists()) {
             throw java.lang.RuntimeException("Copy `sampledata/10mb.zip` file into device Android/media/$yourPackage/ directory")
@@ -104,21 +112,21 @@ class AppFileManagerTest {
         var isCopySuccessful =
             fileManager.copyFile(
                 sourcePath = "/storage/emulated/0/Android/media/${BuildConfig.APPLICATION_ID}/Om Deva deva.mp3",
-                destinationPath = appContext.obbDir.path + "/Om Deva deva.mp3"
+                destinationPath = appContext.obbDir.path + "/Om Deva deva.mp3",
             )
         assertTrue(isCopySuccessful)
 
         isCopySuccessful =
             fileManager.copyFile(
                 sourcePath = "/storage/emulated/0/Android/media/${BuildConfig.APPLICATION_ID}/Om Deva deva.mp3",
-                destinationPath = appContext.filesDir.path + "/Om Deva deva.mp3"
+                destinationPath = appContext.filesDir.path + "/Om Deva deva.mp3",
             )
         assertTrue(isCopySuccessful)
 
         isCopySuccessful =
             fileManager.copyFile(
                 sourcePath = "/storage/emulated/0/Android/media/${BuildConfig.APPLICATION_ID}/Om Deva deva.mp3",
-                destinationPath = appContext.dataDir.path + "/Om Deva deva.mp3"
+                destinationPath = appContext.dataDir.path + "/Om Deva deva.mp3",
             )
         assertTrue(isCopySuccessful)
     }
@@ -128,7 +136,7 @@ class AppFileManagerTest {
         val isCopySuccessful =
             fileManager.copyFile(
                 sourcePath = "/storage/emulated/0/Android/media/${BuildConfig.APPLICATION_ID}/testFile.txt",
-                destinationPath = appContext.obbDir.path + "/testFile.txt"
+                destinationPath = appContext.obbDir.path + "/testFile.txt",
             )
         assertTrue(isCopySuccessful)
     }
@@ -138,7 +146,7 @@ class AppFileManagerTest {
         val isCopySuccessful =
             fileManager.copyFile(
                 sourcePath = "/storage/emulated/0/Android/media/${BuildConfig.APPLICATION_ID}/testFile.txt",
-                destinationPath = appContext.filesDir.path + "/testFile.txt"
+                destinationPath = appContext.filesDir.path + "/testFile.txt",
             )
         assertTrue(isCopySuccessful)
     }
@@ -148,7 +156,7 @@ class AppFileManagerTest {
         val isCopySuccessful =
             fileManager.copyFile(
                 sourcePath = "/storage/emulated/0/Android/media/${BuildConfig.APPLICATION_ID}/testFile.txt",
-                destinationPath = appContext.dataDir.path + "/testFile.txt"
+                destinationPath = appContext.dataDir.path + "/testFile.txt",
             )
         assertTrue(isCopySuccessful)
     }
@@ -158,7 +166,7 @@ class AppFileManagerTest {
         val isCopySuccessful =
             fileManager.copyFile(
                 sourcePath = "/storage/emulated/0/Android/media/${BuildConfig.APPLICATION_ID}/testFile.txt",
-                destinationPath = appContext.cacheDir.path + "/testFile.txt"
+                destinationPath = appContext.cacheDir.path + "/testFile.txt",
             )
         assertTrue(isCopySuccessful)
     }
@@ -168,7 +176,7 @@ class AppFileManagerTest {
         val isCopySuccessful =
             fileManager.copyFile(
                 sourcePath = "/storage/emulated/0/Android/media/${BuildConfig.APPLICATION_ID}/testFile.txt",
-                destinationPath = appContext.externalCacheDir?.path + "/testFile.txt"
+                destinationPath = appContext.externalCacheDir?.path + "/testFile.txt",
             )
         assertTrue(isCopySuccessful)
     }
@@ -178,7 +186,7 @@ class AppFileManagerTest {
         val isCopySuccessful =
             fileManager.copyFile(
                 sourcePath = "/storage/emulated/0/Android/media/${BuildConfig.APPLICATION_ID}/testFile.txt",
-                destinationPath = appContext.getExternalFilesDir(null)?.path + "/testFile.txt"
+                destinationPath = appContext.getExternalFilesDir(null)?.path + "/testFile.txt",
             )
         assertTrue(isCopySuccessful)
     }
@@ -188,7 +196,7 @@ class AppFileManagerTest {
         val isCopySuccessful =
             fileManager.copyFile(
                 sourcePath = "/storage/emulated/0/Android/media/${BuildConfig.APPLICATION_ID}/Om Deva deva.mp3",
-                destinationPath = "${Constants.MUSIC_PATH}Om Deva deva.mp3"
+                destinationPath = "${Constants.MUSIC_PATH}Om Deva deva.mp3",
             )
         assertTrue(isCopySuccessful)
     }
@@ -199,7 +207,7 @@ class AppFileManagerTest {
         val isCopySuccessful =
             fileManager.copyFile(
                 sourcePath = "/storage/emulated/0/Android/media/${BuildConfig.APPLICATION_ID}/Om Deva deva.mp3",
-                destinationPath = "/storage/emulated/0/Android/media/com.example.file/Om Deva deva.mp3"
+                destinationPath = "/storage/emulated/0/Android/media/com.example.file/Om Deva deva.mp3",
             )
         assertFalse(isCopySuccessful)
     }
@@ -215,7 +223,7 @@ class AppFileManagerTest {
             fileManager.renameFile(
                 context = appContext,
                 existingFilePath = "/storage/emulated/0/Android/media/${BuildConfig.APPLICATION_ID}/before_renamed_file.txt",
-                newFileName = "after_renamed_file.txt"
+                newFileName = "after_renamed_file.txt",
             )
         val isRenameSuccessful = renamedFile.exists()
         assertTrue(isRenameSuccessful)
@@ -236,7 +244,7 @@ class AppFileManagerTest {
         assertTrue(testOutputFile.exists())
         println("Zip file size: ${testOutputFile.length() / 1024F} kb")
         assertTrue(testOutputFile.length() > 0)
-        testOutputFile.delete()                                         // clear generated test file
+        testOutputFile.delete() // clear generated test file
     }
 
     @Test
@@ -262,7 +270,7 @@ class AppFileManagerTest {
         val startingTime = System.currentTimeMillis()
         fileManager.unZipFileSlowly(
             zipFilePath = "/storage/emulated/0/Android/media/${BuildConfig.APPLICATION_ID}/10mb.zip",
-            extractLocationPath = "/storage/emulated/0/Android/media/${BuildConfig.APPLICATION_ID}/"
+            extractLocationPath = "/storage/emulated/0/Android/media/${BuildConfig.APPLICATION_ID}/",
         )
         val endTime = System.currentTimeMillis()
         val unZippingTimeInSeconds = (endTime - startingTime) / 1000
@@ -280,7 +288,7 @@ class AppFileManagerTest {
         val startingTime = System.currentTimeMillis()
         fileManager.unZipFile(
             zipFilePath = "/storage/emulated/0/Android/media/${BuildConfig.APPLICATION_ID}/10mb.zip",
-            extractLocationPath = "/storage/emulated/0/Android/media/${BuildConfig.APPLICATION_ID}/"
+            extractLocationPath = "/storage/emulated/0/Android/media/${BuildConfig.APPLICATION_ID}/",
         )
         val endTime = System.currentTimeMillis()
         val unZippingTimeInMilliSeconds = (endTime - startingTime)
@@ -300,7 +308,7 @@ class AppFileManagerTest {
             fileManager.encryptFile(
                 context = appContext,
                 srcFilePath = "/storage/emulated/0/Android/media/${BuildConfig.APPLICATION_ID}/big_buck_bunny_240p_10mb.mp4",
-                encryptedFileName = "encrypted-TestFile"
+                encryptedFileName = "encrypted-TestFile",
             )
         val endTime = System.currentTimeMillis()
         val encryptionTimeInMilliSeconds = (endTime - startingTime)
@@ -319,7 +327,7 @@ class AppFileManagerTest {
             fileManager.decryptFile(
                 context = appContext,
                 encryptedFilePath = "/storage/emulated/0/Android/media/${BuildConfig.APPLICATION_ID}/encrypted-TestFile.enc",
-                outputFileName = "decrypted-${System.currentTimeMillis()}.mp4"
+                outputFileName = "decrypted-${System.currentTimeMillis()}.mp4",
             )
         val endTime = System.currentTimeMillis()
         val decryptionTimeInMilliSeconds = (endTime - startingTime)
@@ -357,7 +365,7 @@ class AppFileManagerTest {
         assertTrue("Failed to delete file", isDeleted)
     }
 
-    @Suppress("UNUSED_VARIABLE", "RedundantExplicitType")
+    @Suppress("UNUSED_VARIABLE")
     @Test
     fun testDeleteFileFromMediaDirectorySuccessful() {
         val sourceFilePath: String = createAppsInternalPrivateStoragePath("media/${BuildConfig.APPLICATION_ID}")?.path + "/Om Deva deva.mp3"
@@ -375,11 +383,9 @@ class AppFileManagerTest {
         try {
             val rootFolderPath = "/storage/emulated/0/Android"
             var folder: File = File(rootFolderPath)
-
             val pathFoldersList: List<String> = path.split("/")
             pathFoldersList.forEach { childFolder ->
                 folder = File(folder, childFolder)
-
                 if (!folder.exists()) {
                     println("Is Folder Created at: ${folder.absolutePath}: ${folder.mkdirs()}")
                 }

@@ -37,7 +37,7 @@ android {
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
+                "proguard-rules.pro",
             )
         }
     }
@@ -80,7 +80,7 @@ ktlint {
             "no-multi-spaces",
             "no-consecutive-blank-lines",
             "no-blank-line-before-rbrace",
-            "final-newline"
+            "final-newline",
         )
     )
     reporters {

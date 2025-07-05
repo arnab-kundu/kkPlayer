@@ -8,13 +8,7 @@ import com.akundu.kkplayer.domain.Repository
 import kotlinx.coroutines.launch
 
 class MainViewModel(private val repository: Repository) : ViewModel() {
-
     lateinit var songList: LiveData<List<SongEntity>>
-    fun login() {
-        viewModelScope.launch {
-            repository.login("test@test.com", "test123")
-        }
-    }
 
     fun updateSongDownloadStatus(id: Long) {
         viewModelScope.launch {

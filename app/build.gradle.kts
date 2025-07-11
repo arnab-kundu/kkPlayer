@@ -101,6 +101,7 @@ dependencies {
     implementation(libs.androidx.work.runtime.ktx)
     implementation(libs.androidx.constraintlayout)
     implementation(libs.androidx.core.splashscreen)
+    implementation(libs.google.android.material)
 
     // Compose UI
     implementation(libs.androidx.ui)
@@ -116,11 +117,11 @@ dependencies {
     implementation(libs.kotlinx.coroutines.android)
 
     // Retrofit
-    implementation(libs.retrofit)
-    implementation(libs.converter.gson)
-    implementation(libs.logging.interceptor)
-    implementation(libs.okhttp)
-    implementation(libs.picasso)
+    implementation(libs.squareup.retrofit)
+    implementation(libs.squareup.converter.gson)
+    implementation(libs.squareup.logging.interceptor)
+    implementation(libs.squareup.okhttp)
+    implementation(libs.squareup.picasso)
 
     // Room Database
     implementation(libs.androidx.room.runtime)
@@ -146,6 +147,6 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
 
     // Jitpack.IO
-    implementation("com.github.arnab-kundu:Storage:1.0.5")
-    implementation("com.github.arnab-kundu:ESCPOS-ThermalPrinter-Android:v3.4.0")
+    // implementation("com.github.arnab-kundu:Storage:1.0.5")
+    // implementation("com.github.arnab-kundu:ESCPOS-ThermalPrinter-Android:v3.4.0")
 }

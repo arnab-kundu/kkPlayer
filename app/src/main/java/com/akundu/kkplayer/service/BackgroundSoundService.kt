@@ -15,14 +15,13 @@ import androidx.core.app.NotificationCompat
 import com.akundu.kkplayer.R
 import com.akundu.kkplayer.database.SongDatabase
 import com.akundu.kkplayer.database.entity.SongEntity
+import com.akundu.kkplayer.storage.Constants.INTERNAL_MEDIA_PATH
 import java.io.File
 
 class BackgroundSoundService : Service() {
-
-    private val TAG = "Service"
-    var player: MediaPlayer? = null
-    var uriString: String = ""
-    var songTitle: String = ""
+    private var player: MediaPlayer? = null
+    private var uriString: String = ""
+    private var songTitle: String = ""
 
     companion object {
         private var self: BackgroundSoundService? = null
@@ -35,36 +34,26 @@ class BackgroundSoundService : Service() {
         return null
     }
 
-    override fun onCreate() {
-        super.onCreate()
-    }
-
     override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
         uriString = intent.extras?.getString("uri") ?: ""
         songTitle = intent.extras?.getString("songTitle") ?: ""
         val id = intent.extras?.getInt("id", 0) ?: 0
-        Log.d(TAG, "onStartCommand: $uriString, $id")
+        Log.d("BackgroundSoundService", "onStartCommand: $uriString, $id")
         self = this
         player = MediaPlayer.create(this, Uri.parse(uriString))
         if (player != null) {
             player?.isLooping = false // Set looping
             player?.setVolume(100f, 100f)
             player?.start()
-            //TODO
-            player?.setOnCompletionListener { mediaPlayer: MediaPlayer? ->
-                //stopSelf()
+            player?.setOnCompletionListener {
                 nextSong(id)
             }
-
-            // Log.i(TAG, "Playing: " + uriString.split("Music/").toTypedArray()[1])
-
             runAsForeground()
         }
         return START_STICKY
     }
 
     private fun nextSong(previousSongId: Int) {
-
         val database = SongDatabase.getDatabase(this)
         val nextSongId = previousSongId + 1
         val songEntity: SongEntity = database.songDao().findSongById(nextSongId.toLong())
@@ -76,7 +65,7 @@ class BackgroundSoundService : Service() {
         }
         player = if (songEntity.isDownloaded) {
             // Retrieve song/media file from storage
-            MediaPlayer.create(this, Uri.parse(File("/storage/emulated/0/Android/media/com.akundu.kkplayer/${songEntity.fileName}").toString()))
+            MediaPlayer.create(this, Uri.parse(File("$INTERNAL_MEDIA_PATH${songEntity.fileName}").toString()))
         } else {
             // Retrieve song/media from cloud / network
             MediaPlayer.create(this, Uri.parse(songEntity.url))
@@ -85,29 +74,12 @@ class BackgroundSoundService : Service() {
             player?.isLooping = false // Set looping
             player?.setVolume(100f, 100f)
             player?.start()
-            //TODO
-            player?.setOnCompletionListener { mediaPlayer: MediaPlayer? ->
-                //stopSelf()
+            player?.setOnCompletionListener {
                 nextSong(nextSongId)
             }
-
-            // Log.i(TAG, "Playing: " + uriString.split("Music/").toTypedArray()[1])
-
             runAsForeground()
         }
     }
-
-    @Deprecated("Deprecated in Java")
-    override fun onStart(intent: Intent, startId: Int) {
-    }
-
-    fun onUnBind(arg0: Intent?): IBinder? {
-        // TODO Auto-generated method
-        return null
-    }
-
-    fun onStop() {}
-    fun onPause() {}
 
     override fun onDestroy() {
         if (player != null) {
@@ -115,8 +87,6 @@ class BackgroundSoundService : Service() {
             player?.release()
         }
     }
-
-    override fun onLowMemory() {}
 
     private fun runAsForeground() {
         val notificationIntent = Intent(this, this.javaClass)
@@ -155,7 +125,6 @@ class BackgroundSoundService : Service() {
             .setContentTitle(songTitle)
             .addAction(android.R.drawable.ic_media_play, "Play/Pause", pauseServicePendingIntent)
             .addAction(android.R.drawable.ic_menu_close_clear_cancel, "Stop", stopServicePendingIntent)
-            // .setContentText("Replace with your text")
             .setSilent(true)
             .setContentIntent(pendingIntent)
         startForeground(12345, notification.build())

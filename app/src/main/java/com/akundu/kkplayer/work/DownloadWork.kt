@@ -6,9 +6,9 @@ import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import com.akundu.kkplayer.AppsNotificationManager
 import com.akundu.kkplayer.Logg
-import com.akundu.kkplayer.feature.main.view.MainActivity
 import com.akundu.kkplayer.R
 import com.akundu.kkplayer.database.SongDatabase
+import com.akundu.kkplayer.feature.main.view.MainActivity
 import com.akundu.kkplayer.media.FolderFiles
 import com.akundu.kkplayer.network.ApiRequest
 import com.akundu.kkplayer.network.RetrofitRequest
@@ -27,8 +27,7 @@ import retrofit2.Response
 import java.io.File
 import java.io.InputStream
 
-class DownloadWork(val context: Context, workerParameters: WorkerParameters) :
-    CoroutineWorker(context, workerParameters) {
+class DownloadWork(val context: Context, workerParameters: WorkerParameters) : CoroutineWorker(context, workerParameters) {
 
     override suspend fun doWork(): Result {
 
@@ -68,13 +67,11 @@ class DownloadWork(val context: Context, workerParameters: WorkerParameters) :
             if (response.isSuccessful) {
                 val inputStream: InputStream? = response.body()?.byteStream()
 
-                /** Save file in scoped storage in Music folder */
-                /*if (inputStream != null) {
+                /** Save file in scoped storage in Music folder *//*if (inputStream != null) {
                     FolderFiles.addMusic(context = context, inputStream = inputStream, filename = fileName)
                 }*/
 
-                /** Save file in app own storage media directory */
-                /*val path = FolderFiles.createInternalMediaDirectory()
+                /** Save file in app own storage media directory *//*val path = FolderFiles.createInternalMediaDirectory()
                 if (path != null) {
                     val file = FolderFiles.createFileAtPath(context = context, fileName = fileName, path = path)
                     if (inputStream != null)

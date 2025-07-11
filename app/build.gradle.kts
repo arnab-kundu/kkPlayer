@@ -81,6 +81,7 @@ ktlint {
             "no-consecutive-blank-lines",
             "no-blank-line-before-rbrace",
             "final-newline",
+            "no-newline-after-opening-parenthesis"
         ),
     )
     reporters {

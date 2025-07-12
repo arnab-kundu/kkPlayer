@@ -14,7 +14,7 @@ object SongDataProvider {
                 title = "Bhole Shankar",
                 artist = "Hansraj Raghuwanshi",
                 fileName = "Bhole Shankar.mp3",
-                url = "https://www.pagalworldl.com/files/download/id/2829",
+                url = "https://pagalfree.com/musics/128-Bhole%20Shankar%20-%20Hansraj%20Raghuwanshi%20128%20Kbps.mp3",
                 movie = "OMG 2",
             ),
             Song(
@@ -30,6 +30,13 @@ object SongDataProvider {
                 fileName = "Unstoppable.mp3",
                 url = "https://pagalworld.cool/files/download/type/320/id/905",
                 movie = "--",
+            ),
+            Song(
+                title = "I don't wanna live forever",
+                artist = "Fifty Shades Darker",
+                fileName = "i_dont_wanna_live_forever_fifty_shades_darker.mp3",
+                url = "",
+                movie = "Fifty Shades Darker",
             ),
             Song(
                 title = "Tu Mera Na Hoke Bhi -  Arijit Singh",
@@ -70,7 +77,7 @@ object SongDataProvider {
                 title = "Tu Hi Meri Shab Hai",
                 artist = "K.K",
                 fileName = "Tu Hi Meri Shab Hai (Gangster) - K.K - 320Kbps.mp3",
-                url = "https://pagalfree.com/musics/128-Tu%20Hi%20Meri%20Shab%20Hai%20-%20Gangster%20128%20Kbps.mp3",
+                url = "",
                 movie = "Gangster",
             ),
             Song(

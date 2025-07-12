@@ -43,6 +43,15 @@ interface FileManager {
     fun copyFile(sourcePath: String, destinationPath: String): Boolean
 
     /**
+     * **Save a file into destination path from an inputStream**
+     *
+     * @param fileInputStream InputStream
+     * @param destinationPath String
+     * @return isCopySuccessful - Boolean
+     */
+    fun saveFile(fileInputStream: InputStream, destinationPath: String): Boolean
+
+    /**
      * **Delete file**
      *
      * @param sourceFilePath

@@ -27,6 +27,9 @@ interface SongDao {
     @Query("SELECT * FROM SongsTable WHERE title LIKE '%' || :title || '%'")
     fun searchSongByTitle(title: String?): List<SongEntity>
 
+    @Query("SELECT id FROM SongsTable WHERE fileName = :filename")
+    fun findSongIdByFilename(filename: String): Long
+
     @Query("UPDATE SongsTable SET isDownloaded = :isDownloaded WHERE id = :id")
     fun updateSongDownloadInfo(id: Long, isDownloaded: Boolean): Int
 

@@ -171,6 +171,32 @@ class AppFileManager : FileManager, ZipManager, EncryptionManager() {
         }
     }
 
+    @Throws(IOException::class)
+    override fun saveFile(fileInputStream: InputStream, destinationPath: String): Boolean {
+        try {
+            val outputStream: OutputStream = FileOutputStream(destinationPath)
+            try {
+                // Transfer bytes from in to out
+                val buffer = ByteArray(1024)
+                var len: Int
+                while (fileInputStream.read(buffer).also { len = it } > 0) {
+                    outputStream.write(buffer, 0, len)
+                }
+            } catch (e: Exception) {
+                Logg.e(e.toString())
+                return false
+            } finally {
+                outputStream.close()
+            }
+            return true
+        } catch (e: FileNotFoundException) {
+            Logg.e(e.toString())
+            return false
+        } finally {
+            fileInputStream.close()
+        }
+    }
+
     override fun deleteFile(sourceFilePath: String): Boolean {
         return File(sourceFilePath).delete()
     }

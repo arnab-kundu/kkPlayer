@@ -67,10 +67,12 @@ import com.akundu.kkplayer.database.entity.SongEntity
 import com.akundu.kkplayer.download.AndroidDownloader
 import com.akundu.kkplayer.feature.main.viewModel.MainViewModel
 import com.akundu.kkplayer.feature.player.view.PlayerActivity
+import com.akundu.kkplayer.getRawFileResourceID
 import com.akundu.kkplayer.permission.RuntimePermission.askNotificationPermission
 import com.akundu.kkplayer.presentation.viewModelFactory
 import com.akundu.kkplayer.service.BackgroundSoundService
 import com.akundu.kkplayer.service.ServiceTools
+import com.akundu.kkplayer.storage.AppFileManager
 import com.akundu.kkplayer.storage.Constants.INTERNAL_MEDIA_PATH
 import com.akundu.kkplayer.ui.theme.AlleanaFontFamily
 import com.akundu.kkplayer.ui.theme.Blue
@@ -80,6 +82,7 @@ import es.dmoral.toasty.Toasty
 import wseemann.media.FFmpegMediaMetadataRetriever
 import java.io.File
 import java.io.FileNotFoundException
+import java.io.InputStream
 
 
 class MainActivity : ComponentActivity() {
@@ -369,9 +372,30 @@ class MainActivity : ComponentActivity() {
         }
     }
 
+    /**
+     * Makes a copy of the file(provided fileName) from **RAW** folder into app's **MEDIA DIRECTORY**
+     * @param fileName
+     */
+    private fun copyFileFromRaw(fileName: String) {
+        Logg.d("DownloadFromRaw: $fileName")
+
+        val resourceID: Int = getRawFileResourceID(fileName)                        // R.raw.i_dont_wanna_live_forever_fifty_shades_darker
+        val fileInputStream: InputStream = resources.openRawResource(resourceID)    // Getting InputStream of raw file
+        AppFileManager().saveFile(fileInputStream = fileInputStream, destinationPath = "/storage/emulated/0/Android/media/com.akundu.kkplayer/$fileName")
+
+        val database: SongDatabase = SongDatabase.getDatabase(this)
+        val id = database.songDao().findSongIdByFilename(fileName)
+        database.songDao().updateSongDownloadInfo(id, true)
+    }
+
 
     fun download(context: Context, id: Long, fileName: String, url: String, movie: String) {
         Logg.i("Downloading: $fileName")
+
+        if (url.isEmpty()) {
+            copyFileFromRaw(fileName)
+            return
+        }
 
         val notificationID = System.currentTimeMillis().toInt()
 

@@ -4,6 +4,7 @@ plugins {
     id("kotlin-parcelize")
     id("com.google.devtools.ksp")
     id("org.jlleitschuh.gradle.ktlint") version "12.2.0"
+    alias(libs.plugins.kotlin.compose)
 }
 
 apply(from = "../app-version.gradle")

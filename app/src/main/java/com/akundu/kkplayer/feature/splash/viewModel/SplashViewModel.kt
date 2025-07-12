@@ -52,6 +52,15 @@ class SplashViewModel : ViewModel() {
     private val _uiState = MutableStateFlow(SplashUiState())
     val uiState: StateFlow<SplashUiState> = _uiState.asStateFlow()
 
+    fun loading() {
+        _uiState.update { currentState ->
+            currentState.copy(
+                isLoadingDotsVisible = true,
+                isLoginLayoutVisible = false
+            )
+        }
+    }
+
     fun loginButtonClickStateChangeEvent(): Boolean {
         if (_uiState.value.email.isNotEmpty() &&
             Patterns.EMAIL_ADDRESS.matcher(_uiState.value.email).matches() &&

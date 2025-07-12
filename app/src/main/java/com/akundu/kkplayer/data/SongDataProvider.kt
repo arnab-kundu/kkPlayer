@@ -76,7 +76,7 @@ object SongDataProvider {
             Song(
                 title = "Tu Hi Meri Shab Hai",
                 artist = "K.K",
-                fileName = "Tu Hi Meri Shab Hai (Gangster) - K.K - 320Kbps.mp3",
+                fileName = "tu_hi_meri_shab_hai.mp3",
                 url = "",
                 movie = "Gangster",
             ),

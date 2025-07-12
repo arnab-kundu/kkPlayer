@@ -30,11 +30,12 @@ class Splash2Activity : AppCompatActivity() {
                     KkPlayerTheme {
                         SplashPage(viewModel = viewModel, version = version, isAnimationEndFlow = true, uiState = uiState,
                             loginButtonClick = {
+                                viewModel.loading()
                                 if (viewModel.loginButtonClickStateChangeEvent()) {
                                     Handler(Looper.getMainLooper()).postDelayed({
                                         startActivity(Intent(this@Splash2Activity, MainActivity::class.java))
                                         finish()
-                                    }, 1500)
+                                    }, 3000)
                                 }
                             })
                     }

@@ -42,7 +42,12 @@
         <path
             android:name="Layer 2"
             android:fillColor="#070707"
-            android:pathData="m51 35v1.62h4v2.43h7.2v-2.43h3.2v-1.62zm17.6 0v1.62h4.8l-10.4 10.54h-0.8l-0.2 -3.16h-4l-3 3.97v9.03l5 8h5.4v-2.43h-3.2c0 0 0 -9.19 0 -13.78h0.8l7.2 13.78h-3.2v2.43h16v-2.43h-3.2l-11.2 -17.84l7.2 -8.11h4.8v-1.62z" />
+            android:pathData="m51 35v1.62h4v2.43h7.2v-2.43h3.2v-1.62z" />
+        <path
+            android:name="Layer 3"
+            android:fillColor="#070707"
+            android:pathData="m68.6 35v1.62h4.8l-10.4 10.54h-0.8l-0.2 -3.16h-4l-3 3.97v9.03l5 8h5.4v-2.43h-3.2c0 0 0 -9.19 0 -13.78h0.8l7.2 13.78h-3.2v2.43h16v-2.43h-3.2l-11.2 -17.84l7.2 -8.11h4.8v-1.62z" />
+
     </group>
 
     <group

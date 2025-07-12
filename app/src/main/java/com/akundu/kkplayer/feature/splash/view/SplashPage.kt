@@ -66,13 +66,9 @@ fun SplashPage(
         Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
             Spacer(modifier = Modifier.height(60.dp))
 
-            val drawable = AnimatedImageVector.animatedVectorResource(R.drawable.avd_splash_icon)
-            Image(
-                painter = rememberAnimatedVectorPainter(animatedImageVector = drawable, atEnd = isAnimationEndFlow),
-                contentDescription = "Logo",
-                modifier = Modifier.clip(CircleShape)
-            )
-            // Image(painter = painterResource(id = R.drawable.ic_launcher_foreground), contentDescription = "Logo", modifier = Modifier.clip(CircleShape))
+            // val drawable = AnimatedImageVector.animatedVectorResource(R.drawable.avd_splash_icon)
+            // Image(painter = rememberAnimatedVectorPainter(animatedImageVector = drawable, atEnd = isAnimationEndFlow), contentDescription = "Logo", modifier = Modifier.clip(CircleShape))
+            Image(painter = painterResource(id = R.drawable.ic_launcher_foreground), contentDescription = "Logo", modifier = Modifier.clip(CircleShape))
             Spacer(modifier = Modifier.height(15.dp))
             Text(text = "Powered by @k music industries", color = Color.Gray)
             Spacer(modifier = Modifier.height(21.dp))

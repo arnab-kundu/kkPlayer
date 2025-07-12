@@ -7,10 +7,10 @@ buildscript {
     }
     dependencies {
         classpath("com.android.tools.build:gradle:8.8.2")   // Ladybug Feature Drop    (8.8.0 - 8.8.2)
-        // classpath 'com.android.tools.build:gradle:8.5.1' // Koala    (8.5.0 - 8.5.2)
-        // classpath 'com.android.tools.build:gradle:8.4.2' // JellyFish (8.4.0 - 8.4.2)
-        // classpath 'com.android.tools.build:gradle:8.3.2' // Iguana   (8.3.0 - 8.3.2)
-        // classpath 'com.android.tools.build:gradle:8.2.2' // Hedgehog (8.2.0 - 8.2.2)
+        // classpath("com.android.tools.build:gradle:8.5.1") // Koala    (8.5.0 - 8.5.2)
+        // classpath("com.android.tools.build:gradle:8.4.2") // JellyFish (8.4.0 - 8.4.2)
+        // classpath("com.android.tools.build:gradle:8.3.2") // Iguana   (8.3.0 - 8.3.2)
+        // classpath("com.android.tools.build:gradle:8.2.2") // Hedgehog (8.2.0 - 8.2.2)
 
         classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:2.1.0")
         classpath("com.google.gms:google-services:4.4.3")         // Firebase

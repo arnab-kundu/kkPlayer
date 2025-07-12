@@ -29,8 +29,7 @@ android {
             useSupportLibrary = true
         }
         androidResources {
-            localeFilters.addAll(listOf("en", "en-rGB", "en-rIN"))
-        }
+            noCompress += "tflite"        }
     }
 
     buildTypes {

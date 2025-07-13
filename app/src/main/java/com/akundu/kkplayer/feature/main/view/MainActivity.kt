@@ -53,6 +53,7 @@ import androidx.core.graphics.drawable.toBitmap
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.work.Constraints
 import androidx.work.Data
+import androidx.work.NetworkType
 import androidx.work.OneTimeWorkRequest.Builder
 import androidx.work.WorkManager
 import com.akundu.kkplayer.AppsNotificationManager
@@ -352,7 +353,7 @@ class MainActivity : ComponentActivity() {
                 context.startService(svc)
 
                 val intent = Intent(context, PlayerActivity::class.java)
-                intent.putExtra("index", index-1)
+                intent.putExtra("index", index - 1)
                 context.startActivity(intent)
 
             } else {
@@ -408,7 +409,7 @@ class MainActivity : ComponentActivity() {
             .build()
 
         val constraints: Constraints = Constraints.Builder()
-            // .setRequiredNetworkType(NetworkType.UNMETERED)
+            .setRequiredNetworkType(NetworkType.CONNECTED)
             // .setRequiresBatteryNotLow(true)
             // .setRequiresStorageNotLow(true)
             .build()

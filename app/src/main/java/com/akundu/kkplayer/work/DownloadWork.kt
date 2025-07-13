@@ -16,9 +16,11 @@ import com.akundu.kkplayer.provider.FileAccessPermissionProvider
 import com.akundu.kkplayer.storage.AppFileManager
 import com.akundu.kkplayer.storage.FileLocationCategory.MEDIA_DIRECTORY
 import com.akundu.kkplayer.storage.FileManager
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import okhttp3.ResponseBody
 import retrofit2.Call
@@ -38,7 +40,27 @@ class DownloadWork(val context: Context, workerParameters: WorkerParameters) : C
         val notificationID = inputData.getInt("notificationID", 0)
 
         // downloadFileAndSaveInAppDirectory(fileName, movie, notificationID)
-        downloadFileAndSaveInScopedStorage(id, fileName, url, movie, notificationID)
+        CoroutineScope(Dispatchers.IO).launch {
+            runCatching {
+                downloadFileAndSaveInScopedStorage(id, fileName, url, movie, notificationID)
+            }.onFailure {
+                Logg.e( "Error: ${it.message}, FileName: $fileName")
+
+                val database: SongDatabase = SongDatabase.getDatabase(context)
+                database.songDao().deleteSong(id)
+
+                AppsNotificationManager.getInstance(context)?.cancelNotification(notificationID)
+                AppsNotificationManager.getInstance(context)?.downloadCompletedNotification(
+                    targetNotificationActivity = MainActivity::class.java,
+                    channelId = "CHANNEL_ID",
+                    title = fileName,
+                    text = "Download Failed",
+                    notificationId = System.currentTimeMillis().toInt(),
+                    pendingIntentFlag = PendingIntent.FLAG_IMMUTABLE,
+                    drawableId = getDrawable(movie)
+                )
+            }
+        }
 
         return Result.success()
     }
@@ -96,19 +118,30 @@ class DownloadWork(val context: Context, workerParameters: WorkerParameters) : C
 
                 val database: SongDatabase = SongDatabase.getDatabase(context)
                 database.songDao().updateSongDownloadInfo(id, true)
+
+                AppsNotificationManager.getInstance(context)?.downloadCompletedNotification(
+                    targetNotificationActivity = MainActivity::class.java,
+                    channelId = "CHANNEL_ID",
+                    title = fileName,
+                    text = "Download Completed",
+                    notificationId = System.currentTimeMillis().toInt(),
+                    pendingIntentFlag = PendingIntent.FLAG_IMMUTABLE,
+                    drawableId = getDrawable(movie)
+                )
             } else {
                 Logg.e("StatusCode: ${response.code()}")
+
+                AppsNotificationManager.getInstance(context)?.downloadCompletedNotification(
+                    targetNotificationActivity = MainActivity::class.java,
+                    channelId = "CHANNEL_ID",
+                    title = fileName,
+                    text = "Download failed. Error: ${response.code()}",
+                    notificationId = System.currentTimeMillis().toInt(),
+                    pendingIntentFlag = PendingIntent.FLAG_IMMUTABLE,
+                    drawableId = getDrawable(movie)
+                )
             }
             AppsNotificationManager.getInstance(context)?.cancelNotification(notificationID)
-            AppsNotificationManager.getInstance(context)?.downloadCompletedNotification(
-                targetNotificationActivity = MainActivity::class.java,
-                channelId = "CHANNEL_ID",
-                title = fileName,
-                text = "Download Completed",
-                notificationId = System.currentTimeMillis().toInt(),
-                pendingIntentFlag = PendingIntent.FLAG_IMMUTABLE,
-                drawableId = getDrawable(movie)
-            )
         }
     }
 

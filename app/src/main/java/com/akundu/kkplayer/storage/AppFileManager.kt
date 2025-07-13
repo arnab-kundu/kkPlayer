@@ -174,6 +174,7 @@ class AppFileManager : FileManager, ZipManager, EncryptionManager() {
     @Throws(IOException::class)
     override fun saveFile(fileInputStream: InputStream, destinationPath: String): Boolean {
         try {
+            createFolder("", destinationPath.substringBeforeLast('/'))
             val outputStream: OutputStream = FileOutputStream(destinationPath)
             try {
                 // Transfer bytes from in to out

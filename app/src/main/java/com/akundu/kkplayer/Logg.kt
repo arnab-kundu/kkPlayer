@@ -17,6 +17,7 @@ object Logg {
             } else {
                 "$path$link"
             }
+            link
         }
     }
 

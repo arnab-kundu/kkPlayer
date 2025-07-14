@@ -35,7 +35,7 @@ object SongDataProvider {
                 title = "Unstoppable",
                 artist = "Sia",
                 fileName = "Unstoppable.mp3",
-                url = "#",
+                url = "https://pagalnew.com/128-downloads/34694",
                 movie = "--",
             ),
             Song(
@@ -127,7 +127,7 @@ object SongDataProvider {
                 artist = "The Chainsmokers, Halsey",
                 fileName = "Closer - The Chainsmokers.mp3",
                 url = "https://djmaza.live/files/download/type/320/id/6453",
-                movie = "",
+                movie = "https://pagalnew.com/128-downloads/34689",
             ),
             Song(
                 title = "Love Me Like You Do",
@@ -140,7 +140,7 @@ object SongDataProvider {
                 title = "Asatoma Sadgamaya",
                 artist = "Arijit Singh",
                 fileName = "Asatoma Sadgamaya.mp3",
-                url = "#",
+                url = "https://bajaao.pendujatt.com.se/load/128/14805866/121873/Asatoma%20Sadgamaya.mp3", // 96, 128, 320 kbps
                 movie = "",
             ),
             Song(

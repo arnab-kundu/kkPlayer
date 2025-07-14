@@ -25,6 +25,13 @@ object SongDataProvider {
                 movie = "djmaza",
             ),
             Song(
+                title = "Shaky shaky dance",
+                artist = "Sanju Rathod",
+                fileName = "shaky.mp3",
+                url = "",
+                movie = "--",
+            ),
+            Song(
                 title = "Unstoppable",
                 artist = "Sia",
                 fileName = "Unstoppable.mp3",

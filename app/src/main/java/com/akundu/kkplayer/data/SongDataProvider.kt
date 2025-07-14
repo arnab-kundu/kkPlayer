@@ -21,14 +21,14 @@ object SongDataProvider {
                 title = "Om Deva deva -  Arijit Singh",
                 artist = "Arijit Singh",
                 fileName = "Om Deva deva-djmaza.mp3",
-                url = "https://djmaza.live/files/download/type/320/id/4825",
+                url = "https://pagalnew.com/128-downloads/32137",
                 movie = "djmaza",
             ),
             Song(
                 title = "Unstoppable",
                 artist = "Sia",
                 fileName = "Unstoppable.mp3",
-                url = "https://pagalworld.cool/files/download/type/320/id/905",
+                url = "#",
                 movie = "--",
             ),
             Song(
@@ -42,7 +42,7 @@ object SongDataProvider {
                 title = "Tu Mera Na Hoke Bhi -  Arijit Singh",
                 artist = "Arijit Singh",
                 fileName = "Tu Mera Na Hoke Bhi.mp3",
-                url = "https://pagaliworld.com/files/download/id/12969",
+                url = "#",
                 movie = "--",
             ),
             Song(
@@ -112,7 +112,7 @@ object SongDataProvider {
                 title = "Maahi Ve",
                 artist = "A.R. Rahman",
                 fileName = "Maahi Ve.mp3",
-                url = "https://pagalnew.com/download128/5535",
+                url = "https://pagalnew.com/128-downloads/5535",
                 movie = "Highway",
             ),
             Song(
@@ -133,7 +133,7 @@ object SongDataProvider {
                 title = "Asatoma Sadgamaya",
                 artist = "Arijit Singh",
                 fileName = "Asatoma Sadgamaya.mp3",
-                url = "https://pagaliworld.com/files/download/id/6507",
+                url = "#",
                 movie = "",
             ),
             Song(
@@ -154,7 +154,7 @@ object SongDataProvider {
                 title = "Wish you were here",
                 artist = "avril lavigne",
                 fileName = "wish you were here.mp3",
-                url = "https://ia600504.us.archive.org/6/items/WishYouWereHere-avrilLavigne/AvrilLavigne-WishYouWereHere-AcousticVersion.mp3",
+                url = "#",
                 movie = "",
             ),
             Song(
@@ -168,7 +168,7 @@ object SongDataProvider {
                 title = "Kuch-To-Hai",
                 artist = "Armaan Malik",
                 fileName = "Kuch-To-Hai.mp3",
-                url = "https://cdn.jattpendu.com/download/128k-axsth/Kuch-To-Hai.mp3",
+                url = "https://pagalnew.com/128-downloads/3937",
                 movie = "",
             ),
             Song(
@@ -183,7 +183,7 @@ object SongDataProvider {
                 title = "Love story",
                 artist = "Taylor Swift",
                 fileName = "lovestory.mp3",
-                url = "https://ia903102.us.archive.org/24/items/lovestory_381/03-taylor_swift-love_story.mp3",
+                url = "#",
                 movie = "",
             ),
 

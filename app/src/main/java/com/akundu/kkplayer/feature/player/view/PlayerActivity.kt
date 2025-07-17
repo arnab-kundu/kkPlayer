@@ -1,6 +1,8 @@
 package com.akundu.kkplayer.feature.player.view
 
+import android.app.PendingIntent
 import android.content.Context
+import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.media.MediaPlayer
@@ -16,9 +18,10 @@ import androidx.compose.ui.graphics.asImageBitmap
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.toBitmap
 import com.akundu.kkplayer.R
-import com.akundu.kkplayer.data.SongDataProvider
+import com.akundu.kkplayer.database.SongDatabase
 import com.akundu.kkplayer.feature.player.ui.PlayerPage
 import com.akundu.kkplayer.feature.player.viewModel.PlayerViewModel
+import com.akundu.kkplayer.service.StopServiceReceiver
 import com.akundu.kkplayer.ui.theme.KkPlayerTheme
 import wseemann.media.FFmpegMediaMetadataRetriever
 import java.io.File
@@ -41,7 +44,8 @@ class PlayerActivity : ComponentActivity() {
             KkPlayerTheme {
                 // A surface container using the 'background' color from the theme
                 Surface(color = Color.Gray) {
-                    val song = SongDataProvider.kkSongList[songIndex]
+                    val dataBase = SongDatabase.getDatabase(this)
+                    val song = dataBase.songDao().findSongById(id = songIndex.toLong())
                     val mediaPlayer = MediaPlayer.create(this, Uri.parse(File("/storage/emulated/0/Android/media/com.akundu.kkplayer/${song.fileName}").toString()))
                     Log.d(TAG, "onCreate: duration ${mediaPlayer.duration}")
                     PlayerPage(
@@ -61,6 +65,16 @@ class PlayerActivity : ComponentActivity() {
                         previousClick = {
                             Log.i(TAG, "previousClick: ")
                         },
+                        backClick = {
+                            val stopServicePendingIntent = PendingIntent.getBroadcast(
+                                this,
+                                400,
+                                Intent(this, StopServiceReceiver::class.java).putExtra("isStopService", true),
+                                PendingIntent.FLAG_IMMUTABLE
+                            )
+                            stopServicePendingIntent.send()
+                            finish()
+                        }
                     )
                 }
             }

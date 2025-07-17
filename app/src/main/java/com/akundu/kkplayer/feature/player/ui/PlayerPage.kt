@@ -6,6 +6,7 @@ import android.media.MediaPlayer
 import android.net.Uri
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -30,13 +31,15 @@ import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.akundu.kkplayer.R
 import com.akundu.kkplayer.data.Song
-import com.akundu.kkplayer.data.SongDataProvider
+import com.akundu.kkplayer.database.entity.SongEntity
 import com.akundu.kkplayer.feature.player.viewModel.PlayerViewModel
 import com.akundu.kkplayer.storage.Constants
 import java.io.File
@@ -45,23 +48,25 @@ var playProgress: Float = 50.0F
 
 @Preview
 @Composable
-fun PlayerPagePreview(song: Song = SongDataProvider.kkSongList[8]) {
-    PlayerPage(song = song, playClick = {}, pauseClick = {}, nextClick = {}, previousClick = {})
+fun PlayerPagePreview() {
+    PlayerPage(song = SongEntity(0,"Tu hi meri sab hay","KK","","",""), playClick = {}, pauseClick = {}, nextClick = {}, previousClick = {}, backClick = {})
 }
 
 @Composable
 fun PlayerPage(
     viewModel: PlayerViewModel = PlayerViewModel(),
-    song: Song,
+    song: SongEntity,
     duration: Int = 0,
     bitmap: ImageBitmap = BitmapFactory.decodeResource(LocalContext.current.resources, R.drawable.gangster).asImageBitmap(),
-    playClick: () -> Unit, pauseClick: () -> Unit, nextClick: () -> Unit, previousClick: () -> Unit
+    playClick: () -> Unit, pauseClick: () -> Unit, nextClick: () -> Unit, previousClick: () -> Unit, backClick: () -> Unit
 ) {
     Image(modifier = Modifier.blur(16.dp), painter = painterResource(id = R.drawable.background), contentDescription = null, contentScale = ContentScale.FillBounds)
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
+        Spacer(modifier = Modifier.height(48.dp))
         AlbumArt(
             bitmap = bitmap,
             songTitle = song.title,
+            artist = song.artist
         )
         Spacer(modifier = Modifier.weight(1F))
         Slider(
@@ -89,10 +94,22 @@ fun PlayerPage(
         )
         Spacer(modifier = Modifier.height(16.dp))
     }
+    Box(
+        modifier = Modifier
+            .clickable { backClick.invoke() }
+            .padding(24.dp)) {
+        Image(
+            painter = painterResource(id = R.drawable.baseline_west_24),
+            contentDescription = null,
+            modifier = Modifier
+                .size(24.dp)
+        )
+    }
+
 }
 
 @Composable
-fun AlbumArt(bitmap: ImageBitmap = BitmapFactory.decodeResource(LocalContext.current.resources, R.drawable.gangster).asImageBitmap(), songTitle: String = "Tu hi meri sab hay") {
+fun AlbumArt(bitmap: ImageBitmap = BitmapFactory.decodeResource(LocalContext.current.resources, R.drawable.gangster).asImageBitmap(), songTitle: String = "Tu hi meri sab hay", artist: String = "Arijit Singh") {
     Column(modifier = Modifier.padding(24.dp), horizontalAlignment = Alignment.CenterHorizontally) {
         Image(
             bitmap = bitmap,
@@ -103,8 +120,10 @@ fun AlbumArt(bitmap: ImageBitmap = BitmapFactory.decodeResource(LocalContext.cur
                 .clip(shape = RoundedCornerShape(16.dp, 16.dp, 16.dp, 16.dp))
         )
         Spacer(modifier = Modifier.height(16.dp))
-        Text(text = songTitle, color = Color.White, fontSize = 26.sp)
-        Spacer(modifier = Modifier.height(16.dp))
+        Text(text = songTitle, color = Color.White, fontSize = 26.sp,  fontFamily = FontFamily.Cursive,  fontWeight = FontWeight.Bold)
+        Spacer(modifier = Modifier.height(64.dp))
+        Text(text = artist, color = Color.DarkGray, fontSize = 26.sp,  fontFamily = FontFamily.Cursive,  fontWeight = FontWeight.Bold)
+        Spacer(modifier = Modifier.height(0.dp))
     }
 }
 
@@ -120,9 +139,9 @@ fun MediaControllerButtons(
         MediaButton(drawableResId = android.R.drawable.ic_media_previous, size = 32.dp, buttonClick = previousClick)
         Spacer(modifier = Modifier.width(24.dp))
         if (viewModel.isPlaying.observeAsState(true).value) {
-            MediaButton(drawableResId = R.drawable.ic_play_circle, buttonClick = playClick)
-        } else {
             MediaButton(drawableResId = R.drawable.ic_pause_circle, buttonClick = pauseClick)
+        } else {
+            MediaButton(drawableResId = R.drawable.ic_play_circle, buttonClick = playClick)
         }
         Spacer(modifier = Modifier.width(24.dp))
         MediaButton(drawableResId = android.R.drawable.ic_media_next, size = 32.dp, buttonClick = nextClick)

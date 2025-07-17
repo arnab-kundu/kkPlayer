@@ -161,7 +161,7 @@ class MainActivity : ComponentActivity() {
 
 
     @Composable
-    fun SongItem(song: Song, index: Int) {
+    fun SongItem(song: SongEntity, index: Int) {
         val context = LocalContext.current
         Box(
             modifier = Modifier
@@ -171,7 +171,7 @@ class MainActivity : ComponentActivity() {
             Row(
                 modifier = Modifier
                     .background(MaterialTheme.colorScheme.background)
-                    .clickable { playSong(context, song.title, song.fileName, index) },
+                    .clickable { playSong(context, song.title, song.fileName, song.id.toInt()) },
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 Image(
@@ -186,18 +186,19 @@ class MainActivity : ComponentActivity() {
                 Column(modifier = Modifier.weight(1f)) {
                     Text(
                         text = song.title, style = MaterialTheme.typography.bodySmall, color = Color.Red,
-                        fontFamily = FontFamily.Cursive, fontSize = 14.sp,
+                        fontSize = 14.sp,
                         fontWeight = FontWeight.Bold
                     )
                     Row {
                         Text(
                             stringResource(id = R.string.artist),
                             style = MaterialTheme.typography.bodyLarge,
-                            color = MaterialTheme.colorScheme.onBackground
+                            color = MaterialTheme.colorScheme.onBackground,
+                            fontFamily = AlleanaFontFamily,
                         )
                         Text(
                             text = song.artist, style = MaterialTheme.typography.bodyLarge,
-                            color = MaterialTheme.colorScheme.onBackground, fontFamily = AlleanaFontFamily, fontSize = 18.sp,
+                            color = MaterialTheme.colorScheme.onBackground, fontSize = 18.sp,
                         )
                     }
                 }
@@ -271,19 +272,21 @@ class MainActivity : ComponentActivity() {
                 )
                 Column(modifier = Modifier.weight(1f)) {
                     Text(
-                        text = song.title, style = MaterialTheme.typography.bodyLarge, color = Color.Red,
-                        fontFamily = FontFamily.Cursive, fontSize = 14.sp,
+                        text = song.title, style = MaterialTheme.typography.bodyLarge, color = Color.DarkGray,
+                        fontSize = 20.sp,
                         fontWeight = FontWeight.Bold
                     )
                     Row {
                         Text(
                             stringResource(id = R.string.artist),
                             style = MaterialTheme.typography.bodyLarge,
-                            color = MaterialTheme.colorScheme.onBackground
+                            color = MaterialTheme.colorScheme.onBackground,
+                            fontFamily = AlleanaFontFamily,
+                            fontSize = 24.sp,
                         )
                         Text(
                             text = song.artist, style = MaterialTheme.typography.bodyLarge,
-                            color = MaterialTheme.colorScheme.onBackground, fontFamily = AlleanaFontFamily, fontSize = 24.sp,
+                            color = MaterialTheme.colorScheme.onBackground,
                         )
                     }
                 }
@@ -353,7 +356,7 @@ class MainActivity : ComponentActivity() {
                 context.startService(svc)
 
                 val intent = Intent(context, PlayerActivity::class.java)
-                intent.putExtra("index", index - 1)
+                intent.putExtra("index", index)
                 context.startActivity(intent)
 
             } else {
@@ -451,13 +454,13 @@ class MainActivity : ComponentActivity() {
     @Preview
     @Composable
     fun SongItemPreview() {
-        SongItem(kkSongList[0], 0)
+        SongItem(SongEntity(0,"Tu hi meri sab hay","KK","","",""), 0)
     }
 
 
     @Composable
     fun SongListComposeWithStaticData(
-        songList: List<Song>,
+        songList: List<SongEntity>,
         modifier: Modifier = Modifier
     ) {
         // Use LazyRow when making horizontal lists

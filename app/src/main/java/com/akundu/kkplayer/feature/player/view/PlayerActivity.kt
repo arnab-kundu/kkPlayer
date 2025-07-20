@@ -11,12 +11,18 @@ import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.BasicAlertDialog
 import androidx.compose.material3.Surface
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.toBitmap
+import com.akundu.kkplayer.MetaDataExtractor
 import com.akundu.kkplayer.R
 import com.akundu.kkplayer.database.SongDatabase
 import com.akundu.kkplayer.feature.player.ui.PlayerPage
@@ -32,6 +38,8 @@ class PlayerActivity : ComponentActivity() {
 
     private var songIndex = 0
     private lateinit var viewModel: PlayerViewModel
+    // State to control dialog visibility
+    private lateinit var showInfoDialogState: MutableState<Boolean>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,6 +49,8 @@ class PlayerActivity : ComponentActivity() {
         songIndex = bundle?.getInt("index") ?: 0
 
         setContent {
+            // Initialize the state within a Composable context
+            showInfoDialogState = remember { mutableStateOf(false) }
             KkPlayerTheme {
                 // A surface container using the 'background' color from the theme
                 Surface(color = Color.Gray) {
@@ -74,8 +84,13 @@ class PlayerActivity : ComponentActivity() {
                             )
                             stopServicePendingIntent.send()
                             finish()
+                        },
+                        infoClick = {
+                            showInfoDialogState.value = true
+                            MetaDataExtractor.extractMp3("/storage/emulated/0/Android/media/com.akundu.kkplayer/${song.fileName}") // Does nothing to UI
                         }
                     )
+                    InfoAlertDialog(showInfoDialogState, title = song.title, body = MetaDataExtractor.extractMediaInfo("/storage/emulated/0/Android/media/com.akundu.kkplayer/${song.fileName}"))
                 }
             }
         }

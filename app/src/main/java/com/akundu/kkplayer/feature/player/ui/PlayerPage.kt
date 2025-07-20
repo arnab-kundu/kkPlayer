@@ -49,7 +49,7 @@ var playProgress: Float = 50.0F
 @Preview
 @Composable
 fun PlayerPagePreview() {
-    PlayerPage(song = SongEntity(0,"Tu hi meri sab hay","KK","","",""), playClick = {}, pauseClick = {}, nextClick = {}, previousClick = {}, backClick = {})
+    PlayerPage(song = SongEntity(0,"Tu hi meri sab hay","KK","","",""), playClick = {}, pauseClick = {}, nextClick = {}, previousClick = {}, backClick = {}, infoClick = {})
 }
 
 @Composable
@@ -58,7 +58,7 @@ fun PlayerPage(
     song: SongEntity,
     duration: Int = 0,
     bitmap: ImageBitmap = BitmapFactory.decodeResource(LocalContext.current.resources, R.drawable.gangster).asImageBitmap(),
-    playClick: () -> Unit, pauseClick: () -> Unit, nextClick: () -> Unit, previousClick: () -> Unit, backClick: () -> Unit
+    playClick: () -> Unit, pauseClick: () -> Unit, nextClick: () -> Unit, previousClick: () -> Unit, backClick: () -> Unit, infoClick: () -> Unit
 ) {
     Image(modifier = Modifier.blur(16.dp), painter = painterResource(id = R.drawable.background), contentDescription = null, contentScale = ContentScale.FillBounds)
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
@@ -94,15 +94,24 @@ fun PlayerPage(
         )
         Spacer(modifier = Modifier.height(16.dp))
     }
-    Box(
+    Row(
         modifier = Modifier
-            .clickable { backClick.invoke() }
+
             .padding(24.dp)) {
         Image(
             painter = painterResource(id = R.drawable.baseline_west_24),
             contentDescription = null,
             modifier = Modifier
                 .size(24.dp)
+                .clickable { backClick.invoke() }
+        )
+        Spacer(modifier = Modifier.height(48.dp).weight(1.0F))
+        Image(
+            painter = painterResource(id = R.drawable.ic_info_outline_white_24dp),
+            contentDescription = null,
+            modifier = Modifier
+                .size(24.dp)
+                .clickable { infoClick.invoke() }
         )
     }
 

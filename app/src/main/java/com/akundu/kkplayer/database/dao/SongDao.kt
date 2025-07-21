@@ -33,6 +33,9 @@ interface SongDao {
     @Query("UPDATE SongsTable SET isDownloaded = :isDownloaded WHERE id = :id")
     fun updateSongDownloadInfo(id: Long, isDownloaded: Boolean): Int
 
+    @Query("SELECT * FROM SongsTable WHERE id > :id AND isDownloaded = 1 LIMIT 1")
+    fun getNextDownloadedSong(id: Long): SongEntity?
+
     @Query("SELECT COUNT(*) FROM SongsTable WHERE 1 = 1")
     fun getTotalCount(): Int
 

@@ -10,6 +10,8 @@ import com.akundu.kkplayer.database.entity.SongEntity
 import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
+import org.junit.Assert.assertNotNull
+import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
@@ -66,6 +68,7 @@ class SongDatabaseTest {
             count = index + 1
         }
         val databaseSongsList = dao.getAllSongs()
+        databaseSongsList.forEach { println(it.toString()) }
         assertTrue("TEST FAILED: testGetAllSongs()", databaseSongsList.size == count)
     }
 
@@ -102,6 +105,27 @@ class SongDatabaseTest {
         val updatedSongEntity = dao.findSongById(allSongsList[0].id)
         assertTrue("TEST FAILED: testUpdateSongDownloadInfo()", downloadStatus == 1)
         assertTrue("TEST FAILED: testUpdateSongDownloadInfo()", updatedSongEntity.isDownloaded)
+    }
+
+    @Test
+    fun testGetNextDownloadedSong(){
+        // Next downloaded song is equals to Null
+        assertNull(dao.getNextDownloadedSong(7))
+
+        // Modifying isDownloaded data for testing
+        dao.updateSongDownloadInfo(7, true)
+        dao.updateSongDownloadInfo(8, true)
+        dao.updateSongDownloadInfo(9, true)
+        dao.updateSongDownloadInfo(10, true)
+        // So after modifying those data, Next downloaded songs are NotNull
+        assertNotNull(dao.getNextDownloadedSong(6))
+        assertNotNull(dao.getNextDownloadedSong(7))
+        assertNotNull(dao.getNextDownloadedSong(8))
+        assertNotNull(dao.getNextDownloadedSong(9))
+
+        // Next downloaded song is equals to Null
+        assertNull(dao.getNextDownloadedSong(10))
+        assertNull(dao.getNextDownloadedSong(11))
     }
 
     @Test

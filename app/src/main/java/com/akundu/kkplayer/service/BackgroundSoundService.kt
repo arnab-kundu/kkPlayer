@@ -56,7 +56,14 @@ class BackgroundSoundService : Service() {
     private fun nextSong(previousSongId: Int) {
         val database = SongDatabase.getDatabase(this)
         val nextSongId = previousSongId + 1
-        val songEntity: SongEntity = database.songDao().findSongById(nextSongId.toLong())
+        val songEntity: SongEntity? = database.songDao().getNextDownloadedSong(nextSongId.toLong())
+
+        if (songEntity == null) {
+            // End of playlist
+            onDestroy()
+            return
+        }
+
         songTitle = songEntity.title
 
         if (player != null) {

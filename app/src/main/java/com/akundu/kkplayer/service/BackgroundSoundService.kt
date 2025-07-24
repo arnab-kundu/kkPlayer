@@ -17,6 +17,8 @@ import com.akundu.kkplayer.database.SongDatabase
 import com.akundu.kkplayer.database.entity.SongEntity
 import com.akundu.kkplayer.storage.Constants.INTERNAL_MEDIA_PATH
 import java.io.File
+import androidx.core.net.toUri
+import androidx.core.graphics.toColorInt
 
 class BackgroundSoundService : Service() {
     private var player: MediaPlayer? = null
@@ -40,7 +42,7 @@ class BackgroundSoundService : Service() {
         val id = intent.extras?.getInt("id", 0) ?: 0
         Log.d("BackgroundSoundService", "onStartCommand: $uriString, $id")
         self = this
-        player = MediaPlayer.create(this, Uri.parse(uriString))
+        player = MediaPlayer.create(this, uriString.toUri())
         if (player != null) {
             player?.isLooping = false // Set looping
             player?.setVolume(100f, 100f)
@@ -60,7 +62,7 @@ class BackgroundSoundService : Service() {
 
         if (songEntity == null) {
             // End of playlist
-            onDestroy()
+            this.stopSelf()
             return
         }
 
@@ -72,10 +74,10 @@ class BackgroundSoundService : Service() {
         }
         player = if (songEntity.isDownloaded) {
             // Retrieve song/media file from storage
-            MediaPlayer.create(this, Uri.parse(File("$INTERNAL_MEDIA_PATH${songEntity.fileName}").toString()))
+            MediaPlayer.create(this, File("$INTERNAL_MEDIA_PATH${songEntity.fileName}").toString().toUri())
         } else {
             // Retrieve song/media from cloud / network
-            MediaPlayer.create(this, Uri.parse(songEntity.url))
+            MediaPlayer.create(this, songEntity.url.toUri())
         }
         if (player != null) {
             player?.isLooping = false // Set looping
@@ -126,7 +128,7 @@ class BackgroundSoundService : Service() {
             .setNumber(0)
             .setOngoing(true)
             .setColorized(true)
-            .setColor(Color.parseColor("#606060"))
+            .setColor("#606060".toColorInt())
             .setSmallIcon(R.mipmap.ic_launcher)
             .setSubText("is playing...")
             .setContentTitle(songTitle)

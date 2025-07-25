@@ -91,7 +91,7 @@ class MainActivity : ComponentActivity() {
     }
 
     fun internetAvailable(context: Context) {
-        Toasty.success(context, "Online!", Toast.LENGTH_SHORT).show()
+        // Toasty.success(context, "Online!", Toast.LENGTH_SHORT).show()
     }
 
     fun noInternet(context: Context) {

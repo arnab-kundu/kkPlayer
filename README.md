@@ -1,16 +1,29 @@
 ## Build Tools
-Android Studio Ladybug Feature Drop | 2024.2.2
-
-## TODO 
- - Search bar ..... on typing song name:  filter the list
- - settings
- - theme changing option
- - save song location change/ app internal directory or music directory
+Android Studio Meerkat Feature Drop | 2024.3.2
 
 ## TODO
+### Main screen
+search FAB button
+search song window visible
 search song
-save file options... from setting
-theme change
-next song automatic - done
-next song title update in notification - done
+
+### Setting screen
+Repeat One
+Repeat All
+Repeat None
+
+Light theme
+Dark theme
+Default theme
+
+save file location change/ app internal directory or music directory
+### Player screen
+play progress UI
+play progress sick to 100
+
+Play pause 
+prev song
+next song
+
+### Notification
 next song - button in notification

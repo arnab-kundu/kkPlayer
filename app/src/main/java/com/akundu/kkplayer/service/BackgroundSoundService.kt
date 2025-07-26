@@ -10,13 +10,13 @@ import android.os.Build
 import android.os.IBinder
 import android.util.Log
 import androidx.core.app.NotificationCompat
+import androidx.core.graphics.toColorInt
+import androidx.core.net.toUri
 import com.akundu.kkplayer.R
 import com.akundu.kkplayer.database.SongDatabase
 import com.akundu.kkplayer.database.entity.SongEntity
 import com.akundu.kkplayer.storage.Constants.INTERNAL_MEDIA_PATH
 import java.io.File
-import androidx.core.net.toUri
-import androidx.core.graphics.toColorInt
 
 class BackgroundSoundService : Service() {
     private var player: MediaPlayer? = null
@@ -127,7 +127,7 @@ class BackgroundSoundService : Service() {
             .setOngoing(true)
             .setColorized(true)
             .setColor("#606060".toColorInt())
-            .setSmallIcon(R.mipmap.ic_launcher)
+            .setSmallIcon(R.mipmap.ic_launcher) // .setSmallIcon(R.drawable.ic_notification)
             .setSubText("is playing...")
             .setContentTitle(songTitle)
             .addAction(android.R.drawable.ic_media_play, "Play/Pause", pauseServicePendingIntent)

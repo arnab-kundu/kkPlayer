@@ -7,7 +7,7 @@ object SongDataProvider {
                 title = "Shri Hanuman Chalisa",
                 artist = "",
                 fileName = "hanumanchalisa.mp3",
-                url = "  https://ravalwebs.github.io/hanumanchalisa/mp3/Shri%20Hanuman%20Chalisa.mp3",
+                url = "https://ravalwebs.github.io/hanumanchalisa/mp3/Shri%20Hanuman%20Chalisa.mp3",
                 movie = "",
             ),
             Song(
@@ -133,7 +133,7 @@ object SongDataProvider {
                 title = "Love Me Like You Do",
                 artist = "Ellie Goulding",
                 fileName = "Love Me Like You Do.mp3",
-                url = "https://pagal-world.com.in/files/download/id/841",
+                url = "", //""https://pagal-world.com.in/files/download/id/841",
                 movie = "",
             ),
             Song(

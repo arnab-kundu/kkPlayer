@@ -48,11 +48,12 @@ var playProgress: Float = 50.0F
 @Preview
 @Composable
 fun PlayerPagePreview() {
-    PlayerPage(song = SongEntity(0,"Tu hi meri sab hay","KK","","",""), playClick = {}, pauseClick = {}, nextClick = {}, previousClick = {}, backClick = {}, infoClick = {})
+    PlayerPage(song = SongEntity(0, "Tu hi meri sab hay", "KK", "", "", ""), playClick = {}, pauseClick = {}, nextClick = {}, previousClick = {}, backClick = {}, infoClick = {})
 }
 
 @Composable
 fun PlayerPage(
+    verticalPadding: Dp = 10.dp,
     viewModel: PlayerViewModel = PlayerViewModel(),
     song: SongEntity,
     duration: Int = 0,
@@ -61,7 +62,7 @@ fun PlayerPage(
 ) {
     Image(modifier = Modifier.blur(16.dp), painter = painterResource(id = R.drawable.background), contentDescription = null, contentScale = ContentScale.FillBounds)
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
-        Spacer(modifier = Modifier.height(48.dp))
+        Spacer(modifier = Modifier.height(48.dp + verticalPadding))
         AlbumArt(
             bitmap = bitmap,
             songTitle = song.title,
@@ -91,11 +92,12 @@ fun PlayerPage(
             nextClick = nextClick,
             previousClick = previousClick
         )
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(16.dp + verticalPadding))
     }
     Row(
         modifier = Modifier
-            .padding(horizontal = 24.dp, vertical = 32.dp)) {
+            .padding(horizontal = 24.dp, vertical = 32.dp + verticalPadding)
+    ) {
         Image(
             painter = painterResource(id = R.drawable.baseline_west_24),
             contentDescription = null,
@@ -116,7 +118,11 @@ fun PlayerPage(
 }
 
 @Composable
-fun AlbumArt(bitmap: ImageBitmap = BitmapFactory.decodeResource(LocalContext.current.resources, R.drawable.gangster).asImageBitmap(), songTitle: String = "Tu hi meri sab hay", artist: String = "Arijit Singh") {
+fun AlbumArt(
+    bitmap: ImageBitmap = BitmapFactory.decodeResource(LocalContext.current.resources, R.drawable.gangster).asImageBitmap(),
+    songTitle: String = "Tu hi meri sab hay",
+    artist: String = "Arijit Singh"
+) {
     Column(modifier = Modifier.padding(24.dp), horizontalAlignment = Alignment.CenterHorizontally) {
         Image(
             bitmap = bitmap,
@@ -127,9 +133,9 @@ fun AlbumArt(bitmap: ImageBitmap = BitmapFactory.decodeResource(LocalContext.cur
                 .clip(shape = RoundedCornerShape(16.dp, 16.dp, 16.dp, 16.dp))
         )
         Spacer(modifier = Modifier.height(16.dp))
-        Text(text = songTitle, color = Color.White, fontSize = 26.sp,  fontFamily = FontFamily.Cursive,  fontWeight = FontWeight.Bold)
+        Text(text = songTitle, color = Color.White, fontSize = 26.sp, fontFamily = FontFamily.Cursive, fontWeight = FontWeight.Bold)
         Spacer(modifier = Modifier.height(64.dp))
-        Text(text = artist, color = Color.DarkGray, fontSize = 26.sp,  fontFamily = FontFamily.Cursive,  fontWeight = FontWeight.Bold)
+        Text(text = artist, color = Color.DarkGray, fontSize = 26.sp, fontFamily = FontFamily.Cursive, fontWeight = FontWeight.Bold)
         Spacer(modifier = Modifier.height(0.dp))
     }
 }

@@ -12,11 +12,10 @@ import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.material3.Surface
+import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.core.content.ContextCompat
@@ -53,12 +52,13 @@ class PlayerActivity : ComponentActivity() {
             showInfoDialogState = remember { mutableStateOf(false) }
             KkPlayerTheme {
                 // A surface container using the 'background' color from the theme
-                Surface(color = Color.Gray) {
+                Scaffold { innerPadding ->
                     val dataBase = SongDatabase.getDatabase(this)
                     val song = dataBase.songDao().findSongById(id = songIndex.toLong())
                     val mediaPlayer = MediaPlayer.create(this, Uri.parse(File("/storage/emulated/0/Android/media/com.akundu.kkplayer/${song.fileName}").toString()))
                     Log.d(TAG, "onCreate: duration ${mediaPlayer.duration}")
                     PlayerPage(
+                        verticalPadding = innerPadding.calculateTopPadding(),
                         viewModel = viewModel,
                         song = song,
                         duration = mediaPlayer.duration / 1000,

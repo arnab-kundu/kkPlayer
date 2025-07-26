@@ -17,14 +17,9 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.BottomSheetScaffold
-import androidx.compose.material.BottomSheetState
-import androidx.compose.material.BottomSheetValue.Expanded
-import androidx.compose.material.Button
-import androidx.compose.material.ButtonDefaults
-import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.rememberBottomSheetScaffoldState
-import androidx.compose.material3.Surface
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchColors
 import androidx.compose.material3.Text
@@ -32,14 +27,12 @@ import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
@@ -61,9 +54,9 @@ fun SplashPage(
     uiState: SplashUiState = SplashUiState(),
     loginButtonClick: () -> Unit = {},
 ) {
-    Surface {
+    Scaffold { innerPadding ->
         Image(painter = painterResource(id = R.drawable.background), contentDescription = null, contentScale = ContentScale.FillBounds)
-        Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
+        Column(modifier = Modifier.fillMaxWidth().padding(vertical = innerPadding.calculateTopPadding()), horizontalAlignment = Alignment.CenterHorizontally) {
             Spacer(modifier = Modifier.height(60.dp))
 
             // val drawable = AnimatedImageVector.animatedVectorResource(R.drawable.avd_splash_icon)
@@ -194,7 +187,7 @@ fun LoginLayout(viewModel: SplashViewModel = SplashViewModel(), uiState: SplashU
                         .height(48.dp)
                         .width(180.dp)
                         .align(Alignment.CenterHorizontally),
-                    colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFF2C2C2C))
+                    colors = ButtonDefaults.buttonColors(Color(0xFF2C2C2C))
                 ) {
                     Text(text = "LOGIN", modifier = Modifier, color = Color.White, fontSize = 12.sp)
                 }
@@ -209,22 +202,5 @@ fun LoginLayout(viewModel: SplashViewModel = SplashViewModel(), uiState: SplashU
                     fontSize = 13.sp)
             }
         }
-    }
-}
-
-@ExperimentalMaterialApi
-@Composable
-private fun BottomSheet() {
-    val scaffoldState = rememberBottomSheetScaffoldState(bottomSheetState = BottomSheetState(Expanded, LocalDensity.current))
-    val scope = rememberCoroutineScope()
-    BottomSheetScaffold(
-        modifier = Modifier.height(380.dp),
-        scaffoldState = scaffoldState,
-        sheetContent = {
-            // Sheet content
-            LoginLayout()
-        }
-    ) {
-        // Screen content
     }
 }

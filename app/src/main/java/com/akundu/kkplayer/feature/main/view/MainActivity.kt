@@ -9,6 +9,8 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts.RequestPermission
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.Scaffold
@@ -77,7 +79,7 @@ class MainActivity : ComponentActivity() {
 
                 // A Scaffold container helps to enable edgeToEdge support.
                 // innerPadding parameter helps to give some extra padding to the content of LazyColumn in topBar and bottomBar section. However when scroll it takes the whole screen.
-                Scaffold { innerPadding ->
+                Scaffold(contentWindowInsets = WindowInsets.safeDrawing) { innerPadding ->
                     Image(modifier = Modifier.blur(16.dp), painter = painterResource(id = R.drawable.background), contentDescription = null, contentScale = ContentScale.FillBounds)
                     LazyColumn(contentPadding = innerPadding) {
                         songListState.value?.let { itemsIndexed(it) { _, song -> SongItem(song = song) } }

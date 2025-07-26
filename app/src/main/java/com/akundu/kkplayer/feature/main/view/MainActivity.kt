@@ -6,18 +6,27 @@ import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts.RequestPermission
-import androidx.compose.material3.Surface
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.blur
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.akundu.kkplayer.KkPlayerApp
 import com.akundu.kkplayer.Logg
+import com.akundu.kkplayer.R
 import com.akundu.kkplayer.data.SongDataProvider.kkSongList
 import com.akundu.kkplayer.database.SongDatabase
 import com.akundu.kkplayer.database.dao.SongDao
 import com.akundu.kkplayer.database.entity.SongEntity
-import com.akundu.kkplayer.feature.main.ui.SongListPreview
+import com.akundu.kkplayer.feature.main.ui.SongItem
 import com.akundu.kkplayer.feature.main.viewModel.MainViewModel
 import com.akundu.kkplayer.permission.RuntimePermission.askNotificationPermission
 import com.akundu.kkplayer.presentation.viewModelFactory
@@ -34,6 +43,7 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        enableEdgeToEdge()
 
         database = SongDatabase.getDatabase(this)
         dao = database.songDao()
@@ -63,8 +73,15 @@ class MainActivity : ComponentActivity() {
                 viewModel.allSongsLiveData()
                 val songListState = viewModel.songList.observeAsState(null)
                 // A surface container using the 'background' color from the theme
-                Surface(color = Color.Gray) {
-                    SongListPreview(songListState)
+                // Surface(color = Color.Gray) { SongListPreview(songListState) } // Surface Not using anymore
+
+                // A Scaffold container helps to enable edgeToEdge support.
+                // innerPadding parameter helps to give some extra padding to the content of LazyColumn in topBar and bottomBar section. However when scroll it takes the whole screen.
+                Scaffold { innerPadding ->
+                    Image(modifier = Modifier.blur(16.dp), painter = painterResource(id = R.drawable.background), contentDescription = null, contentScale = ContentScale.FillBounds)
+                    LazyColumn(contentPadding = innerPadding) {
+                        songListState.value?.let { itemsIndexed(it) { _, song -> SongItem(song = song) } }
+                    }
                 }
             }
         }

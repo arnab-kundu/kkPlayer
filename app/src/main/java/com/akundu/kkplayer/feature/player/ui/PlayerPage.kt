@@ -6,7 +6,6 @@ import android.media.MediaPlayer
 import android.net.Uri
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -96,8 +95,7 @@ fun PlayerPage(
     }
     Row(
         modifier = Modifier
-
-            .padding(24.dp)) {
+            .padding(horizontal = 24.dp, vertical = 32.dp)) {
         Image(
             painter = painterResource(id = R.drawable.baseline_west_24),
             contentDescription = null,

@@ -62,7 +62,7 @@ fun PlayerPage(
     viewModel: PlayerViewModel = PlayerViewModel(),
     song: SongEntity,
     duration: Int = 0,
-    bitmap: ImageBitmap = BitmapFactory.decodeResource(LocalContext.current.resources, R.drawable.gangster).asImageBitmap(),
+    bitmap: ImageBitmap = BitmapFactory.decodeResource(LocalContext.current.resources, R.drawable.ic_music_album_avatar1).asImageBitmap(),
     playClick: () -> Unit,
     pauseClick: () -> Unit,
     nextClick: () -> Unit,
@@ -139,7 +139,7 @@ fun PlayerPage(
 
 @Composable
 fun AlbumArt(
-    bitmap: ImageBitmap = BitmapFactory.decodeResource(LocalContext.current.resources, R.drawable.gangster).asImageBitmap(),
+    bitmap: ImageBitmap = BitmapFactory.decodeResource(LocalContext.current.resources, R.drawable.ic_music_album_avatar1).asImageBitmap(),
     songTitle: String = "Tu hi meri sab hay",
     artist: String = "Arijit Singh",
 ) {

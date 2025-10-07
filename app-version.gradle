@@ -1,0 +1,7 @@
+allprojects {
+    project.ext {
+        major = 1
+        minor = 3
+        build = 8
+    }
+}

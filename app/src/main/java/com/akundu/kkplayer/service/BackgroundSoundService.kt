@@ -1,0 +1,201 @@
+package com.akundu.kkplayer.service
+
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.app.PendingIntent
+import android.app.Service
+import android.content.Intent
+import android.media.MediaPlayer
+import android.os.Build
+import android.os.Handler
+import android.os.IBinder
+import android.os.Looper
+import android.util.Log
+import androidx.core.app.NotificationCompat
+import androidx.core.graphics.toColorInt
+import androidx.core.net.toUri
+import com.akundu.kkplayer.R
+import com.akundu.kkplayer.database.SongDatabase
+import com.akundu.kkplayer.database.entity.SongEntity
+import com.akundu.kkplayer.feature.settings.datastore.DataStoreManager
+import com.akundu.kkplayer.feature.settings.datastore.RepeatMode
+import com.akundu.kkplayer.storage.Constants.MEDIA_PATH
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.launch
+import java.io.File
+
+class BackgroundSoundService : Service() {
+    private var player: MediaPlayer? = null
+    private var uriString: String = ""
+    private var songTitle: String = ""
+    private val _repeatMode = MutableStateFlow(RepeatMode.NONE)
+
+    companion object {
+        private var self: BackgroundSoundService? = null
+
+        fun getServiceObject(): BackgroundSoundService? = self
+    }
+
+    override fun onBind(intent: Intent): IBinder? = null
+
+    override fun onStartCommand(
+        intent: Intent?,
+        flags: Int,
+        startId: Int,
+    ): Int {
+        fetchRepeatMode()
+        uriString = intent?.extras?.getString("uri") ?: ""
+        songTitle = intent?.extras?.getString("songTitle") ?: ""
+        val id = intent?.extras?.getInt("id", 0) ?: 0
+        Log.d("BackgroundSoundService", "onStartCommand: $uriString, $id")
+        self = this
+        Handler(Looper.getMainLooper()).postDelayed({
+            player = MediaPlayer.create(this, uriString.toUri())
+            if (player != null) {
+                player?.isLooping = false // Set looping
+                player?.setVolume(100f, 100f)
+                player?.start()
+                player?.setOnCompletionListener {
+                    when (_repeatMode.value) {
+                        RepeatMode.NONE -> nextSong(id)
+                        RepeatMode.ONE -> {
+                            val database = SongDatabase.getDatabase(this)
+                            val songEntity: SongEntity = database.songDao().findSongById(id.toLong())
+                            player = MediaPlayer.create(this, File("$MEDIA_PATH/${songEntity.fileName}").toString().toUri())
+                            if (player != null) {
+                                player?.isLooping = true // Set looping
+                                player?.setVolume(100f, 100f)
+                                player?.start()
+                                runAsForeground()
+                            }
+                        }
+
+                        RepeatMode.ALL -> {
+                            val database = SongDatabase.getDatabase(this)
+                            val nextSongId = id + 1
+                            val songEntity: SongEntity? = database.songDao().getNextDownloadedSong(nextSongId.toLong())
+                            if (songEntity == null) {
+                                nextSong(0)
+                            } else {
+                                nextSong(id)
+                            }
+                        }
+                    }
+                }
+                runAsForeground()
+            }
+        }, 50)
+        return START_STICKY
+    }
+
+    private fun nextSong(previousSongId: Int) {
+        val database = SongDatabase.getDatabase(this)
+        val nextSongId = previousSongId + 1
+        val songEntity: SongEntity? = database.songDao().getNextDownloadedSong(nextSongId.toLong())
+
+        if (songEntity == null) {
+            // End of playlist
+            this.stopSelf()
+            return
+        }
+
+        songTitle = songEntity.title
+
+        if (player != null) {
+            player?.stop()
+            player?.release()
+        }
+        player =
+            if (songEntity.isDownloaded) {
+                // Retrieve song/media file from storage
+                MediaPlayer.create(this, File("$MEDIA_PATH/${songEntity.fileName}").toString().toUri())
+            } else {
+                // Retrieve song/media from cloud / network
+                MediaPlayer.create(this, songEntity.url.toUri())
+            }
+        if (player != null) {
+            player?.isLooping = false // Set looping
+            player?.setVolume(100f, 100f)
+            player?.start()
+            player?.setOnCompletionListener {
+                nextSong(nextSongId)
+            }
+            runAsForeground()
+        }
+    }
+
+    override fun onDestroy() {
+        if (player != null) {
+            player?.stop()
+            player?.release()
+        }
+    }
+
+    private fun runAsForeground() {
+        val notificationIntent = Intent(this, this.javaClass)
+        notificationIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+        notificationIntent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
+        val pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, PendingIntent.FLAG_IMMUTABLE)
+        val mNotificationManager = applicationContext.getSystemService(NOTIFICATION_SERVICE) as NotificationManager
+        if (Build.VERSION.SDK_INT >= 26) {
+            val channel = NotificationChannel("2", "Player channel", NotificationManager.IMPORTANCE_HIGH)
+            channel.description = "Playing song notification"
+            channel.setShowBadge(true)
+            mNotificationManager.createNotificationChannel(channel)
+        }
+
+        val stopServicePendingIntent =
+            PendingIntent.getBroadcast(
+                this,
+                400,
+                Intent(this, StopServiceReceiver::class.java).putExtra("isStopService", true),
+                PendingIntent.FLAG_IMMUTABLE,
+            )
+
+        val pauseServicePendingIntent =
+            PendingIntent.getBroadcast(
+                this,
+                200,
+                Intent(this, StopServiceReceiver::class.java).putExtra("isPauseService", true),
+                PendingIntent.FLAG_IMMUTABLE,
+            )
+
+        val notification =
+            NotificationCompat
+                .Builder(this, "2")
+                .setNumber(0)
+                .setOngoing(true)
+                .setColorized(true)
+                .setColor("#606060".toColorInt())
+                .setSmallIcon(R.mipmap.ic_launcher) // .setSmallIcon(R.drawable.ic_notification)
+                .setSubText("is playing...")
+                .setContentTitle(songTitle)
+                .addAction(android.R.drawable.ic_media_play, "Play/Pause", pauseServicePendingIntent)
+                .addAction(android.R.drawable.ic_menu_close_clear_cancel, "Stop", stopServicePendingIntent)
+                .setSilent(true)
+                .setContentIntent(pendingIntent)
+        startForeground(12345, notification.build())
+    }
+
+    fun playPausePlayer() {
+        if (player != null) {
+            if (player?.isPlaying == true) {
+                player?.pause()
+            } else {
+                player?.start()
+            }
+        }
+    }
+
+    private fun fetchRepeatMode() {
+        val dataStoreManager = DataStoreManager(application)
+
+        CoroutineScope(Dispatchers.IO).launch {
+            dataStoreManager.repeatModeFlow.collect {
+                _repeatMode.value = it
+            }
+        }
+    }
+}

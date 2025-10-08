@@ -22,6 +22,9 @@
 /captures
 raw
 sampledata
+*.jpg
+*.jpeg
+*.png
 .externalNativeBuild
 .cxx
 local.properties

@@ -9,8 +9,8 @@ import kotlin.random.Random
 fun getDrawable(movie: String): Int {
     val listOfAvatar =
         listOf(
+            R.drawable.ic_music_album_avatar,
             R.drawable.ic_music_album_avatar1,
-            // R.drawable.ic_music_album_avatar3,
         )
     val randomIndex = Random.nextInt(listOfAvatar.size)
     val randomAvatar = listOfAvatar[randomIndex]

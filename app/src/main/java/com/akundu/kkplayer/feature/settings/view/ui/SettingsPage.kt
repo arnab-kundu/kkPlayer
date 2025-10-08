@@ -54,6 +54,7 @@ fun SettingsScreenContainer(
 ) {
     val theme by viewModel.theme.collectAsState()
     val repeatMode by viewModel.repeatMode.collectAsState()
+    val displayOption by viewModel.displayOption.collectAsState()
 
     SettingsScreen(
         modifier = modifier,
@@ -62,8 +63,8 @@ fun SettingsScreenContainer(
         onThemeSelected = viewModel::onThemeSelected,
         selectedRepeatMode = repeatMode,
         onRepeatModeSelected = viewModel::onRepeatModeSelected,
-        selectedDisplayMode = "", // TODO
-        onDisplayModeSelected = { /* TODO */ },
+        selectedDisplayMode = displayOption,
+        onDisplayModeSelected = viewModel::onDisplayOptionSelected,
         onClearCache = { /* Clear Cache Logic */ },
         onClearDatabase = { /* Clear DB Logic */ },
         onClearData = { /* Clear All Data Logic */ },
@@ -78,7 +79,7 @@ fun SettingsScreen(
     onThemeSelected: (String) -> Unit,
     selectedRepeatMode: String,
     onRepeatModeSelected: (String) -> Unit,
-    selectedDisplayMode: String = "All Songs",
+    selectedDisplayMode: String,
     onDisplayModeSelected: (String) -> Unit,
     onClearCache: () -> Unit,
     onClearDatabase: () -> Unit,

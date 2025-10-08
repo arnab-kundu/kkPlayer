@@ -27,6 +27,7 @@ class DataStoreManager(
     companion object {
         private val REPEAT_MODE_KEY = stringPreferencesKey("repeat_mode")
         private val THEME_KEY = stringPreferencesKey("theme")
+        private val DISPLAY_OPTION = stringPreferencesKey("display_option")
     }
 
     val repeatModeFlow: Flow<String> =
@@ -50,6 +51,18 @@ class DataStoreManager(
 
     suspend fun saveTheme(theme: String) {
         dataStore.edit { prefs -> prefs[THEME_KEY] = theme }
+    }
+
+    val displayOptionFlow: Flow<String> =
+        dataStore.data
+            .catch { exception ->
+                if (exception is IOException) emit(emptyPreferences()) else throw exception
+            }.map { preferences ->
+                preferences[DISPLAY_OPTION] ?: DisplayOptions.ALL_SONGS
+            }
+
+    suspend fun saveDisplayOption(option: String) {
+        dataStore.edit { prefs -> prefs[DISPLAY_OPTION] = option }
     }
 }
 

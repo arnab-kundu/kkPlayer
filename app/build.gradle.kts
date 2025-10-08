@@ -5,6 +5,7 @@ plugins {
     alias(libs.plugins.com.google.devtools.ksp)
     alias(libs.plugins.ktlint)
     alias(libs.plugins.kotlin.compose)
+    id("com.google.gms.google-services")
 }
 
 apply(from = "../app-version.gradle")
@@ -21,7 +22,7 @@ android {
             project.ext["major"].toString().toInt() * 100 + project.ext["minor"].toString().toInt() * 10 +
             project.ext["build"].toString().toInt()
         versionName = "${project.ext["major"]}.${project.ext["minor"]}.${project.ext["build"]}"
-        setProperty("archivesBaseName", "${rootProject.name}-v$versionName")
+        // setProperty("archivesBaseName", "${rootProject.name}-v$versionName")
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
@@ -127,6 +128,10 @@ dependencies {
 
     // 3rd party dependencies
     implementation(libs.toasty)
+
+    // Firebase
+    implementation(platform("com.google.firebase:firebase-bom:34.3.0"))
+    implementation("com.google.firebase:firebase-analytics")
 
     // Test Dependencies
     testImplementation(libs.junit)

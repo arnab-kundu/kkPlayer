@@ -1,120 +1,63 @@
 {
   "project_info": {
-    "project_number": "676533197787",
-    "project_id": "app-distribution-ccdb8",
-    "storage_bucket": "app-distribution-ccdb8.appspot.com"
+    "project_number": "510240613520",
+    "firebase_url": "https://arnabsmassanger.firebaseio.com",
+    "project_id": "arnabsmassanger",
+    "storage_bucket": "arnabsmassanger.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:676533197787:android:0cb27c472edeccebd3e5fe",
+        "mobilesdk_app_id": "1:510240613520:android:12f17c97f2ffa54e2c6415",
+        "android_client_info": {
+          "package_name": "com.akundu.arnabsmessenger"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "510240613520-n3019p6hhojongq0m2cp22jcrn9b7r02.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB29CRcJ_5LIOSyIMDm3nTOYK4F9FOa3vQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "510240613520-n3019p6hhojongq0m2cp22jcrn9b7r02.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:510240613520:android:f61efead4e8625682c6415",
         "android_client_info": {
           "package_name": "com.akundu.kkplayer"
         }
       },
       "oauth_client": [
         {
-          "client_id": "676533197787-rqkco4j3vquvr6b40vdqc1qu1ahls95a.apps.googleusercontent.com",
+          "client_id": "510240613520-n3019p6hhojongq0m2cp22jcrn9b7r02.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyCKxsjpX4Hp8e2tFFJui4DHglvQUbUVC30"
+          "current_key": "AIzaSyB29CRcJ_5LIOSyIMDm3nTOYK4F9FOa3vQ"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "676533197787-rqkco4j3vquvr6b40vdqc1qu1ahls95a.apps.googleusercontent.com",
-              "client_type": 3
-            }
-          ]
-        }
-      }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:676533197787:android:aa6cc643ab599b83d3e5fe",
-        "android_client_info": {
-          "package_name": "com.traintimetable.hasanabadlocal"
-        }
-      },
-      "oauth_client": [
-        {
-          "client_id": "676533197787-rqkco4j3vquvr6b40vdqc1qu1ahls95a.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
-      "api_key": [
-        {
-          "current_key": "AIzaSyCKxsjpX4Hp8e2tFFJui4DHglvQUbUVC30"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "676533197787-rqkco4j3vquvr6b40vdqc1qu1ahls95a.apps.googleusercontent.com",
-              "client_type": 3
-            }
-          ]
-        }
-      }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:676533197787:android:00d5b052ce21e193d3e5fe",
-        "android_client_info": {
-          "package_name": "com.traintimetable.hasanabadlocal.debug"
-        }
-      },
-      "oauth_client": [
-        {
-          "client_id": "676533197787-rqkco4j3vquvr6b40vdqc1qu1ahls95a.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
-      "api_key": [
-        {
-          "current_key": "AIzaSyCKxsjpX4Hp8e2tFFJui4DHglvQUbUVC30"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "676533197787-rqkco4j3vquvr6b40vdqc1qu1ahls95a.apps.googleusercontent.com",
-              "client_type": 3
-            }
-          ]
-        }
-      }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:676533197787:android:86a52eaee3f81640d3e5fe",
-        "android_client_info": {
-          "package_name": "com.traintimetable.hasanabadlocal.qa"
-        }
-      },
-      "oauth_client": [
-        {
-          "client_id": "676533197787-rqkco4j3vquvr6b40vdqc1qu1ahls95a.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
-      "api_key": [
-        {
-          "current_key": "AIzaSyCKxsjpX4Hp8e2tFFJui4DHglvQUbUVC30"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "676533197787-rqkco4j3vquvr6b40vdqc1qu1ahls95a.apps.googleusercontent.com",
+              "client_id": "510240613520-n3019p6hhojongq0m2cp22jcrn9b7r02.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

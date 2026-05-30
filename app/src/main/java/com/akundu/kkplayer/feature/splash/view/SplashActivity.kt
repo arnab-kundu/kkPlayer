@@ -31,7 +31,7 @@ class SplashActivity : AppCompatActivity() {
             }
         }
         // TODO: To run in IQOO uncomment below 2 line. And comment installSplashScreen {} block
-        //startActivity(Intent(this@SplashActivity, Splash2Activity::class.java))
-        //finish()
+        // startActivity(Intent(this@SplashActivity, Splash2Activity::class.java))
+        // finish()
     }
 }

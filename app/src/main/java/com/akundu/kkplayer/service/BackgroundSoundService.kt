@@ -11,8 +11,9 @@ import android.os.Handler
 import android.os.IBinder
 import android.os.Looper
 import android.util.Log
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
 import androidx.core.app.NotificationCompat
-import androidx.core.graphics.toColorInt
 import androidx.core.net.toUri
 import com.akundu.kkplayer.R
 import com.akundu.kkplayer.database.SongDatabase
@@ -168,7 +169,7 @@ class BackgroundSoundService : Service() {
                 .setNumber(0)
                 .setOngoing(true)
                 .setColorized(true)
-                .setColor("#606060".toColorInt())
+                .setColor(Color(0xFF606060).toArgb())
                 .setSmallIcon(R.mipmap.ic_launcher) // .setSmallIcon(R.drawable.ic_notification)
                 .setSubText("is playing...")
                 .setContentTitle(songTitle)

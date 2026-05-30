@@ -1,0 +1,64 @@
+name: Run Build Manually
+
+on:
+  workflow_dispatch:
+    inputs:
+      buildType:
+        description: "Build type to run"
+        required: true
+        default: "debug"
+        type: choice
+        options:
+          - debug
+          - qa
+          - release
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+    - name: set up JDK 21
+      uses: actions/setup-java@v4
+      with:
+        java-version: '21'
+        distribution: 'temurin'
+        cache: gradle
+
+    - name: Grant execute permission for gradlew
+      run: chmod +x gradlew
+      
+    - name: Build with Gradle
+      run: ./gradlew assemble${{ inputs.buildType == 'qa' && 'Qa' || inputs.buildType == 'debug' && 'Debug' || 'Release' }}
+    
+    - name: ktLint
+      run: ./gradlew ktlintCheck
+      
+    - name: Upload a Build Artifact
+      uses: actions/upload-artifact@v4.0.0
+      with:
+          name: app
+          path: app/build/outputs/apk/${{ inputs.buildType }}/*.apk
+          
+    - name: Firebase App Distribution Action
+      # You may pin to the exact commit or the version.
+      # uses: hasretsariyer/firebase-app-distribution-github-action@1efdc61b2aecd54be4072edb5dd527be26571943
+      uses: hasretsariyer/firebase-app-distribution-github-action@v1.0
+      with:
+        # Firebase App ID. You can find it in the Firebase console, on the General Settings page.
+        app_id: 1:510240613520:android:f61efead4e8625682c6415
+      
+        # Path of IPA or APK file to distribution.
+        app_file: app/build/outputs/apk/debug/app-debug.apk
+      
+        # 'Firebase access token. You can create it by `firebase login:ci` on your local machine.
+        #  Visit [cli-ci-systems](https://firebase.google.com/docs/cli#cli-ci-systems) for more detail'
+        firebase_token: "1//0gWkqDlQarTk4CgYIARAAGBASNwF-L9IrCYBEh0CxRnb95fjES9GH7ycecGQ9lKfLkqZ5jtZ0-wiPaT3t3uZwN2BKp49IXrFz7vs"
+      
+        # Distribution groups
+        tester_groups: androidTesters
+      
+        # Release notes for this build.
+        release_notes: ${{ github.event.head_commit.message }}

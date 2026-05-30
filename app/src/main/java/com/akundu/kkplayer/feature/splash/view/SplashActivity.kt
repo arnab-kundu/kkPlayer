@@ -16,7 +16,7 @@ class SplashActivity : AppCompatActivity() {
 
         viewModel = SplashViewModel()
 
-        // Splash screen loading
+        // Splash screen loading animation: Crashing in IQOO
         installSplashScreen().apply {
             // Conditional delay in SplashScreen. SplashScreen will remain until this condition gets succeeded
             setKeepOnScreenCondition {
@@ -30,5 +30,8 @@ class SplashActivity : AppCompatActivity() {
                 finish()
             }
         }
+        // TODO: To run in IQOO uncomment below 2 line. And comment installSplashScreen {} block
+        //startActivity(Intent(this@SplashActivity, Splash2Activity::class.java))
+        //finish()
     }
 }

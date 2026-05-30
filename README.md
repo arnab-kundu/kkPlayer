@@ -1,5 +1,5 @@
 ## Build Tools
-Android Studio Narwhal 3 Feature Drop | 2025.1.3
+Android Studio Panda 2 | 2025.3.2
 
 ## TODO
 ### Main screen

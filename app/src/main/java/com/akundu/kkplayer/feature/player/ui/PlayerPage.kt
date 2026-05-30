@@ -176,7 +176,7 @@ fun MediaControllerButtons(
     previousClick: () -> Unit,
 ) {
     Row(modifier = Modifier.height(64.dp), verticalAlignment = Alignment.CenterVertically) {
-        MediaButton(drawableResId = android.R.drawable.ic_media_previous, size = 32.dp, buttonClick = previousClick)
+        MediaButton(drawableResId = R.drawable.volume_down, size = 32.dp, buttonClick = previousClick)
         Spacer(modifier = Modifier.width(24.dp))
         if (viewModel.isPlaying.observeAsState(true).value) {
             MediaButton(drawableResId = R.drawable.ic_pause_circle, buttonClick = pauseClick)
@@ -184,7 +184,7 @@ fun MediaControllerButtons(
             MediaButton(drawableResId = R.drawable.ic_play_circle, buttonClick = playClick)
         }
         Spacer(modifier = Modifier.width(24.dp))
-        MediaButton(drawableResId = android.R.drawable.ic_media_next, size = 32.dp, buttonClick = nextClick)
+        MediaButton(drawableResId = R.drawable.volume_up, size = 32.dp, buttonClick = nextClick)
     }
 }
 

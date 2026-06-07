@@ -22,7 +22,14 @@ android {
             project.ext["major"].toString().toInt() * 100 + project.ext["minor"].toString().toInt() * 10 +
             project.ext["build"].toString().toInt()
         versionName = "${project.ext["major"]}.${project.ext["minor"]}.${project.ext["build"]}"
-        // setProperty("archivesBaseName", "${rootProject.name}-v$versionName")
+
+        // Rename APK programmatically
+        applicationVariants.all {
+            outputs.all {
+                (this as com.android.build.gradle.internal.api.BaseVariantOutputImpl).outputFileName =
+                    "${rootProject.name}-v$versionName.apk"
+            }
+        }
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 

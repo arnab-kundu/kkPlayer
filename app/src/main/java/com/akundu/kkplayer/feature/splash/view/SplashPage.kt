@@ -1,10 +1,10 @@
 package com.akundu.kkplayer.feature.splash.view
 
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -27,10 +28,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -54,7 +57,10 @@ fun SplashPage(
     Scaffold { innerPadding ->
         Image(painter = painterResource(id = R.drawable.background), contentDescription = null, contentScale = ContentScale.FillBounds)
         Column(
-            modifier = Modifier.fillMaxWidth().padding(vertical = innerPadding.calculateTopPadding()),
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = innerPadding.calculateTopPadding()),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Spacer(modifier = Modifier.height(60.dp))
@@ -79,7 +85,7 @@ fun SplashPage(
 
             Spacer(modifier = Modifier.weight(1F))
             Text(
-                text = "©2025 @k music industries. All rights reserved.",
+                text = "©2026 @k music industries. All rights reserved.",
                 color = Color.DarkGray,
                 modifier = Modifier.padding(0.dp, 0.dp, 0.dp, 20.dp),
                 fontSize = 12.sp,
@@ -199,17 +205,41 @@ fun LoginLayout(
 
                 Button(
                     onClick = {
-                        Log.d("SplashPage", "login onClick = { ... } ")
-                        loginButtonClick.invoke()
+                        loginButtonClick()
                     },
                     modifier =
                         Modifier
-                            .height(48.dp)
                             .width(180.dp)
-                            .align(Alignment.CenterHorizontally),
-                    colors = ButtonDefaults.buttonColors(Color(0xFF2C2C2C)),
+                            .height(48.dp)
+                            .align(Alignment.CenterHorizontally)
+                            .background(
+                                brush =
+                                    Brush.verticalGradient(
+                                        colors =
+                                            listOf(
+                                                Color(0xFF5A5A5A),
+                                                Color(0xFF2C2C2C),
+                                            ),
+                                    ),
+                                shape = RoundedCornerShape(24.dp),
+                            ),
+                    elevation =
+                        ButtonDefaults.buttonElevation(
+                            defaultElevation = 6.dp,
+                            pressedElevation = 2.dp,
+                        ),
+                    colors =
+                        ButtonDefaults.buttonColors(
+                            containerColor = Color.Transparent,
+                        ),
+                    contentPadding = PaddingValues(),
                 ) {
-                    Text(text = "LOGIN", modifier = Modifier, color = Color.White, fontSize = 12.sp)
+                    Text(
+                        text = "LOGIN",
+                        color = Color.White,
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 12.sp,
+                    )
                 }
                 Spacer(modifier = Modifier.height(12.dp))
 

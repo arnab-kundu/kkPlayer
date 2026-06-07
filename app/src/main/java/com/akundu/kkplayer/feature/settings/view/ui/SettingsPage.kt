@@ -14,7 +14,9 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Delete
@@ -26,7 +28,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.blur
@@ -85,6 +86,7 @@ fun SettingsScreen(
     onClearDatabase: () -> Unit,
     onClearData: () -> Unit,
 ) {
+    val scrollState = rememberScrollState()
     val glassModifier =
         Modifier
             .fillMaxWidth()
@@ -110,112 +112,120 @@ fun SettingsScreen(
     )
     Column(
         modifier =
-            modifier
+            Modifier
                 .fillMaxSize()
-                .padding(16.dp),
+                .verticalScroll(scrollState),
     ) {
-        Row {
-            Icon(
-                painter = painterResource(id = R.drawable.baseline_west_24),
-                contentDescription = null,
-                modifier =
-                    Modifier
-                        .size(24.dp)
-                        .clickable { backClick.invoke() },
-                tint = MaterialTheme.colorScheme.onSurfaceVariant,
-            )
-            Column(
-                modifier = Modifier.fillMaxWidth(),
-            ) {
-                Text(
-                    "Settings",
-                    style = MaterialTheme.typography.titleMedium,
-                    color = Color.White,
-                    fontSize = 26.sp,
-                    fontFamily = FontFamily.Cursive,
-                    fontWeight = FontWeight.Bold,
-                    modifier = Modifier.align(Alignment.CenterHorizontally),
+        // Scrollable content
+        Column(
+            modifier =
+                modifier
+                    .fillMaxSize()
+                    .padding(16.dp),
+        ) {
+            Row {
+                Icon(
+                    painter = painterResource(id = R.drawable.baseline_west_24),
+                    contentDescription = null,
+                    modifier =
+                        Modifier
+                            .size(24.dp)
+                            .clickable { backClick.invoke() },
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
+                Column(
+                    modifier = Modifier.fillMaxWidth(),
+                ) {
+                    Text(
+                        "Settings",
+                        style = MaterialTheme.typography.titleMedium,
+                        color = Color.White,
+                        fontSize = 26.sp,
+                        fontFamily = FontFamily.Cursive,
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier.align(Alignment.CenterHorizontally),
+                    )
+                }
             }
-        }
-        Spacer(modifier = Modifier.height(24.dp))
+            Spacer(modifier = Modifier.height(24.dp))
 
-        // 🎨 Theme Section
-        Box(modifier = glassModifier) {
-            Column {
-                Text("Theme", style = MaterialTheme.typography.titleMedium, color = Color.White)
-                Spacer(Modifier.height(8.dp))
-                listOf("Default", "Dark", "Light").forEach { theme ->
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        RadioButton(
-                            selected = theme == selectedTheme,
-                            onClick = { onThemeSelected(theme) },
-                        )
-                        Text(theme, modifier = Modifier.padding(start = 8.dp), color = Color.White)
+            // 🎨 Theme Section
+            Box(modifier = glassModifier) {
+                Column {
+                    Text("Theme", style = MaterialTheme.typography.titleMedium, color = Color.White)
+                    Spacer(Modifier.height(8.dp))
+                    listOf("Default", "Dark", "Light").forEach { theme ->
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            RadioButton(
+                                selected = theme == selectedTheme,
+                                onClick = { onThemeSelected(theme) },
+                            )
+                            Text(theme, modifier = Modifier.padding(start = 8.dp), color = Color.White)
+                        }
                     }
                 }
             }
-        }
 
-        Spacer(modifier = Modifier.height(24.dp))
+            Spacer(modifier = Modifier.height(24.dp))
 
-        // 🔁 Repeat Mode Section
-        Box(modifier = glassModifier) {
-            Column {
-                Text("Repeat Mode", style = MaterialTheme.typography.titleMedium, color = Color.White)
-                Spacer(Modifier.height(8.dp))
-                listOf("Repeat One", "Repeat All", "Repeat None").forEach { mode ->
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        RadioButton(
-                            selected = mode == selectedRepeatMode,
-                            onClick = { onRepeatModeSelected(mode) },
-                        )
-                        Text(mode, modifier = Modifier.padding(start = 8.dp), color = Color.White)
+            // 🔁 Repeat Mode Section
+            Box(modifier = glassModifier) {
+                Column {
+                    Text("Repeat Mode", style = MaterialTheme.typography.titleMedium, color = Color.White)
+                    Spacer(Modifier.height(8.dp))
+                    listOf("Repeat One", "Repeat All", "Repeat None").forEach { mode ->
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            RadioButton(
+                                selected = mode == selectedRepeatMode,
+                                onClick = { onRepeatModeSelected(mode) },
+                            )
+                            Text(mode, modifier = Modifier.padding(start = 8.dp), color = Color.White)
+                        }
                     }
                 }
             }
-        }
 
-        Spacer(modifier = Modifier.height(32.dp))
+            Spacer(modifier = Modifier.height(32.dp))
 
-        // 🎵 Display Songs Section
-        Box(modifier = glassModifier) {
-            Column {
-                Text(text = "Display Options", style = MaterialTheme.typography.titleMedium, color = Color.White)
-                Spacer(Modifier.height(8.dp))
-                listOf("All Songs", "Downloaded Songs Only").forEach { mode ->
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        RadioButton(
-                            selected = mode == selectedDisplayMode,
-                            onClick = { onDisplayModeSelected(mode) },
-                        )
-                        Text(mode, modifier = Modifier.padding(start = 8.dp), color = Color.White)
+            // 🎵 Display Songs Section
+            Box(modifier = glassModifier) {
+                Column {
+                    Text(text = "Display Options", style = MaterialTheme.typography.titleMedium, color = Color.White)
+                    Spacer(Modifier.height(8.dp))
+                    listOf("All Songs", "Downloaded Songs Only").forEach { mode ->
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            RadioButton(
+                                selected = mode == selectedDisplayMode,
+                                onClick = { onDisplayModeSelected(mode) },
+                            )
+                            Text(mode, modifier = Modifier.padding(start = 8.dp), color = Color.White)
+                        }
                     }
                 }
             }
+
+            Spacer(modifier = Modifier.height(32.dp))
+
+            // 🧹 Clear Options
+            GlassActionButton(
+                icon = Icons.Outlined.Delete, // Delete Cache
+                label = "Clear Cache",
+                onClick = onClearCache,
+            )
+
+            GlassActionButton(
+                icon = Icons.Default.DateRange, // DB icon
+                label = "Clear Database",
+                onClick = onClearDatabase,
+            )
+
+            GlassActionButton(
+                icon = Icons.Default.Delete, // Delete all data,
+                label = "Clear All Data",
+                color = Color.Red,
+                onClick = onClearData,
+            )
         }
-
-        Spacer(modifier = Modifier.height(32.dp))
-
-        // 🧹 Clear Options
-        GlassActionButton(
-            icon = Icons.Outlined.Delete, // Delete Cache
-            label = "Clear Cache",
-            onClick = onClearCache,
-        )
-
-        GlassActionButton(
-            icon = Icons.Default.DateRange, // DB icon
-            label = "Clear Database",
-            onClick = onClearDatabase,
-        )
-
-        GlassActionButton(
-            icon = Icons.Default.Delete, // Delete all data,
-            label = "Clear All Data",
-            color = Color.Red,
-            onClick = onClearData,
-        )
     }
 }
 

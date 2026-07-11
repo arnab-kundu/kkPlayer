@@ -6,15 +6,15 @@ object SongDataProvider {
             Song(
                 title = "Shri Hanuman Chalisa",
                 artist = "",
-                fileName = "hanumanchalisa.mp3",
-                url = "https://ravalwebs.github.io/hanumanchalisa/mp3/Shri%20Hanuman%20Chalisa.mp3",
+                fileName = "hanuman_chalisa.mp3",
+                url = "https://cs1.mp3.pm/download/1312416/dzZEK3ZreHhHN0NWa01rVTFCVzJmUDlGbWdNRUlCOVZGMXloelN1d1RjVkpaalJCMHl3dmpsMFc2Y0VoK2xXUVBHQ0VlMFNIUFRQb2RUTjNHZEpvMkppbXNXZzBDS1BVQy9NUU1JeGxKcGFtYnR0a01TQW51cy82bjBzZ2hRQlY/Gulshan_Kumar_-_Sheree_Hanuman_Chalisa_(mp3.pm).mp3",
                 movie = "",
             ),
             Song(
                 title = "Bhole Shankar",
                 artist = "Hansraj Raghuwanshi",
-                fileName = "Bhole Shankar.mp3",
-                url = "https://pagalfree.com/musics/128-Bhole%20Shankar%20-%20Hansraj%20Raghuwanshi%20128%20Kbps.mp3",
+                fileName = "bhole_shankar.mp3",
+                url = "",
                 movie = "OMG 2",
             ),
             Song(
@@ -56,28 +56,28 @@ object SongDataProvider {
                 title = "Bekhayali",
                 artist = "Sachet Tandon, Sachet Parampara",
                 fileName = "Bekhayali - Kabir Singh.mp3",
-                url = "https://pagalfree.com/musics/128-Bekhayali%20-%20Kabir%20Singh%20128%20Kbps.mp3",
+                url = "https://pagalnew.com/128-downloads/2384",
                 movie = "Kabir Singh (2019)",
             ),
             Song(
                 title = "Tujhe Kitna Chahne Lage",
                 artist = "Arijit Singh",
                 fileName = "Tujhe Kitna Chahne Lage - Kabir Singh.mp3",
-                url = "https://pagalfree.com/musics/128-Tujhe%20Kitna%20Chahne%20Lage%20-%20Kabir%20Singh%20128%20Kbps.mp3",
+                url = "https://pagalnew.com/128-downloads/2386",
                 movie = "Kabir Singh (2019)",
             ),
             Song(
                 title = "Kaise Hua",
                 artist = "Vishal Mishra",
                 fileName = "Kaise Hua - Kabir Singh",
-                url = "https://pagalfree.com/musics/128-Kaise%20Hua%20-%20Kabir%20Singh%20128%20Kbps.mp3",
+                url = "https://pagalnew.com/128-downloads/2385",
                 movie = "Kabir Singh (2019)",
             ),
             Song(
                 title = "Tujhe Kitna Chahein Aur",
                 artist = "Jubin Nautiyal",
                 fileName = "Tujhe Kitna Chahein Aur - Jubin.mp3",
-                url = "https://pagalfree.com/musics/128-Tujhe%20Kitna%20Chahein%20Aur%20(Film%20Version)%20-%20Kabir%20Singh%20128%20Kbps.mp3",
+                url = "https://pagalnew.com/128-downloads/21565",
                 movie = "Kabir Singh (2019)",
             ),
             Song(
@@ -182,7 +182,7 @@ object SongDataProvider {
                 title = "Malang",
                 artist = "Ved Sharma",
                 fileName = "Malang.mp3",
-                url = "https://pagalfree.com/musics/192-Malang%20(Title%20Track)%20-%20Malang%20-%20Unleash%20The%20Madness%20192%20Kbps.mp3",
+                url = "https://pagalnew.com/128-downloads/1848",
                 movie = "",
             ),
             Song(
@@ -195,8 +195,8 @@ object SongDataProvider {
             Song(
                 title = "Wildest Dreams",
                 artist = "Taylor Swift",
-                fileName = "Wildest Dreams.mp3",
-                url = "https://ia800505.us.archive.org/2/items/07.20Taylor20Swift2020Wildest20Dreams2020www.SongsLover.cc/07.%2520Taylor%2520Swift%2520-%2520Wildest%2520Dreams%2520-%2520%28www.SongsLover.cc%29.mp3",
+                fileName = "wildest_dreams.mp3",
+                url = "https://cs1.mp3.pm/download/90975111/dzZEK3ZreHhHN0NWa01rVTFCVzJmUDlGbWdNRUlCOVZGMXloelN1d1RjVll5Z1B1K01Wc2luajZnbmd4SE5rRnVHUmllL3RHZnY4MTk4UG5iaTJDZEVLRkFpNEllRUlXbFRyTkx3ZXFybnViUm9qMWtLcTM4Y2p6Q2VzUkJjZ04/Tayor_Swift_-_Wildest_dreams_(mp3.pm).mp3",
                 movie = "",
             ),
             // Song(

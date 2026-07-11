@@ -14,6 +14,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlin.time.Duration.Companion.milliseconds
 
 class SplashViewModel : ViewModel() {
     // region How to create delay in splashScreen viewModel using StateFlow
@@ -22,7 +23,7 @@ class SplashViewModel : ViewModel() {
 
     init {
         viewModelScope.launch {
-            delay(2500)
+            delay(1500.milliseconds)
             _isLoading.value = false
         }
     }
@@ -33,7 +34,7 @@ class SplashViewModel : ViewModel() {
     fun reverseAnimation() {
         viewModelScope.launch {
             isAnimationEndLiveData.value = (isAnimationEndLiveData.value)?.not()
-            delay(2500)
+            delay(2500.milliseconds)
             reverseAnimation()
         }
     }
@@ -45,7 +46,7 @@ class SplashViewModel : ViewModel() {
                 Log.d("TAG", ": $it")
                 emit(isAnimationEnd)
                 isAnimationEnd = isAnimationEnd.not()
-                delay(2500)
+                delay(2500.milliseconds)
             }
         }
 

@@ -12,12 +12,12 @@ apply(from = "../app-version.gradle")
 
 android {
     namespace = "com.akundu.kkplayer"
-    compileSdk = 36
+    compileSdk = 37
 
     defaultConfig {
         applicationId = "com.akundu.kkplayer"
-        minSdk = 23
-        targetSdk = 36
+        minSdk = 33
+        targetSdk = 37
         versionCode =
             project.ext["major"].toString().toInt() * 100 + project.ext["minor"].toString().toInt() * 10 +
             project.ext["build"].toString().toInt()
@@ -52,7 +52,16 @@ android {
         sourceCompatibility = JavaVersion.VERSION_21
         targetCompatibility = JavaVersion.VERSION_21
     }
-
+    kotlin {
+        compilerOptions {
+            jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_21)
+        }
+    }
+    java {
+        toolchain {
+            languageVersion = JavaLanguageVersion.of(21)
+        }
+    }
     buildFeatures {
         buildConfig = true
         compose = true

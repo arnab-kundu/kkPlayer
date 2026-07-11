@@ -90,15 +90,15 @@ object SongDataProvider {
             Song(
                 title = "Labon Ko",
                 artist = "K.K",
-                fileName = "Labon Ko (Bhool Bhulaiyaa) - K.K - 320Kbps.mp3",
-                url = "https://ia801208.us.archive.org/6/items/labon-ko/LABON%20KO.mp3",
+                fileName = "Labon Ko.mp3",
+                url = "https://pagalnew.com/128-downloads/9154",
                 movie = "Bhool Bhulaiyaa",
             ),
             Song(
                 title = "Beete Lamhein",
                 artist = "K.K",
-                fileName = "Beete Lamhein (The Train) - K.K - 320Kbps.mp3",
-                url = "https://ia600302.us.archive.org/18/items/02BeeteLamhe1/02_beete_lamhe%5B1%5D.mp3",
+                fileName = "Beete Lamhein.mp3",
+                url = "https://pagalnew.com/128-downloads/9506",
                 movie = "The Train",
             ),
             Song(
@@ -111,7 +111,7 @@ object SongDataProvider {
             Song(
                 title = "Vaaste",
                 artist = "Dhvani Bhanushali",
-                fileName = "Vaaste - Dhvani Bhanushali Song Info.mp3",
+                fileName = "https://pagalnew.com/128-downloads/25399",
                 url = "https://djmaza.live/files/download/id/10088",
                 movie = "",
             ),
@@ -146,15 +146,15 @@ object SongDataProvider {
             Song(
                 title = "Sooraj Dooba Hain",
                 artist = "Arijit Singh",
-                fileName = "Sooraj Dooba Hain.mp3",
-                url = "https://hindi2.djpunjab.app/load-hindi/rTmpRsc0gX9NQNkbuxKWLg==/Sooraj%20Dooba%20Hain.mp3",
+                fileName = "sooraj_dooba_hain.mp3",
+                url = "https://pagalnew.com/128-downloads/4520",
                 movie = "",
             ),
             Song(
                 title = "In The End ",
                 artist = "Linkin Park (Remix) & Mellen Gi",
-                fileName = "In The End.mp3",
-                url = "https://files.ceenaija.com/wp-content/uploads/music/2021/06/Tommee_Profitt_-_In_The_End_Tried_So_Hard__CeeNaija.com_.mp3",
+                fileName = "in_the_end.mp3",
+                url = "",
                 movie = "",
             ),
             Song(
@@ -167,8 +167,8 @@ object SongDataProvider {
             Song(
                 title = "Aahatein",
                 artist = "Amit Trivedi",
-                fileName = "Aahatein.mp3",
-                url = "https://hindi2.djpunjab.app/load-hindi/YrpaSlVFyCTCBt5-jluvsQ==/Aahatein.mp3",
+                fileName = "aahatein.mp3",
+                url = "https://pagallworlds.com/wp-content/uploads/2023/12/Aahatein-Agnee.mp3",
                 movie = "",
             ),
             Song(

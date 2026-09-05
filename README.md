@@ -26,3 +26,17 @@ chmod +x gradlew
 ```Shell Script
 ./gradlew connectedDebugAndroidTest -Pandroid.testInstrumentationRunnerArguments.class=com.akundu.kkplayer.TestSuite
 ```
+
+| Task                  | Command                                              |
+|-----------------------|------------------------------------------------------|
+| Unit Test Report      | ./gradlew :app:koverHtmlReport                       |
+| Android Test Report   | ./gradlew :app:connectedDebugAndroidTest             |
+| Verify Coverage Limits| ./gradlew :app:koverVerify (if thresholds are set)   |
+| Clean & Report        | ./gradlew clean koverHtmlReport                      |
+
+> [!TIP]
+> To see the Unit Test Report, Run: open app/build/reports/tests/testDebugUnitTest/index.html
+
+> To see the Unit Android Test Report, Run: open app/build/reports/androidTests/connected/debug/index.html
+
+> To see the Test Coverage Report, Run: open app/build/reports/kover/html/index.html

@@ -35,8 +35,9 @@ chmod +x gradlew
 | Clean & Report        | ./gradlew clean koverHtmlReport                      |
 
 > [!TIP]
-> To see the Unit Test Report, Run: open app/build/reports/tests/testDebugUnitTest/index.html
-
-> To see the Unit Android Test Report, Run: open app/build/reports/androidTests/connected/debug/index.html
-
-> To see the Test Coverage Report, Run: open app/build/reports/kover/html/index.html
+> - To see the Unit Test Report in MAC, Run: `open app/build/reports/tests/testDebugUnitTest/index.html`
+> - To see the Unit Test Report in Windows, Run: `start app/build/reports/tests/testDebugUnitTest/index.html`
+> - To see the Unit Android Test Report in MAC, Run: `open app/build/reports/androidTests/connected/debug/index.html`
+> - To see the Unit Android Test Report in Windows, Run: `start app/build/reports/androidTests/connected/debug/index.html`
+> - To see the Test Coverage Report in MAC, Run: `open app/build/reports/kover/html/index.html`
+> - To see the Test Coverage Report in Windows, Run: `start app/build/reports/kover/html/index.html`

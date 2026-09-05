@@ -3,14 +3,18 @@ package com.akundu.kkplayer.feature.settings.viewModel
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import com.akundu.kkplayer.KkPlayerApp
 import com.akundu.kkplayer.feature.settings.datastore.AppTheme
 import com.akundu.kkplayer.feature.settings.datastore.DataStoreManager
 import com.akundu.kkplayer.feature.settings.datastore.DisplayOptions
 import com.akundu.kkplayer.feature.settings.datastore.RepeatMode
+import com.akundu.kkplayer.storage.Constants
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import java.io.File
 
 class SettingsViewModel(
     application: Application,
@@ -60,5 +64,36 @@ class SettingsViewModel(
         viewModelScope.launch {
             dataStoreManager.saveDisplayOption(option)
         }
+    }
+
+    fun onClearCache() {
+        viewModelScope.launch(Dispatchers.IO) {
+            clearCacheDirs()
+        }
+    }
+
+    fun onClearDatabase() {
+        viewModelScope.launch(Dispatchers.IO) {
+            KkPlayerApp.appModule.database.clearAllTables()
+        }
+    }
+
+    fun onClearData() {
+        viewModelScope.launch(Dispatchers.IO) {
+            clearCacheDirs()
+            KkPlayerApp.appModule.database.clearAllTables()
+            clearDirectoryContents(File(Constants.MEDIA_PATH))
+            dataStoreManager.clearAll()
+        }
+    }
+
+    private fun clearCacheDirs() {
+        val application = getApplication<Application>()
+        clearDirectoryContents(application.cacheDir)
+        application.externalCacheDir?.let { clearDirectoryContents(it) }
+    }
+
+    private fun clearDirectoryContents(directory: File) {
+        directory.listFiles()?.forEach { it.deleteRecursively() }
     }
 }

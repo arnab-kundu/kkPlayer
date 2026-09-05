@@ -66,9 +66,9 @@ fun SettingsScreenContainer(
         onRepeatModeSelected = viewModel::onRepeatModeSelected,
         selectedDisplayMode = displayOption,
         onDisplayModeSelected = viewModel::onDisplayOptionSelected,
-        onClearCache = { /* Clear Cache Logic */ },
-        onClearDatabase = { /* Clear DB Logic */ },
-        onClearData = { /* Clear All Data Logic */ },
+        onClearCache = viewModel::onClearCache,
+        onClearDatabase = viewModel::onClearDatabase,
+        onClearData = viewModel::onClearData,
     )
 }
 

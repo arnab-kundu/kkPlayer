@@ -64,6 +64,10 @@ class DataStoreManager(
     suspend fun saveDisplayOption(option: String) {
         dataStore.edit { prefs -> prefs[DISPLAY_OPTION] = option }
     }
+
+    suspend fun clearAll() {
+        dataStore.edit { prefs -> prefs.clear() }
+    }
 }
 
 object RepeatMode {

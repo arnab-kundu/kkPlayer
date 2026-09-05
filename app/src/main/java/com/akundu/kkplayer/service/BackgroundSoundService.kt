@@ -332,6 +332,14 @@ class BackgroundSoundService : Service() {
         runAsForeground()
     }
 
+    fun getCurrentSongId(): Int = currentSongId
+
+    fun getCurrentPositionMs(): Int = player?.currentPosition ?: 0
+
+    fun getDurationMs(): Int = player?.duration ?: 0
+
+    fun isCurrentlyPlaying(): Boolean = player?.isPlaying == true
+
     private fun updateMetadata() {
         val metadataBuilder =
             MediaMetadataCompat

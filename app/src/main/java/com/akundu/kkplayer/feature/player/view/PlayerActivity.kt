@@ -7,14 +7,14 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.media.AudioManager
 import android.media.MediaMetadataRetriever
-import android.media.MediaPlayer
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.ImageBitmap
@@ -34,8 +34,6 @@ import com.akundu.kkplayer.storage.Constants.MEDIA_PATH
 import com.akundu.kkplayer.ui.theme.KkPlayerTheme
 import java.io.File
 
-private const val TAG = "PlayerActivity"
-
 class PlayerActivity : ComponentActivity() {
     private var songIndex = 0
     private lateinit var viewModel: PlayerViewModel
@@ -48,6 +46,7 @@ class PlayerActivity : ComponentActivity() {
         viewModel = PlayerViewModel()
         val bundle = intent.extras
         songIndex = bundle?.getInt("index") ?: 0
+        viewModel.currentSongId.value = songIndex
 
         setContent {
             // Initialize the state within a Composable context
@@ -56,25 +55,23 @@ class PlayerActivity : ComponentActivity() {
                 // A surface container using the 'background' color from the theme
                 Scaffold { innerPadding ->
                     val dataBase = SongDatabase.getDatabase(this)
-                    val song = dataBase.songDao().findSongById(id = songIndex.toLong())
-                    val mediaPlayer = MediaPlayer.create(this, File("$MEDIA_PATH/${song.fileName}").toString().toUri())
-                    Log.d(TAG, "onCreate: duration ${mediaPlayer.duration}")
+                    val currentSongId by viewModel.currentSongId.observeAsState(initial = songIndex)
+                    val song = remember(currentSongId) { dataBase.songDao().findSongById(id = currentSongId.toLong()) }
+                    val bitmap =
+                        remember(currentSongId) {
+                            mediaMetaDataRetriever(fileName = song.fileName, movie = song.movie, context = this)
+                        }
+                    val durationMs by viewModel.durationMs.observeAsState(initial = 0)
+                    val positionMs by viewModel.currentPositionMs.observeAsState(initial = 0)
                     val audioManager = getSystemService(AUDIO_SERVICE) as AudioManager
-                    audioManager.adjustStreamVolume(
-                        AudioManager.STREAM_MUSIC,
-                        AudioManager.ADJUST_RAISE,
-                        0, // Displays the system volume slider
-                    )
-                    // Get maximum index allowed for media stream
-                    val maxVolume = audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC)
-                    var currentVolume = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC)
 
                     PlayerPage(
                         verticalPadding = innerPadding.calculateTopPadding(),
                         viewModel = viewModel,
                         song = song,
-                        duration = mediaPlayer.duration / 1000,
-                        bitmap = mediaMetaDataRetriever(fileName = song.fileName, movie = song.movie, context = this),
+                        duration = durationMs / 1000,
+                        currentPosition = positionMs / 1000,
+                        bitmap = bitmap,
                         playClick = {
                             viewModel.playPauseToggle()
                         },
@@ -82,41 +79,20 @@ class PlayerActivity : ComponentActivity() {
                             viewModel.playPauseToggle()
                         },
                         nextClick = {
-                            Log.i(TAG, "nextClick: ")
-
-                            if (currentVolume < maxVolume) {
-                                // Increase the device volume
-                                audioManager.setStreamVolume(
-                                    AudioManager.STREAM_MUSIC,
-                                    ++currentVolume,
-                                    AudioManager.FLAG_SHOW_UI,
-                                )
-                            } else {
-                                // Increase the device volume
-                                audioManager.setStreamVolume(
-                                    AudioManager.STREAM_MUSIC,
-                                    maxVolume,
-                                    AudioManager.FLAG_SHOW_UI,
-                                )
-                            }
+                            viewModel.nextSong()
                         },
                         previousClick = {
-                            Log.i(TAG, "previousClick: ")
-
-                            if (currentVolume > 0) {
-                                // Decrease the device volume
-                                audioManager.setStreamVolume(
-                                    AudioManager.STREAM_MUSIC,
-                                    --currentVolume,
-                                    AudioManager.FLAG_SHOW_UI,
-                                )
-                            } else {
-                                audioManager.setStreamVolume(
-                                    AudioManager.STREAM_MUSIC,
-                                    0,
-                                    AudioManager.FLAG_SHOW_UI,
-                                )
-                            }
+                            viewModel.previousSong()
+                        },
+                        onSeek = { seekSeconds ->
+                            viewModel.seekTo(seekSeconds * 1000)
+                        },
+                        onVolumeChange = { delta ->
+                            audioManager.adjustStreamVolume(
+                                AudioManager.STREAM_MUSIC,
+                                if (delta > 0) AudioManager.ADJUST_RAISE else AudioManager.ADJUST_LOWER,
+                                AudioManager.FLAG_SHOW_UI,
+                            )
                         },
                         backClick = {
                             val stopServicePendingIntent =

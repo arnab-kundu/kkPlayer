@@ -27,6 +27,8 @@ import java.io.File
 import java.io.FileNotFoundException
 import java.io.InputStream
 
+internal const val DOWNLOAD_WORK_TAG = "song_download"
+
 /**
  * **PlaySong**
  *
@@ -136,6 +138,7 @@ internal fun download(
         Builder(DownloadWork::class.java)
             .setInputData(data)
             .setConstraints(constraints)
+            .addTag(DOWNLOAD_WORK_TAG)
             .build()
 
     WorkManager.getInstance(context).enqueue(request)

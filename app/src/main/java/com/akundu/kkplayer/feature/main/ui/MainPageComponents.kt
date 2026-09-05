@@ -27,6 +27,7 @@ import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.ImageBitmapConfig
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
@@ -38,6 +39,7 @@ import androidx.compose.ui.unit.sp
 import com.akundu.kkplayer.R
 import com.akundu.kkplayer.database.entity.SongEntity
 import com.akundu.kkplayer.media.MediaMetaDataRetriever.fetchMetadataFromCache
+import com.akundu.kkplayer.ui.TestTags
 import com.akundu.kkplayer.ui.theme.AlleanaFontFamily
 import com.akundu.kkplayer.ui.theme.Blue
 
@@ -59,6 +61,7 @@ fun SongItem(song: SongEntity = SongEntity(id = 1L, title = "", artist = "", fil
                     .padding(start = 8.dp, top = 8.dp, end = 8.dp, bottom = 0.dp)
                     .clip(RoundedCornerShape(16.dp, 16.dp, 16.dp, 16.dp))
                     .background(MaterialTheme.colorScheme.background)
+                    .testTag(TestTags.MAIN_SONG_ITEM_ROW)
                     .semantics { contentDescription = "songItem" }
                     .clickable { playSong(context, song.title, song.fileName, song.id.toInt()) },
             verticalAlignment = Alignment.CenterVertically,
@@ -104,6 +107,7 @@ fun SongItem(song: SongEntity = SongEntity(id = 1L, title = "", artist = "", fil
                 }
             }
             IconButton(
+                modifier = Modifier.testTag(TestTags.MAIN_SONG_ITEM_ACTION_BUTTON),
                 onClick = {
                     val downloadUsingAndroidDownloaderAPI = false
                     if (!downloadUsingAndroidDownloaderAPI) {
@@ -164,7 +168,10 @@ fun SongListComposeWithStaticData(
 fun SongListCompose(
     songList: List<SongEntity>,
     @SuppressLint("ModifierParameter")
-    modifier: Modifier = Modifier.semantics { contentDescription = "songsList" },
+    modifier: Modifier =
+        Modifier
+            .testTag(TestTags.MAIN_SONG_LIST)
+            .semantics { contentDescription = "songsList" },
 ) {
     Image(
         modifier = Modifier.blur(16.dp),

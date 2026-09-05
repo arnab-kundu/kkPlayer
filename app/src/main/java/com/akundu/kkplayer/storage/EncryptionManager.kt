@@ -9,7 +9,6 @@ import java.security.InvalidAlgorithmParameterException
 import java.security.InvalidKeyException
 import java.security.NoSuchAlgorithmException
 import javax.crypto.Cipher
-import javax.crypto.CipherOutputStream
 import javax.crypto.NoSuchPaddingException
 import javax.crypto.spec.IvParameterSpec
 import javax.crypto.spec.SecretKeySpec
@@ -66,23 +65,7 @@ abstract class EncryptionManager {
         specStr: String,
         inputStream: InputStream,
         outputStream: OutputStream,
-    ) {
-        var out = outputStream
-        try {
-            val iv = IvParameterSpec(specStr.toByteArray(charset("UTF-8")))
-            val keySpec = SecretKeySpec(keyStr.toByteArray(charset("UTF-8")), ALGO_SECRET_KEY)
-            val c = Cipher.getInstance(ALGO_IMAGE_ENCRYPTOR)
-            c.init(Cipher.ENCRYPT_MODE, keySpec, iv)
-            out = CipherOutputStream(out, c)
-            var count: Int
-            val buffer = ByteArray(READ_WRITE_BLOCK_BUFFER)
-            while (inputStream.read(buffer).also { count = it } > 0) {
-                out.write(buffer, 0, count)
-            }
-        } finally {
-            out.close()
-        }
-    }
+    ) = transform(Cipher.ENCRYPT_MODE, keyStr, specStr, inputStream, outputStream)
 
     /**
      * Decrypt file
@@ -104,21 +87,34 @@ abstract class EncryptionManager {
         specStr: String,
         inputStream: InputStream,
         outputStream: OutputStream,
+    ) = transform(Cipher.DECRYPT_MODE, keyStr, specStr, inputStream, outputStream)
+
+    /**
+     * Runs the cipher over the whole stream. [Cipher.doFinal] is called explicitly rather than
+     * relying on [CipherOutputStream], which swallows the padding error that identifies input
+     * the key cannot decrypt.
+     */
+    private fun transform(
+        mode: Int,
+        keyStr: String,
+        specStr: String,
+        inputStream: InputStream,
+        outputStream: OutputStream,
     ) {
-        var out = outputStream
-        try {
-            val iv = IvParameterSpec(specStr.toByteArray(charset("UTF-8")))
-            val keySpec = SecretKeySpec(keyStr.toByteArray(charset("UTF-8")), ALGO_SECRET_KEY)
-            val c = Cipher.getInstance(ALGO_IMAGE_ENCRYPTOR)
-            c.init(Cipher.DECRYPT_MODE, keySpec, iv)
-            out = CipherOutputStream(out, c)
-            var count: Int
-            val buffer = ByteArray(READ_WRITE_BLOCK_BUFFER)
-            while (inputStream.read(buffer).also { count = it } > 0) {
-                out.write(buffer, 0, count)
+        val iv = IvParameterSpec(specStr.toByteArray(charset("UTF-8")))
+        val keySpec = SecretKeySpec(keyStr.toByteArray(charset("UTF-8")), ALGO_SECRET_KEY)
+        val cipher = Cipher.getInstance(ALGO_IMAGE_ENCRYPTOR)
+        cipher.init(mode, keySpec, iv)
+
+        inputStream.use { input ->
+            outputStream.use { out ->
+                var count: Int
+                val buffer = ByteArray(READ_WRITE_BLOCK_BUFFER)
+                while (input.read(buffer).also { count = it } > 0) {
+                    cipher.update(buffer, 0, count)?.let { out.write(it) }
+                }
+                out.write(cipher.doFinal())
             }
-        } finally {
-            out.close()
         }
     }
 }

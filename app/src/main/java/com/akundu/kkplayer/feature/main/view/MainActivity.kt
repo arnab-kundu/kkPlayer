@@ -1,7 +1,6 @@
 package com.akundu.kkplayer.feature.main.view
 
 import android.content.Context
-import android.os.Build
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.ComponentActivity
@@ -18,6 +17,7 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.blur
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -32,6 +32,7 @@ import com.akundu.kkplayer.feature.main.ui.SongItem
 import com.akundu.kkplayer.feature.main.viewModel.MainViewModel
 import com.akundu.kkplayer.permission.RuntimePermission.askNotificationPermission
 import com.akundu.kkplayer.presentation.viewModelFactory
+import com.akundu.kkplayer.ui.TestTags
 import com.akundu.kkplayer.ui.theme.KkPlayerTheme
 import es.dmoral.toasty.Toasty
 
@@ -86,7 +87,7 @@ class MainActivity : ComponentActivity() {
                         contentDescription = null,
                         contentScale = ContentScale.FillBounds,
                     )
-                    LazyColumn(contentPadding = innerPadding) {
+                    LazyColumn(modifier = Modifier.testTag(TestTags.MAIN_SONG_LIST), contentPadding = innerPadding) {
                         songListState.value?.let { itemsIndexed(it) { _, song -> SongItem(song = song) } }
                     }
                 }
@@ -94,9 +95,7 @@ class MainActivity : ComponentActivity() {
         }
 
         // ActivityCompat.requestPermissions(this@MainActivity, arrayOf(READ_EXTERNAL_STORAGE, WRITE_EXTERNAL_STORAGE), 111)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            askNotificationPermission(this, requestPermissionLauncher)
-        }
+        askNotificationPermission(this, requestPermissionLauncher)
     }
 
     @Suppress("RemoveExplicitTypeArguments")

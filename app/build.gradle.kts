@@ -5,6 +5,7 @@ plugins {
     alias(libs.plugins.com.google.devtools.ksp)
     alias(libs.plugins.ktlint)
     alias(libs.plugins.kotlin.compose)
+    alias(libs.plugins.kover)
     id("com.google.gms.google-services")
 }
 
@@ -45,6 +46,16 @@ android {
         getByName("release") {
             isMinifyEnabled = false
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+        }
+        getByName("debug") {
+            enableAndroidTestCoverage = true
+        }
+    }
+
+    testOptions {
+        unitTests {
+            isIncludeAndroidResources = true
+            isReturnDefaultValues = true
         }
     }
 
@@ -143,14 +154,72 @@ dependencies {
     implementation(libs.toasty)
 
     // Firebase
-    implementation(platform("com.google.firebase:firebase-bom:34.14.0"))
-    implementation("com.google.firebase:firebase-analytics")
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.analytics)
 
-    // Test Dependencies
+    // Unit Test Dependencies
     testImplementation(libs.junit)
+    testImplementation(libs.mockito.core)
+    testImplementation(libs.mockito.kotlin)
+    testImplementation(libs.robolectric)
+    testImplementation(libs.kotlinx.coroutines.test)
+    testImplementation(libs.androidx.arch.core.testing)
+    testImplementation(libs.androidx.room.testing)
+    testImplementation(libs.androidx.work.testing)
+
+    // Instrumentation Test Dependencies
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
-    androidTestImplementation(libs.mockito.kotlin.kt1.x)
+    androidTestImplementation(libs.androidx.espresso.intents)
+    androidTestImplementation(libs.mockito.android)
+    androidTestImplementation(libs.mockito.kotlin)
     androidTestImplementation(libs.androidx.ui.test.junit4)
+    androidTestImplementation(libs.androidx.room.testing)
     androidTestImplementation(platform(libs.androidx.compose.bom))
+}
+
+kover {
+    reports {
+        filters {
+            excludes {
+                classes(
+                    "com.akundu.kkplayer.BuildConfig",
+                    "*.R",
+                    "*.R\$*",
+                    "*_Impl",
+                    "*ComposableSingletons*",
+                )
+                packages("com.akundu.kkplayer.ui.theme")
+                annotatedBy("androidx.compose.ui.tooling.preview.Preview")
+            }
+        }
+    }
+}
+
+/**
+ * `./gradlew unitTestSuite` runs every local unit test in one pass through
+ * com.akundu.kkplayer.UnitTestSuite.
+ *
+ * A plain `./gradlew testDebugUnitTest` leaves the suite class out, so the same tests are not
+ * executed twice - once directly and once again through the suite.
+ */
+val isUnitTestSuiteRun = gradle.startParameter.taskNames.any { it.substringAfterLast(':') == "unitTestSuite" }
+
+tasks.withType<Test>().configureEach {
+    if (isUnitTestSuiteRun) {
+        filter.setIncludePatterns("com.akundu.kkplayer.UnitTestSuite")
+        // A suite builds every runner it lists up front, which does not fit in the 512m the
+        // Android plugin gives a unit test worker by default.
+        maxHeapSize = "2g"
+    } else {
+        // Excluded at class level: filter.excludeTestsMatching would only match the leaf tests, and
+        // the suite would still re-run every class it lists.
+        exclude("**/UnitTestSuite.class")
+    }
+}
+
+tasks.register("unitTestSuite") {
+    group = "verification"
+    description = "Runs all local unit tests through com.akundu.kkplayer.UnitTestSuite"
+    dependsOn("testDebugUnitTest")
 }

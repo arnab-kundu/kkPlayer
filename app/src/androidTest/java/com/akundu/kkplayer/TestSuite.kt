@@ -2,31 +2,27 @@ package com.akundu.kkplayer
 
 import com.akundu.kkplayer.database.SongDatabaseTest
 import com.akundu.kkplayer.download.AndroidDownloaderTest
+import com.akundu.kkplayer.feature.main.view.MainActivityTest
+import com.akundu.kkplayer.feature.player.ui.PlayerPageTest
+import com.akundu.kkplayer.feature.player.view.InfoAlertDialogTest
+import com.akundu.kkplayer.feature.settings.view.SettingsActivityTest
+import com.akundu.kkplayer.feature.settings.view.ui.SettingsScreenTest
+import com.akundu.kkplayer.feature.splash.view.SplashPageTest
 import com.akundu.kkplayer.storage.AppFileManagerTest
 import org.junit.runner.RunWith
 import org.junit.runners.Suite
 import org.junit.runners.Suite.SuiteClasses
 
 @RunWith(Suite::class)
-@SuiteClasses(SongDatabaseTest::class, AndroidDownloaderTest::class, AppFileManagerTest::class)
-object TestSuite {
-    private const val DELAY = 300
-
-    @JvmStatic
-    fun delay() {
-        try {
-            Thread.sleep(DELAY.toLong())
-        } catch (e: InterruptedException) {
-            e.printStackTrace()
-        }
-    }
-
-    @JvmStatic
-    fun delay(timeInMilliSecond: Int) {
-        try {
-            Thread.sleep(timeInMilliSecond.toLong())
-        } catch (e: InterruptedException) {
-            e.printStackTrace()
-        }
-    }
-}
+@SuiteClasses(
+    SongDatabaseTest::class,
+    AppFileManagerTest::class,
+    AndroidDownloaderTest::class,
+    SettingsScreenTest::class,
+    PlayerPageTest::class,
+    SplashPageTest::class,
+    InfoAlertDialogTest::class,
+    SettingsActivityTest::class,
+    MainActivityTest::class,
+)
+object TestSuite

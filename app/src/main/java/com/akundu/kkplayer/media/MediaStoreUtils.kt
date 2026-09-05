@@ -1,17 +1,14 @@
 package com.akundu.kkplayer.media
 
 import android.Manifest.permission.READ_EXTERNAL_STORAGE
-import android.Manifest.permission.WRITE_EXTERNAL_STORAGE
 import android.content.ContentUris
 import android.content.ContentValues
 import android.content.Context
 import android.content.pm.PackageManager
 import android.media.MediaScannerConnection
 import android.net.Uri
-import android.os.Build
 import android.provider.MediaStore
 import android.provider.MediaStore.MediaColumns.DATE_ADDED
-import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat.checkSelfPermission
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.suspendCancellableCoroutine
@@ -27,18 +24,11 @@ object MediaStoreUtils {
     /**
      * Check if the app can writes on the shared storage
      *
-     * On Android 10 (API 29), we can add media to MediaStore without having to request the
-     * [WRITE_EXTERNAL_STORAGE] permission, so we only check on pre-API 29 devices
+     * Since Android 10 (API 29), we can add media to MediaStore without having to request the
+     * WRITE_EXTERNAL_STORAGE permission.
      */
-    fun canWriteInMediaStore(context: Context): Boolean =
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            true
-        } else {
-            checkSelfPermission(
-                context,
-                WRITE_EXTERNAL_STORAGE,
-            ) == PackageManager.PERMISSION_GRANTED
-        }
+    @Suppress("UNUSED_PARAMETER")
+    fun canWriteInMediaStore(context: Context): Boolean = true
 
     /**
      * We create a MediaStore [Uri] where an image will be stored
@@ -47,12 +37,7 @@ object MediaStoreUtils {
         context: Context,
         filename: String,
     ): Uri? {
-        val imageCollection =
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                MediaStore.Images.Media.getContentUri(MediaStore.VOLUME_EXTERNAL_PRIMARY)
-            } else {
-                MediaStore.Images.Media.EXTERNAL_CONTENT_URI
-            }
+        val imageCollection = MediaStore.Images.Media.getContentUri(MediaStore.VOLUME_EXTERNAL_PRIMARY)
 
         return withContext(Dispatchers.IO) {
             val newImage =
@@ -73,12 +58,7 @@ object MediaStoreUtils {
         context: Context,
         filename: String,
     ): Uri? {
-        val videoCollection =
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                MediaStore.Video.Media.getContentUri(MediaStore.VOLUME_EXTERNAL_PRIMARY)
-            } else {
-                MediaStore.Video.Media.EXTERNAL_CONTENT_URI
-            }
+        val videoCollection = MediaStore.Video.Media.getContentUri(MediaStore.VOLUME_EXTERNAL_PRIMARY)
 
         return withContext(Dispatchers.IO) {
             val newVideo =
@@ -99,12 +79,7 @@ object MediaStoreUtils {
         context: Context,
         filename: String,
     ): Uri? {
-        val audioCollection =
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                MediaStore.Audio.Media.getContentUri(MediaStore.VOLUME_EXTERNAL_PRIMARY)
-            } else {
-                MediaStore.Audio.Media.EXTERNAL_CONTENT_URI
-            }
+        val audioCollection = MediaStore.Audio.Media.getContentUri(MediaStore.VOLUME_EXTERNAL_PRIMARY)
 
         return withContext(Dispatchers.IO) {
             val newAudio =
@@ -121,7 +96,6 @@ object MediaStoreUtils {
     /**
      * We create a MediaStore [Uri] where an image will be stored
      */
-    @RequiresApi(Build.VERSION_CODES.Q)
     suspend fun createDownloadUri(
         context: Context,
         filename: String,
@@ -153,11 +127,7 @@ object MediaStoreUtils {
     private fun convertMediaUriToContentUri(uri: Uri): Uri? {
         val entryId = uri.lastPathSegment ?: return null
 
-        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            MediaStore.Files.getContentUri(MediaStore.getVolumeName(uri), entryId.toLong())
-        } else {
-            MediaStore.Files.getContentUri(uri.pathSegments[0], entryId.toLong())
-        }
+        return MediaStore.Files.getContentUri(MediaStore.getVolumeName(uri), entryId.toLong())
     }
 
     suspend fun scanPath(

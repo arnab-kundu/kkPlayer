@@ -5,6 +5,9 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
+import com.akundu.kkplayer.ui.TestTags
 
 @Composable
 fun InfoAlertDialog(
@@ -28,6 +31,7 @@ fun InfoAlertDialog(
             },
             confirmButton = {
                 TextButton(
+                    modifier = Modifier.testTag(TestTags.PLAYER_INFO_DIALOG_OK_BUTTON),
                     onClick = {
                         openDialog.value = false
                         // Handle confirm action
@@ -38,6 +42,7 @@ fun InfoAlertDialog(
             },
             dismissButton = {
                 TextButton(
+                    modifier = Modifier.testTag(TestTags.PLAYER_INFO_DIALOG_CANCEL_BUTTON),
                     onClick = {
                         openDialog.value = false
                         // Handle dismiss action

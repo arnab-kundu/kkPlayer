@@ -14,15 +14,9 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
 
 class DataStoreManager(
-    context: Context,
+    private val dataStore: DataStore<Preferences>,
 ) {
-    // ❌ This causes multiple instances
-    private val dataStoreError =
-        PreferenceDataStoreFactory.create(
-            produceFile = { context.preferencesDataStoreFile("settings") },
-        )
-
-    private val dataStore = DataStoreProvider.getInstance(context)
+    constructor(context: Context) : this(DataStoreProvider.getInstance(context))
 
     companion object {
         private val REPEAT_MODE_KEY = stringPreferencesKey("repeat_mode")

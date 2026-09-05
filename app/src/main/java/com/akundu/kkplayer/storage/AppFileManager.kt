@@ -2,9 +2,7 @@ package com.akundu.kkplayer.storage
 
 import android.content.Context
 import android.media.MediaScannerConnection
-import android.os.Build.VERSION_CODES
 import android.util.Log
-import androidx.annotation.RequiresApi
 import com.akundu.kkplayer.BuildConfig
 import com.akundu.kkplayer.Logg
 import com.akundu.kkplayer.storage.FileLocationCategory.CACHE_DIRECTORY
@@ -33,8 +31,9 @@ import java.util.zip.ZipInputStream
 import java.util.zip.ZipOutputStream
 
 @Suppress("RedundantExplicitType")
-class AppFileManager :
-    EncryptionManager(),
+class AppFileManager(
+    private val externalStorageRoot: File = File(DEFAULT_EXTERNAL_STORAGE_ROOT),
+) : EncryptionManager(),
     FileManager,
     ZipManager {
     override fun createFolder(
@@ -47,8 +46,7 @@ class AppFileManager :
 
     override fun createAppsInternalPrivateStoragePath(path: String): File? {
         try {
-            val rootFolderPath = "/storage/emulated/0/Android"
-            var folder: File = File(rootFolderPath)
+            var folder: File = File(externalStorageRoot, "Android")
 
             val pathFoldersList: List<String> = path.split("/")
             pathFoldersList.forEach { childFolder ->
@@ -78,10 +76,11 @@ class AppFileManager :
     }
 
     override fun deleteFolder(directory: File) {
-        for (file in directory.listFiles()!!) {
-            if (!file.isDirectory) {
-                file.delete()
+        directory.listFiles()?.forEach { file ->
+            if (file.isDirectory) {
+                deleteFolder(file)
             }
+            file.delete()
         }
     }
 
@@ -115,7 +114,6 @@ class AppFileManager :
         return file
     }
 
-    @RequiresApi(VERSION_CODES.N)
     override fun createFile(
         context: Context,
         fileLocationCategory: FileLocationCategory,
@@ -154,7 +152,7 @@ class AppFileManager :
                     }
                 OBB_DIRECTORY -> context.obbDir
 
-                DOWNLOADS_DIRECTORY -> File("/storage/emulated/0/Download/")
+                DOWNLOADS_DIRECTORY -> File(externalStorageRoot, "Download")
                 DOCUMENT_DIRECTORY -> TODO()
                 MUSIC_DIRECTORY -> TODO()
                 PICTURES_DIRECTORY -> TODO()
@@ -185,35 +183,26 @@ class AppFileManager :
         return file
     }
 
-    @Throws(IOException::class)
     override fun copyFile(
         sourcePath: String,
         destinationPath: String,
-    ): Boolean {
-        val inputStream: InputStream = FileInputStream(sourcePath)
+    ): Boolean =
         try {
-            val outputStream: OutputStream = FileOutputStream(destinationPath)
-            try {
-                // Transfer bytes from in to out
-                val buffer = ByteArray(1024)
-                var len: Int
-                while (inputStream.read(buffer).also { len = it } > 0) {
-                    outputStream.write(buffer, 0, len)
+            FileInputStream(sourcePath).use { inputStream ->
+                FileOutputStream(destinationPath).use { outputStream ->
+                    // Transfer bytes from in to out
+                    val buffer = ByteArray(1024)
+                    var len: Int
+                    while (inputStream.read(buffer).also { len = it } > 0) {
+                        outputStream.write(buffer, 0, len)
+                    }
                 }
-            } catch (e: Exception) {
-                Logg.e(e.toString())
-                return false
-            } finally {
-                outputStream.close()
             }
-            return true
-        } catch (e: FileNotFoundException) {
+            true
+        } catch (e: IOException) {
             Logg.e(e.toString())
-            return false
-        } finally {
-            inputStream.close()
+            false
         }
-    }
 
     @Throws(IOException::class)
     override fun saveFile(
@@ -255,7 +244,6 @@ class AppFileManager :
         deleteFile(sourcePath)
     }
 
-    @RequiresApi(VERSION_CODES.N)
     override fun renameFile(
         context: Context,
         existingFilePath: String,
@@ -274,11 +262,13 @@ class AppFileManager :
         inputStream: InputStream,
         file: File,
     ) {
-        FileOutputStream(file, false).use { outputStream ->
-            var read: Int
-            val bytes = ByteArray(DEFAULT_BUFFER_SIZE)
-            while (inputStream.read(bytes).also { read = it } != -1) {
-                outputStream.write(bytes, 0, read)
+        inputStream.use { input ->
+            FileOutputStream(file, false).use { outputStream ->
+                var read: Int
+                val bytes = ByteArray(DEFAULT_BUFFER_SIZE)
+                while (input.read(bytes).also { read = it } != -1) {
+                    outputStream.write(bytes, 0, read)
+                }
             }
         }
     }
@@ -452,14 +442,13 @@ class AppFileManager :
         }
     }
 
-    @RequiresApi(VERSION_CODES.N)
     override fun encryptFile(
         context: Context,
         srcFilePath: String,
         encryptedFileName: String,
     ): File? {
         var encryptedOutputFile: File? = null
-        try {
+        return try {
             val inputStream: InputStream = FileInputStream(srcFilePath)
 
             /** Create Folder and file */
@@ -472,23 +461,21 @@ class AppFileManager :
                 inputStream,
                 FileOutputStream(encryptedOutputFile),
             )
-        } catch (e: FileNotFoundException) {
-            e.printStackTrace()
+            encryptedOutputFile
         } catch (e: Exception) {
-            e.printStackTrace()
+            Logg.e("Failed to encrypt $srcFilePath: $e")
+            encryptedOutputFile?.delete()
+            null
         }
-        return encryptedOutputFile
     }
 
-    @RequiresApi(VERSION_CODES.N)
     override fun decryptFile(
         context: Context,
         encryptedFilePath: String,
         outputFileName: String,
     ): File? {
-        val decryptedOutputFile: File?
-        val mInputStream: InputStream = FileInputStream(encryptedFilePath)
-        try {
+        var decryptedOutputFile: File? = null
+        return try {
             /** Create Folder and file */
             createFolder("decrypt", encryptedFilePath)
             decryptedOutputFile = createFile(context, MEDIA_DIRECTORY, outputFileName, null)
@@ -496,16 +483,20 @@ class AppFileManager :
             decryptToFile(
                 keyStr = "keyLength16digit",
                 specStr = "keySizeMustBe16-",
-                mInputStream,
+                FileInputStream(encryptedFilePath),
                 FileOutputStream(decryptedOutputFile),
             )
-        } catch (e: FileNotFoundException) {
-            e.printStackTrace()
-            return null
+            decryptedOutputFile
         } catch (e: Exception) {
-            e.printStackTrace()
-            return null
+            Logg.e("Failed to decrypt $encryptedFilePath: $e")
+            // A failed decryption leaves a partially written file behind, which would otherwise
+            // look like a successful result to anything that only checks for the file's presence.
+            decryptedOutputFile?.delete()
+            null
         }
-        return decryptedOutputFile
+    }
+
+    companion object {
+        const val DEFAULT_EXTERNAL_STORAGE_ROOT = "/storage/emulated/0"
     }
 }

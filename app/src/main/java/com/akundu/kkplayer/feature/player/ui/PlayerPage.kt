@@ -29,6 +29,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -41,7 +42,8 @@ import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalResources
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
@@ -55,6 +57,7 @@ import com.akundu.kkplayer.data.Song
 import com.akundu.kkplayer.database.entity.SongEntity
 import com.akundu.kkplayer.feature.player.viewModel.PlayerViewModel
 import com.akundu.kkplayer.storage.Constants
+import com.akundu.kkplayer.ui.TestTags
 import java.io.File
 
 @Preview
@@ -71,7 +74,7 @@ fun PlayerPage(
     song: SongEntity,
     duration: Int = 0,
     currentPosition: Int = 0,
-    bitmap: ImageBitmap = BitmapFactory.decodeResource(LocalContext.current.resources, R.drawable.ic_music_album_avatar1).asImageBitmap(),
+    bitmap: ImageBitmap = BitmapFactory.decodeResource(LocalResources.current, R.drawable.ic_music_album_avatar1).asImageBitmap(),
     playClick: () -> Unit,
     pauseClick: () -> Unit,
     nextClick: () -> Unit,
@@ -122,6 +125,7 @@ fun PlayerPage(
                 modifier =
                     Modifier
                         .size(24.dp)
+                        .testTag(TestTags.PLAYER_BACK_BUTTON)
                         .clickable { backClick.invoke() },
                 tint = MaterialTheme.colorScheme.onSurfaceVariant,
             )
@@ -132,6 +136,7 @@ fun PlayerPage(
                 modifier =
                     Modifier
                         .size(24.dp)
+                        .testTag(TestTags.PLAYER_SETTINGS_BUTTON)
                         .clickable { settingsClick.invoke() },
                 tint = MaterialTheme.colorScheme.onSurfaceVariant,
             )
@@ -142,7 +147,8 @@ fun PlayerPage(
                 Modifier
                     .align(Alignment.CenterEnd)
                     .height(350.dp)
-                    .width(72.dp),
+                    .width(72.dp)
+                    .testTag(TestTags.PLAYER_VOLUME_SWIPE_ZONE),
         )
     }
 }
@@ -169,7 +175,10 @@ private fun PlaybackSeekBar(
             SliderDefaults.colors(
                 activeTrackColor = Color.Gray,
             ),
-        modifier = Modifier.padding(horizontal = 16.dp),
+        modifier =
+            Modifier
+                .padding(horizontal = 16.dp)
+                .testTag(TestTags.PLAYER_SEEK_BAR),
     )
 }
 
@@ -178,7 +187,7 @@ private fun VolumeSwipeZone(
     onVolumeChange: (Float) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    var dragAccumulatorPx by remember { mutableStateOf(0f) }
+    var dragAccumulatorPx by remember { mutableFloatStateOf(0f) }
     Box(
         modifier =
             modifier.pointerInput(Unit) {
@@ -205,7 +214,7 @@ private fun VolumeSwipeZone(
 
 @Composable
 fun AlbumArt(
-    bitmap: ImageBitmap = BitmapFactory.decodeResource(LocalContext.current.resources, R.drawable.ic_music_album_avatar1).asImageBitmap(),
+    bitmap: ImageBitmap = BitmapFactory.decodeResource(LocalResources.current, R.drawable.ic_music_album_avatar1).asImageBitmap(),
     songTitle: String = "Tu hi meri sab hay",
     artist: String = "Arijit Singh",
 ) {
@@ -217,6 +226,7 @@ fun AlbumArt(
             modifier =
                 Modifier
                     .fillMaxWidth()
+                    .testTag(TestTags.PLAYER_ALBUM_ART)
                     .clip(shape = RoundedCornerShape(16.dp, 16.dp, 16.dp, 16.dp)),
         )
         Spacer(modifier = Modifier.height(16.dp))
@@ -248,6 +258,7 @@ fun MediaControllerButtons(
             modifier =
                 Modifier
                     .size(40.dp)
+                    .testTag(TestTags.PLAYER_PREVIOUS_BUTTON)
                     .clickable { previousClick.invoke() },
             tint = MaterialTheme.colorScheme.onSurfaceVariant,
         )
@@ -264,6 +275,7 @@ fun MediaControllerButtons(
             modifier =
                 Modifier
                     .size(40.dp)
+                    .testTag(TestTags.PLAYER_NEXT_BUTTON)
                     .clickable { nextClick.invoke() },
             tint = MaterialTheme.colorScheme.onSurfaceVariant,
         )
@@ -282,6 +294,7 @@ fun MediaButton(
         modifier =
             Modifier
                 .size(size)
+                .testTag(TestTags.PLAYER_PLAY_PAUSE_BUTTON)
                 .clickable { buttonClick.invoke() },
     )
 }

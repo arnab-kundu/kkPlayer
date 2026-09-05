@@ -1,15 +1,10 @@
 package com.akundu.kkplayer.service
 
-import android.app.NotificationChannel
-import android.app.NotificationManager
 import android.app.PendingIntent
 import android.app.Service
 import android.content.Intent
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
-import android.media.MediaMetadataRetriever
 import android.media.MediaPlayer
-import android.os.Build
 import android.os.Handler
 import android.os.IBinder
 import android.os.Looper
@@ -17,28 +12,29 @@ import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaSessionCompat
 import android.support.v4.media.session.PlaybackStateCompat
 import android.util.Log
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.toArgb
-import androidx.core.app.NotificationCompat
-import androidx.core.content.ContextCompat
-import androidx.core.graphics.drawable.toBitmap
 import androidx.core.net.toUri
-import com.akundu.kkplayer.R
 import com.akundu.kkplayer.database.SongDatabase
 import com.akundu.kkplayer.database.entity.SongEntity
 import com.akundu.kkplayer.feature.settings.datastore.DataStoreManager
 import com.akundu.kkplayer.feature.settings.datastore.RepeatMode
-import com.akundu.kkplayer.getDrawable
+import com.akundu.kkplayer.service.notification.PlayerNotificationBuilder
+import com.akundu.kkplayer.service.playback.AlbumArtExtractor
+import com.akundu.kkplayer.service.playback.PlaybackController
+import com.akundu.kkplayer.service.playback.PlaybackQueueController
 import com.akundu.kkplayer.storage.Constants.MEDIA_PATH
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.File
-import androidx.media.app.NotificationCompat as MediaNotificationCompat
 
-class BackgroundSoundService : Service() {
+class BackgroundSoundService :
+    Service(),
+    PlaybackController {
     private var player: MediaPlayer? = null
     private var mediaSession: MediaSessionCompat? = null
     private var uriString: String = ""
@@ -46,6 +42,13 @@ class BackgroundSoundService : Service() {
     private var currentSongId: Int = 0
     private var albumArt: Bitmap? = null
     private val _repeatMode = MutableStateFlow(RepeatMode.NONE)
+
+    private val serviceScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
+    private var repeatModeJob: Job? = null
+
+    private val queueController: PlaybackQueueController by lazy {
+        PlaybackQueueController(SongDatabase.getDatabase(this).songDao())
+    }
 
     private val positionUpdateHandler = Handler(Looper.getMainLooper())
     private val positionUpdateRunnable: Runnable =
@@ -111,38 +114,11 @@ class BackgroundSoundService : Service() {
         Handler(Looper.getMainLooper()).postDelayed({
             player = MediaPlayer.create(this, uriString.toUri())
             if (player != null) {
-                player?.isLooping = false // Set looping
+                player?.isLooping = false
                 player?.setVolume(100f, 100f)
                 player?.start()
-                player?.setOnCompletionListener {
-                    when (_repeatMode.value) {
-                        RepeatMode.NONE -> nextSong()
-                        RepeatMode.ONE -> {
-                            val database = SongDatabase.getDatabase(this)
-                            val songEntity: SongEntity = database.songDao().findSongById(currentSongId.toLong())
-                            player?.release()
-                            player = MediaPlayer.create(this, File("$MEDIA_PATH/${songEntity.fileName}").toString().toUri())
-                            if (player != null) {
-                                player?.isLooping = true // Set looping
-                                player?.setVolume(100f, 100f)
-                                player?.start()
-                                updateMetadata()
-                                runAsForeground()
-                            }
-                        }
-
-                        RepeatMode.ALL -> {
-                            val database = SongDatabase.getDatabase(this)
-                            val nextSongId = currentSongId + 1
-                            val songEntity: SongEntity? = database.songDao().getNextDownloadedSong(nextSongId.toLong())
-                            if (songEntity == null) {
-                                currentSongId = 0
-                            }
-                            nextSong()
-                        }
-                    }
-                }
-                loadAlbumArt(SongDatabase.getDatabase(this).songDao().findSongById(currentSongId.toLong()))
+                player?.setOnCompletionListener { handleCompletion() }
+                loadAlbumArt(queueController.current(currentSongId))
                 updateMetadata()
                 runAsForeground()
             }
@@ -150,10 +126,28 @@ class BackgroundSoundService : Service() {
         return START_STICKY
     }
 
-    fun nextSong() {
-        val database = SongDatabase.getDatabase(this)
-        val nextSongId = currentSongId + 1
-        val songEntity: SongEntity? = database.songDao().getNextDownloadedSong(nextSongId.toLong())
+    private fun handleCompletion() {
+        when (val action = queueController.onCompletion(_repeatMode.value, currentSongId)) {
+            is PlaybackQueueController.CompletionAction.LoopCurrent -> {
+                player?.release()
+                player = MediaPlayer.create(this, File("$MEDIA_PATH/${action.song.fileName}").toString().toUri())
+                if (player != null) {
+                    player?.isLooping = true
+                    player?.setVolume(100f, 100f)
+                    player?.start()
+                    updateMetadata()
+                    runAsForeground()
+                }
+            }
+
+            is PlaybackQueueController.CompletionAction.Advance -> playSongEntity(action.song)
+
+            PlaybackQueueController.CompletionAction.EndOfPlaylist -> stopSelf()
+        }
+    }
+
+    override fun nextSong() {
+        val songEntity: SongEntity? = queueController.next(currentSongId)
 
         if (songEntity == null) {
             // End of playlist
@@ -161,6 +155,26 @@ class BackgroundSoundService : Service() {
             return
         }
 
+        playSongEntity(songEntity)
+    }
+
+    override fun previousSong() {
+        val songEntity: SongEntity? = queueController.previous(currentSongId)
+
+        if (songEntity == null) {
+            // Already at the first song, just restart it
+            player?.seekTo(0)
+            if (player?.isPlaying != true) {
+                player?.start()
+            }
+            runAsForeground()
+            return
+        }
+
+        playSongEntity(songEntity)
+    }
+
+    private fun playSongEntity(songEntity: SongEntity) {
         currentSongId = songEntity.id.toInt()
         songTitle = songEntity.title
         loadAlbumArt(songEntity)
@@ -178,46 +192,6 @@ class BackgroundSoundService : Service() {
                 MediaPlayer.create(this, songEntity.url.toUri())
             }
         if (player != null) {
-            player?.isLooping = false // Set looping
-            player?.setVolume(100f, 100f)
-            player?.start()
-            player?.setOnCompletionListener {
-                nextSong()
-            }
-            updateMetadata()
-            runAsForeground()
-        }
-    }
-
-    fun previousSong() {
-        val database = SongDatabase.getDatabase(this)
-        val songEntity: SongEntity? = database.songDao().getPreviousDownloadedSong(currentSongId.toLong())
-
-        if (songEntity == null) {
-            // Already at the first song, just restart it
-            player?.seekTo(0)
-            if (player?.isPlaying != true) {
-                player?.start()
-            }
-            runAsForeground()
-            return
-        }
-
-        currentSongId = songEntity.id.toInt()
-        songTitle = songEntity.title
-        loadAlbumArt(songEntity)
-
-        if (player != null) {
-            player?.stop()
-            player?.release()
-        }
-        player =
-            if (songEntity.isDownloaded) {
-                MediaPlayer.create(this, File("$MEDIA_PATH/${songEntity.fileName}").toString().toUri())
-            } else {
-                MediaPlayer.create(this, songEntity.url.toUri())
-            }
-        if (player != null) {
             player?.isLooping = false
             player?.setVolume(100f, 100f)
             player?.start()
@@ -231,6 +205,7 @@ class BackgroundSoundService : Service() {
 
     override fun onDestroy() {
         super.onDestroy()
+        serviceScope.cancel()
         positionUpdateHandler.removeCallbacks(positionUpdateRunnable)
         mediaSession?.release()
         if (player != null) {
@@ -245,78 +220,42 @@ class BackgroundSoundService : Service() {
         notificationIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
         notificationIntent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
         val pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, PendingIntent.FLAG_IMMUTABLE)
-        val mNotificationManager = applicationContext.getSystemService(NOTIFICATION_SERVICE) as NotificationManager
-        if (Build.VERSION.SDK_INT >= 26) {
-            val channel = NotificationChannel("2", "Player channel", NotificationManager.IMPORTANCE_HIGH)
-            channel.description = "Playing song notification"
-            channel.setShowBadge(true)
-            mNotificationManager.createNotificationChannel(channel)
-        }
-
-        val stopServicePendingIntent =
-            PendingIntent.getBroadcast(
-                this,
-                400,
-                Intent(this, StopServiceReceiver::class.java).putExtra("isStopService", true),
-                PendingIntent.FLAG_IMMUTABLE,
-            )
-
-        val pauseServicePendingIntent =
-            PendingIntent.getBroadcast(
-                this,
-                200,
-                Intent(this, StopServiceReceiver::class.java).putExtra("isPauseService", true),
-                PendingIntent.FLAG_IMMUTABLE,
-            )
-
-        val previousSongPendingIntent =
-            PendingIntent.getBroadcast(
-                this,
-                500,
-                Intent(this, StopServiceReceiver::class.java).putExtra("isPreviousSong", true),
-                PendingIntent.FLAG_IMMUTABLE,
-            )
-
-        val nextSongPendingIntent =
-            PendingIntent.getBroadcast(
-                this,
-                600,
-                Intent(this, StopServiceReceiver::class.java).putExtra("isNextSong", true),
-                PendingIntent.FLAG_IMMUTABLE,
-            )
+        PlayerNotificationBuilder.registerChannel(this)
 
         val isPlaying = player?.isPlaying == true
         updatePlaybackState(if (isPlaying) PlaybackStateCompat.STATE_PLAYING else PlaybackStateCompat.STATE_PAUSED)
 
-        val playPauseIcon = if (isPlaying) android.R.drawable.ic_media_pause else android.R.drawable.ic_media_play
-        val playPauseLabel = if (isPlaying) "Pause" else "Play"
-
         val notification =
-            NotificationCompat
-                .Builder(this, "2")
-                .setNumber(0)
-                .setOngoing(true)
-                .setColorized(true)
-                .setColor(Color(0xFF606060).toArgb())
-                .setSmallIcon(R.mipmap.ic_launcher) // .setSmallIcon(R.drawable.ic_notification)
-                .setSubText("is playing...")
-                .setContentTitle(songTitle)
-                .setLargeIcon(albumArt)
-                .addAction(android.R.drawable.ic_media_previous, "Previous", previousSongPendingIntent)
-                .addAction(playPauseIcon, playPauseLabel, pauseServicePendingIntent)
-                .addAction(android.R.drawable.ic_media_next, "Next", nextSongPendingIntent)
-                .addAction(android.R.drawable.ic_menu_close_clear_cancel, "Stop", stopServicePendingIntent)
-                .setStyle(
-                    MediaNotificationCompat
-                        .MediaStyle()
-                        .setMediaSession(mediaSession?.sessionToken)
-                        .setShowActionsInCompactView(0, 1, 2),
-                ).setSilent(true)
-                .setContentIntent(pendingIntent)
-        startForeground(12345, notification.build())
+            PlayerNotificationBuilder.build(
+                context = this,
+                songTitle = songTitle,
+                isPlaying = isPlaying,
+                albumArt = albumArt,
+                actions =
+                    PlayerNotificationBuilder.Actions(
+                        previous = stopServiceBroadcast(requestCode = 500, extra = "isPreviousSong"),
+                        playPause = stopServiceBroadcast(requestCode = 200, extra = "isPauseService"),
+                        next = stopServiceBroadcast(requestCode = 600, extra = "isNextSong"),
+                        stop = stopServiceBroadcast(requestCode = 400, extra = "isStopService"),
+                    ),
+                contentIntent = pendingIntent,
+                sessionToken = mediaSession?.sessionToken,
+            )
+        startForeground(PlayerNotificationBuilder.NOTIFICATION_ID, notification)
     }
 
-    fun playPausePlayer() {
+    private fun stopServiceBroadcast(
+        requestCode: Int,
+        extra: String,
+    ): PendingIntent =
+        PendingIntent.getBroadcast(
+            this,
+            requestCode,
+            Intent(this, StopServiceReceiver::class.java).putExtra(extra, true),
+            PendingIntent.FLAG_IMMUTABLE,
+        )
+
+    override fun playPausePlayer() {
         if (player != null) {
             if (player?.isPlaying == true) {
                 player?.pause()
@@ -327,18 +266,18 @@ class BackgroundSoundService : Service() {
         }
     }
 
-    fun seekTo(positionMs: Int) {
+    override fun seekTo(positionMs: Int) {
         player?.seekTo(positionMs)
         runAsForeground()
     }
 
-    fun getCurrentSongId(): Int = currentSongId
+    override fun getCurrentSongId(): Int = currentSongId
 
-    fun getCurrentPositionMs(): Int = player?.currentPosition ?: 0
+    override fun getCurrentPositionMs(): Int = player?.currentPosition ?: 0
 
-    fun getDurationMs(): Int = player?.duration ?: 0
+    override fun getDurationMs(): Int = player?.duration ?: 0
 
-    fun isCurrentlyPlaying(): Boolean = player?.isPlaying == true
+    override fun isCurrentlyPlaying(): Boolean = player?.isPlaying == true
 
     private fun updateMetadata() {
         val metadataBuilder =
@@ -352,46 +291,14 @@ class BackgroundSoundService : Service() {
 
     private fun loadAlbumArt(songEntity: SongEntity) {
         albumArt = null
-        CoroutineScope(Dispatchers.IO).launch {
-            val bitmap = extractAlbumArt(songEntity)
+        serviceScope.launch {
+            val bitmap = AlbumArtExtractor.extractAlbumArt(this@BackgroundSoundService, songEntity)
             withContext(Dispatchers.Main) {
                 albumArt = bitmap
                 updateMetadata()
                 runAsForeground()
             }
         }
-    }
-
-    private fun extractAlbumArt(songEntity: SongEntity): Bitmap {
-        val retriever = MediaMetadataRetriever()
-        return try {
-            if (songEntity.isDownloaded) {
-                retriever.setDataSource(File("$MEDIA_PATH/${songEntity.fileName}").absolutePath)
-            } else {
-                retriever.setDataSource(songEntity.url, HashMap<String, String>())
-            }
-            val data = retriever.embeddedPicture ?: throw RuntimeException("No embedded album art")
-            decodeAndScale(data)
-        } catch (e: Exception) {
-            Log.d("BackgroundSoundService", "No embedded album art for ${songEntity.fileName}: ${e.message}")
-            ContextCompat.getDrawable(this, getDrawable(songEntity.movie))!!.toBitmap()
-        } finally {
-            retriever.release()
-        }
-    }
-
-    private fun decodeAndScale(
-        data: ByteArray,
-        maxSize: Int = 512,
-    ): Bitmap {
-        val bounds = BitmapFactory.Options().apply { inJustDecodeBounds = true }
-        BitmapFactory.decodeByteArray(data, 0, data.size, bounds)
-        var sampleSize = 1
-        while (bounds.outWidth / sampleSize > maxSize || bounds.outHeight / sampleSize > maxSize) {
-            sampleSize *= 2
-        }
-        val options = BitmapFactory.Options().apply { inSampleSize = sampleSize }
-        return BitmapFactory.decodeByteArray(data, 0, data.size, options)
     }
 
     private fun updatePlaybackState(state: Int) {
@@ -415,10 +322,12 @@ class BackgroundSoundService : Service() {
     private fun fetchRepeatMode() {
         val dataStoreManager = DataStoreManager(application)
 
-        CoroutineScope(Dispatchers.IO).launch {
-            dataStoreManager.repeatModeFlow.collect {
-                _repeatMode.value = it
+        repeatModeJob?.cancel()
+        repeatModeJob =
+            serviceScope.launch {
+                dataStoreManager.repeatModeFlow.collect {
+                    _repeatMode.value = it
+                }
             }
-        }
     }
 }

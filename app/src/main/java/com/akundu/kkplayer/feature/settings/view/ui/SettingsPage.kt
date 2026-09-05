@@ -1,5 +1,6 @@
 package com.akundu.kkplayer.feature.settings.view.ui
 
+import android.app.Application
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -36,6 +37,8 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
@@ -45,12 +48,14 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.akundu.kkplayer.R
 import com.akundu.kkplayer.feature.settings.viewModel.SettingsViewModel
+import com.akundu.kkplayer.presentation.viewModelFactory
+import com.akundu.kkplayer.ui.TestTags
 
 @Preview
 @Composable
 fun SettingsScreenContainer(
     modifier: Modifier = Modifier,
-    viewModel: SettingsViewModel = viewModel(),
+    viewModel: SettingsViewModel = defaultSettingsViewModel(),
     backClick: () -> Unit = {},
 ) {
     val theme by viewModel.theme.collectAsState()
@@ -70,6 +75,12 @@ fun SettingsScreenContainer(
         onClearDatabase = viewModel::onClearDatabase,
         onClearData = viewModel::onClearData,
     )
+}
+
+@Composable
+private fun defaultSettingsViewModel(): SettingsViewModel {
+    val application = LocalContext.current.applicationContext as Application
+    return viewModel(factory = viewModelFactory { SettingsViewModel(application) })
 }
 
 @Composable
@@ -130,6 +141,7 @@ fun SettingsScreen(
                     modifier =
                         Modifier
                             .size(24.dp)
+                            .testTag(TestTags.SETTINGS_BACK_BUTTON)
                             .clickable { backClick.invoke() },
                     tint = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
@@ -157,6 +169,7 @@ fun SettingsScreen(
                     listOf("Default", "Dark", "Light").forEach { theme ->
                         Row(verticalAlignment = Alignment.CenterVertically) {
                             RadioButton(
+                                modifier = Modifier.testTag(TestTags.settingsTheme(theme)),
                                 selected = theme == selectedTheme,
                                 onClick = { onThemeSelected(theme) },
                             )
@@ -176,6 +189,7 @@ fun SettingsScreen(
                     listOf("Repeat One", "Repeat All", "Repeat None").forEach { mode ->
                         Row(verticalAlignment = Alignment.CenterVertically) {
                             RadioButton(
+                                modifier = Modifier.testTag(TestTags.settingsRepeatMode(mode)),
                                 selected = mode == selectedRepeatMode,
                                 onClick = { onRepeatModeSelected(mode) },
                             )
@@ -195,6 +209,7 @@ fun SettingsScreen(
                     listOf("All Songs", "Downloaded Songs Only").forEach { mode ->
                         Row(verticalAlignment = Alignment.CenterVertically) {
                             RadioButton(
+                                modifier = Modifier.testTag(TestTags.settingsDisplayOption(mode)),
                                 selected = mode == selectedDisplayMode,
                                 onClick = { onDisplayModeSelected(mode) },
                             )
@@ -210,12 +225,14 @@ fun SettingsScreen(
             GlassActionButton(
                 icon = Icons.Outlined.Delete, // Delete Cache
                 label = "Clear Cache",
+                testTag = TestTags.SETTINGS_CLEAR_CACHE_BUTTON,
                 onClick = onClearCache,
             )
 
             GlassActionButton(
                 icon = Icons.Default.DateRange, // DB icon
                 label = "Clear Database",
+                testTag = TestTags.SETTINGS_CLEAR_DATABASE_BUTTON,
                 onClick = onClearDatabase,
             )
 
@@ -223,6 +240,7 @@ fun SettingsScreen(
                 icon = Icons.Default.Delete, // Delete all data,
                 label = "Clear All Data",
                 color = Color.Red,
+                testTag = TestTags.SETTINGS_CLEAR_ALL_DATA_BUTTON,
                 onClick = onClearData,
             )
         }
@@ -234,12 +252,14 @@ fun GlassActionButton(
     icon: ImageVector,
     label: String,
     color: Color = Color.White,
+    testTag: String = label,
     onClick: () -> Unit,
 ) {
     Box(
         modifier =
             Modifier
                 .fillMaxWidth()
+                .testTag(testTag)
                 .padding(vertical = 4.dp)
                 .clip(RoundedCornerShape(16.dp))
                 .background(

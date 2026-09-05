@@ -1,9 +1,11 @@
 package com.akundu.kkplayer
 
-import kotlin.random.Random
-
 /**
  * GetDrawable provides the movie avatar.
+ *
+ * Per-movie artwork is not bundled, so the avatar is derived from the movie name. Picking it at
+ * random instead would hand the same song a different image on every recomposition.
+ *
  * @param movie String
  */
 fun getDrawable(movie: String): Int {
@@ -12,8 +14,7 @@ fun getDrawable(movie: String): Int {
             R.drawable.ic_music_album_avatar,
             R.drawable.ic_music_album_avatar1,
         )
-    val randomIndex = Random.nextInt(listOfAvatar.size)
-    val randomAvatar = listOfAvatar[randomIndex]
+    val fallbackAvatar = listOfAvatar[movie.hashCode().mod(listOfAvatar.size)]
     return when (movie) {
         // "Bajrangi Bhaijaan" -> R.drawable.bajrangi_bhaijaan
         // "Bhool Bhulaiyaa" -> R.drawable.bhool_bhulaiyaa
@@ -43,6 +44,6 @@ fun getDrawable(movie: String): Int {
         // "Live-The Train" -> R.drawable.the_train
         // "Woh Lamhe" -> R.drawable.woh_lamhe
         // "Zeher" -> R.drawable.zeher
-        else -> randomAvatar
+        else -> fallbackAvatar
     }
 }

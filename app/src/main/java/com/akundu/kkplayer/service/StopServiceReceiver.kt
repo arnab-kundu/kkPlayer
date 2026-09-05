@@ -11,14 +11,23 @@ class StopServiceReceiver : BroadcastReceiver() {
     ) {
         val isStopService: Boolean = intent.extras?.getBoolean("isStopService") ?: false
         val isPauseService: Boolean = intent.extras?.getBoolean("isPauseService") ?: false
+        val isNextSong: Boolean = intent.extras?.getBoolean("isNextSong") ?: false
+        val isPreviousSong: Boolean = intent.extras?.getBoolean("isPreviousSong") ?: false
 
         if (isStopService) {
             context.stopService(Intent(context, BackgroundSoundService::class.java))
         }
 
         if (isPauseService) {
-            val soundService = BackgroundSoundService.getServiceObject() as BackgroundSoundService
-            soundService.playPausePlayer()
+            BackgroundSoundService.getServiceObject()?.playPausePlayer()
+        }
+
+        if (isNextSong) {
+            BackgroundSoundService.getServiceObject()?.nextSong()
+        }
+
+        if (isPreviousSong) {
+            BackgroundSoundService.getServiceObject()?.previousSong()
         }
     }
 }

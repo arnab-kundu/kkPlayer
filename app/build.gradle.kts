@@ -108,6 +108,7 @@ dependencies {
     implementation(libs.google.android.material)
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.datastore.preferences)
+    implementation(libs.androidx.media)
 
     // Compose UI
     implementation(libs.androidx.ui)

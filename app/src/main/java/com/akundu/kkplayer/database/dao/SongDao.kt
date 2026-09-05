@@ -42,6 +42,9 @@ interface SongDao {
     @Query("SELECT * FROM SongsTable WHERE id > :id AND isDownloaded = 1 LIMIT 1")
     fun getNextDownloadedSong(id: Long): SongEntity?
 
+    @Query("SELECT * FROM SongsTable WHERE id < :id AND isDownloaded = 1 ORDER BY id DESC LIMIT 1")
+    fun getPreviousDownloadedSong(id: Long): SongEntity?
+
     @Query("SELECT COUNT(*) FROM SongsTable WHERE 1 = 1")
     fun getTotalCount(): Int
 

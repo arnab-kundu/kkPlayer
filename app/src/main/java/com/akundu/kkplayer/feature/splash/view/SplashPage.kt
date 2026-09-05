@@ -3,6 +3,7 @@ package com.akundu.kkplayer.feature.splash.view
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -32,6 +33,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
@@ -44,6 +46,7 @@ import androidx.compose.ui.unit.sp
 import com.akundu.kkplayer.R
 import com.akundu.kkplayer.feature.splash.model.SplashUiState
 import com.akundu.kkplayer.feature.splash.viewModel.SplashViewModel
+import com.akundu.kkplayer.ui.TestTags
 import com.akundu.kkplayer.ui.theme.AppTextFieldColors
 
 @Composable
@@ -70,18 +73,23 @@ fun SplashPage(
             Image(
                 painter = painterResource(id = R.drawable.ic_launcher_foreground),
                 contentDescription = "Logo",
-                modifier = Modifier.clip(CircleShape),
+                modifier =
+                    Modifier
+                        .testTag(TestTags.SPLASH_LOGO)
+                        .clip(CircleShape),
             )
             Spacer(modifier = Modifier.height(15.dp))
             Text(text = "Powered by @k music industries", color = Color.Gray)
             Spacer(modifier = Modifier.height(21.dp))
             if (uiState.isLoadingDotsVisible) {
-                DotsFlashing()
+                Box(modifier = Modifier.testTag(TestTags.SPLASH_LOADING_DOTS)) {
+                    DotsFlashing()
+                }
             } else {
                 Spacer(modifier = Modifier.height(8.dp))
             }
             Spacer(modifier = Modifier.height(15.dp))
-            Text(text = version, color = Color.DarkGray)
+            Text(text = version, color = Color.DarkGray, modifier = Modifier.testTag(TestTags.SPLASH_VERSION_TEXT))
 
             Spacer(modifier = Modifier.weight(1F))
             Text(
@@ -134,6 +142,7 @@ fun LoginLayout(
                     modifier =
                         Modifier
                             .fillMaxWidth()
+                            .testTag(TestTags.SPLASH_EMAIL_FIELD)
                             .background(color = Color.White),
                     singleLine = true,
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email, imeAction = ImeAction.Next),
@@ -148,7 +157,10 @@ fun LoginLayout(
                     value = uiState.password,
                     // onValueChange = { password.value = it },
                     onValueChange = { viewModel.typingPassword(it) },
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .testTag(TestTags.SPLASH_PASSWORD_FIELD),
                     singleLine = true,
                     visualTransformation = PasswordVisualTransformation(),
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password, imeAction = ImeAction.Done),
@@ -178,6 +190,7 @@ fun LoginLayout(
                     )
                     Spacer(modifier = Modifier.weight(1F))
                     Switch(
+                        modifier = Modifier.testTag(TestTags.SPLASH_BIOMETRIC_SWITCH),
                         checked = biometric.value,
                         colors =
                             SwitchColors(
@@ -212,6 +225,7 @@ fun LoginLayout(
                             .width(180.dp)
                             .height(48.dp)
                             .align(Alignment.CenterHorizontally)
+                            .testTag(TestTags.SPLASH_LOGIN_BUTTON)
                             .background(
                                 brush =
                                     Brush.verticalGradient(
@@ -248,6 +262,7 @@ fun LoginLayout(
                     color = Color(0xFF999999),
                     modifier =
                         Modifier
+                            .testTag(TestTags.SPLASH_FORGOT_PASSWORD_TEXT)
                             .clickable { /*TODO*/ }
                             .align(Alignment.CenterHorizontally),
                     fontSize = 13.sp,

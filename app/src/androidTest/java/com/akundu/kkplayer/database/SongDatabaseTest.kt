@@ -1,15 +1,13 @@
 package com.akundu.kkplayer.database
 
-import android.content.Context
+import androidx.room.Room
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
-import com.akundu.kkplayer.data.Song
 import com.akundu.kkplayer.data.SongDataProvider
 import com.akundu.kkplayer.database.dao.SongDao
 import com.akundu.kkplayer.database.entity.SongEntity
 import org.junit.After
 import org.junit.Assert.assertEquals
-import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
@@ -19,124 +17,116 @@ import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
 class SongDatabaseTest {
-    private val appContext: Context = InstrumentationRegistry.getInstrumentation().targetContext
     private lateinit var database: SongDatabase
     private lateinit var dao: SongDao
-    private val kkSongList: List<Song> = SongDataProvider.kkSongList
-    private var mockEntity: SongEntity =
-        SongEntity(
-            title = kkSongList[0].title,
-            artist = kkSongList[0].artist,
-            fileName = kkSongList[0].fileName,
-            url = kkSongList[0].url,
-            movie = kkSongList[0].movie,
-            isDownloaded = false,
-        )
 
     @Before
     fun setUp() {
-        database = SongDatabase.getDatabase(appContext)
+        val context = InstrumentationRegistry.getInstrumentation().targetContext
+        database =
+            Room
+                .inMemoryDatabaseBuilder(context, SongDatabase::class.java)
+                .allowMainThreadQueries()
+                .build()
         dao = database.songDao()
-        dao.addSong(mockEntity)
     }
 
     @After
     fun tearDown() {
+        database.close()
     }
 
-    @Test
-    fun testAddSong() {
-        dao.addSong(mockEntity)
-        val totalCount = dao.getTotalCount()
-        assertEquals("TEST FAILED: testAddSong()", 1, totalCount)
-    }
-
-    @Test
-    fun testGetAllSongs() {
-        var songEntity: SongEntity
-        var count: Int = 0
-        kkSongList.forEachIndexed { index, song ->
-            songEntity =
+    private fun seedCatalogue(): List<SongEntity> {
+        SongDataProvider.kkSongList.forEach { song ->
+            dao.addSong(
                 SongEntity(
                     title = song.title,
                     artist = song.artist,
                     fileName = song.fileName,
                     url = song.url,
                     movie = song.movie,
-                )
-            dao.addSong(songEntity)
-            count = index + 1
+                ),
+            )
         }
-        val databaseSongsList = dao.getAllSongs()
-        databaseSongsList.forEach { println(it.toString()) }
-        assertTrue("TEST FAILED: testGetAllSongs()", databaseSongsList.size == count)
+        return dao.getAllSongs()
     }
 
     @Test
-    fun testFindSongById() {
-        val songEntity = dao.findSongById(1)
-        assertTrue("TEST FAILED: testFindSongById()", songEntity.title == kkSongList[0].title)
+    fun storesTheWholeCatalogueOnRealSqlite() {
+        val stored = seedCatalogue()
+
+        assertEquals(SongDataProvider.kkSongList.size, stored.size)
+        assertEquals(SongDataProvider.kkSongList.size, dao.getTotalCount())
     }
 
     @Test
-    fun testSearchSongByName() {
-        val songEntity = dao.searchSongByName(kkSongList[0].title)
-        assertTrue("TEST FAILED: testSearchSongByName()", songEntity[0].title == kkSongList[0].title)
+    fun enforcesTheUniqueFileNameIndex() {
+        val stored = seedCatalogue()
+        val first = stored.first()
+
+        dao.addSong(SongEntity(title = "Replacement", artist = "", fileName = first.fileName, url = "", movie = ""))
+
+        assertEquals(stored.size, dao.getTotalCount())
+        assertEquals("Replacement", dao.searchSongByName("Replacement").single().title)
     }
 
     @Test
-    fun testSearchSongByTitle() {
-        val songEntity = dao.searchSongByTitle(kkSongList[0].title.padEnd(2))
-        assertTrue("TEST FAILED: testSearchSongByTitle()", songEntity[0].title == kkSongList[0].title)
+    fun findsASeededSongById() {
+        val stored = seedCatalogue()
+
+        assertEquals(stored.first().title, dao.findSongById(stored.first().id).title)
     }
 
     @Test
-    fun testUpdateSongDownloadInfo() {
-        val allSongsList = dao.getAllSongs()
-        if (allSongsList.isNotEmpty()) {
-            val songEntity = dao.findSongById(allSongsList[0].id)
-            assertFalse(songEntity.isDownloaded)
-        } else {
-            println("No song found in database")
-            return
-        }
+    fun findsASongIdByFileName() {
+        val stored = seedCatalogue()
 
-        val downloadStatus = dao.updateSongDownloadInfo(allSongsList[0].id, true)
-        val updatedSongEntity = dao.findSongById(allSongsList[0].id)
-        assertTrue("TEST FAILED: testUpdateSongDownloadInfo()", downloadStatus == 1)
-        assertTrue("TEST FAILED: testUpdateSongDownloadInfo()", updatedSongEntity.isDownloaded)
+        assertEquals(stored.first().id, dao.findSongIdByFilename(stored.first().fileName))
     }
 
     @Test
-    fun testGetNextDownloadedSong() {
-        // Next downloaded song is equals to Null
-        assertNull(dao.getNextDownloadedSong(7))
+    fun walksThroughDownloadedSongsOnly() {
+        val stored = seedCatalogue()
+        dao.updateSongDownloadInfo(stored[0].id, true)
+        dao.updateSongDownloadInfo(stored[2].id, true)
 
-        // Modifying isDownloaded data for testing
-        dao.updateSongDownloadInfo(7, true)
-        dao.updateSongDownloadInfo(8, true)
-        dao.updateSongDownloadInfo(9, true)
-        dao.updateSongDownloadInfo(10, true)
-        // So after modifying those data, Next downloaded songs are NotNull
-        assertNotNull(dao.getNextDownloadedSong(6))
-        assertNotNull(dao.getNextDownloadedSong(7))
-        assertNotNull(dao.getNextDownloadedSong(8))
-        assertNotNull(dao.getNextDownloadedSong(9))
-
-        // Next downloaded song is equals to Null
-        assertNull(dao.getNextDownloadedSong(10))
-        assertNull(dao.getNextDownloadedSong(11))
+        assertEquals(stored[2].id, dao.getNextDownloadedSong(stored[0].id)?.id)
+        assertEquals(stored[0].id, dao.getPreviousDownloadedSong(stored[2].id)?.id)
+        assertNull(dao.getNextDownloadedSong(stored[2].id))
+        assertNull(dao.getPreviousDownloadedSong(stored[0].id))
     }
 
     @Test
-    fun testGetTotalCount() {
-        val totalCount = dao.getTotalCount()
-        assertTrue("TEST FAILED: testGetTotalCount()", totalCount == kkSongList.size)
+    fun marksASongAsDownloaded() {
+        val stored = seedCatalogue()
+
+        assertEquals(1, dao.updateSongDownloadInfo(stored.first().id, true))
+        assertTrue(dao.findSongById(stored.first().id).isDownloaded)
+        assertEquals(stored.first().id, dao.getFirstDownloadedSong().id)
     }
 
     @Test
-    fun testTruncateTable() {
-        val numberOfDeletedRecord = dao.truncateTable()
-        assertEquals("TEST FAILED: testTruncateTable()", kkSongList.size, numberOfDeletedRecord)
+    fun searchesSongsByPartialTitle() {
+        seedCatalogue()
+        val expected = SongDataProvider.kkSongList.first().title
+
+        assertNotNull(dao.searchSongByTitle(expected.take(4)).firstOrNull())
+    }
+
+    @Test
+    fun deletesASingleSong() {
+        val stored = seedCatalogue()
+
+        dao.deleteSong(stored.first().id)
+
+        assertEquals(stored.size - 1, dao.getTotalCount())
+    }
+
+    @Test
+    fun truncatingEmptiesTheTable() {
+        val stored = seedCatalogue()
+
+        assertEquals(stored.size, dao.truncateTable())
+        assertEquals(0, dao.getTotalCount())
     }
 }

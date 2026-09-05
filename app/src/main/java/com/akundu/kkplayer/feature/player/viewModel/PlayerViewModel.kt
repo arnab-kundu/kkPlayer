@@ -4,10 +4,15 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.akundu.kkplayer.service.BackgroundSoundService
+import com.akundu.kkplayer.service.playback.PlaybackController
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 
-class PlayerViewModel : ViewModel() {
+class PlayerViewModel(
+    private val playbackController: () -> PlaybackController? = { BackgroundSoundService.getServiceObject() },
+    private val pollIntervalMs: Long = POLL_INTERVAL_MS,
+) : ViewModel() {
     val isPlaying = MutableLiveData(true)
     val currentSongId = MutableLiveData(0)
     val currentPositionMs = MutableLiveData(0)
@@ -18,33 +23,37 @@ class PlayerViewModel : ViewModel() {
     }
 
     fun playPauseToggle() {
-        BackgroundSoundService.getServiceObject()?.playPausePlayer()
+        playbackController()?.playPausePlayer()
     }
 
     fun nextSong() {
-        BackgroundSoundService.getServiceObject()?.nextSong()
+        playbackController()?.nextSong()
     }
 
     fun previousSong() {
-        BackgroundSoundService.getServiceObject()?.previousSong()
+        playbackController()?.previousSong()
     }
 
     fun seekTo(positionMs: Int) {
-        BackgroundSoundService.getServiceObject()?.seekTo(positionMs)
+        playbackController()?.seekTo(positionMs)
         currentPositionMs.value = positionMs
     }
 
     private fun pollPlaybackState() {
         viewModelScope.launch {
-            while (true) {
-                BackgroundSoundService.getServiceObject()?.let { service ->
-                    isPlaying.value = service.isCurrentlyPlaying()
-                    currentSongId.value = service.getCurrentSongId()
-                    currentPositionMs.value = service.getCurrentPositionMs()
-                    durationMs.value = service.getDurationMs()
+            while (isActive) {
+                playbackController()?.let { controller ->
+                    isPlaying.value = controller.isCurrentlyPlaying()
+                    currentSongId.value = controller.getCurrentSongId()
+                    currentPositionMs.value = controller.getCurrentPositionMs()
+                    durationMs.value = controller.getDurationMs()
                 }
-                delay(500)
+                delay(pollIntervalMs)
             }
         }
+    }
+
+    companion object {
+        private const val POLL_INTERVAL_MS = 500L
     }
 }

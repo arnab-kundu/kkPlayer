@@ -9,6 +9,7 @@ import com.akundu.kkplayer.feature.settings.datastore.DataStoreManager
 import com.akundu.kkplayer.feature.settings.datastore.DisplayOptions
 import com.akundu.kkplayer.feature.settings.datastore.RepeatMode
 import com.akundu.kkplayer.storage.Constants
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -18,9 +19,11 @@ import java.io.File
 
 class SettingsViewModel(
     application: Application,
+    private val dataStoreManager: DataStoreManager = DataStoreManager(application),
+    private val clearDatabase: () -> Unit = { KkPlayerApp.appModule.database.clearAllTables() },
+    private val mediaDirectory: File = File(Constants.MEDIA_PATH),
+    private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO,
 ) : AndroidViewModel(application) {
-    private val dataStoreManager = DataStoreManager(application)
-
     private val _repeatMode = MutableStateFlow(RepeatMode.NONE)
     val repeatMode: StateFlow<String> = _repeatMode.asStateFlow()
 
@@ -67,27 +70,31 @@ class SettingsViewModel(
     }
 
     fun onClearCache() {
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch(ioDispatcher) {
             clearCacheDirs()
         }
     }
 
     fun onClearDatabase() {
-        viewModelScope.launch(Dispatchers.IO) {
-            KkPlayerApp.appModule.database.clearAllTables()
+        viewModelScope.launch(ioDispatcher) {
+            clearDatabase()
         }
     }
 
     fun onClearData() {
-        viewModelScope.launch(Dispatchers.IO) {
-            clearCacheDirs()
-            KkPlayerApp.appModule.database.clearAllTables()
-            clearDirectoryContents(File(Constants.MEDIA_PATH))
-            dataStoreManager.clearAll()
+        viewModelScope.launch(ioDispatcher) {
+            clearAllData()
         }
     }
 
-    private fun clearCacheDirs() {
+    internal suspend fun clearAllData() {
+        clearCacheDirs()
+        clearDatabase()
+        clearDirectoryContents(mediaDirectory)
+        dataStoreManager.clearAll()
+    }
+
+    internal fun clearCacheDirs() {
         val application = getApplication<Application>()
         clearDirectoryContents(application.cacheDir)
         application.externalCacheDir?.let { clearDirectoryContents(it) }

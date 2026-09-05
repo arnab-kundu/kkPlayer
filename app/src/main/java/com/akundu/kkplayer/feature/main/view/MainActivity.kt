@@ -17,6 +17,7 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.blur
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -31,6 +32,7 @@ import com.akundu.kkplayer.feature.main.ui.SongItem
 import com.akundu.kkplayer.feature.main.viewModel.MainViewModel
 import com.akundu.kkplayer.permission.RuntimePermission.askNotificationPermission
 import com.akundu.kkplayer.presentation.viewModelFactory
+import com.akundu.kkplayer.ui.TestTags
 import com.akundu.kkplayer.ui.theme.KkPlayerTheme
 import es.dmoral.toasty.Toasty
 
@@ -85,7 +87,7 @@ class MainActivity : ComponentActivity() {
                         contentDescription = null,
                         contentScale = ContentScale.FillBounds,
                     )
-                    LazyColumn(contentPadding = innerPadding) {
+                    LazyColumn(modifier = Modifier.testTag(TestTags.MAIN_SONG_LIST), contentPadding = innerPadding) {
                         songListState.value?.let { itemsIndexed(it) { _, song -> SongItem(song = song) } }
                     }
                 }

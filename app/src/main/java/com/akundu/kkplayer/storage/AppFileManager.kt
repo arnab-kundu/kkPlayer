@@ -31,8 +31,9 @@ import java.util.zip.ZipInputStream
 import java.util.zip.ZipOutputStream
 
 @Suppress("RedundantExplicitType")
-class AppFileManager :
-    EncryptionManager(),
+class AppFileManager(
+    private val externalStorageRoot: File = File(DEFAULT_EXTERNAL_STORAGE_ROOT),
+) : EncryptionManager(),
     FileManager,
     ZipManager {
     override fun createFolder(
@@ -45,8 +46,7 @@ class AppFileManager :
 
     override fun createAppsInternalPrivateStoragePath(path: String): File? {
         try {
-            val rootFolderPath = "/storage/emulated/0/Android"
-            var folder: File = File(rootFolderPath)
+            var folder: File = File(externalStorageRoot, "Android")
 
             val pathFoldersList: List<String> = path.split("/")
             pathFoldersList.forEach { childFolder ->
@@ -151,7 +151,7 @@ class AppFileManager :
                     }
                 OBB_DIRECTORY -> context.obbDir
 
-                DOWNLOADS_DIRECTORY -> File("/storage/emulated/0/Download/")
+                DOWNLOADS_DIRECTORY -> File(externalStorageRoot, "Download")
                 DOCUMENT_DIRECTORY -> TODO()
                 MUSIC_DIRECTORY -> TODO()
                 PICTURES_DIRECTORY -> TODO()
@@ -501,5 +501,9 @@ class AppFileManager :
             return null
         }
         return decryptedOutputFile
+    }
+
+    companion object {
+        const val DEFAULT_EXTERNAL_STORAGE_ROOT = "/storage/emulated/0"
     }
 }

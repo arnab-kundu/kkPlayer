@@ -43,6 +43,7 @@ import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalResources
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
@@ -56,6 +57,7 @@ import com.akundu.kkplayer.data.Song
 import com.akundu.kkplayer.database.entity.SongEntity
 import com.akundu.kkplayer.feature.player.viewModel.PlayerViewModel
 import com.akundu.kkplayer.storage.Constants
+import com.akundu.kkplayer.ui.TestTags
 import java.io.File
 
 @Preview
@@ -123,6 +125,7 @@ fun PlayerPage(
                 modifier =
                     Modifier
                         .size(24.dp)
+                        .testTag(TestTags.PLAYER_BACK_BUTTON)
                         .clickable { backClick.invoke() },
                 tint = MaterialTheme.colorScheme.onSurfaceVariant,
             )
@@ -133,6 +136,7 @@ fun PlayerPage(
                 modifier =
                     Modifier
                         .size(24.dp)
+                        .testTag(TestTags.PLAYER_SETTINGS_BUTTON)
                         .clickable { settingsClick.invoke() },
                 tint = MaterialTheme.colorScheme.onSurfaceVariant,
             )
@@ -143,7 +147,8 @@ fun PlayerPage(
                 Modifier
                     .align(Alignment.CenterEnd)
                     .height(350.dp)
-                    .width(72.dp),
+                    .width(72.dp)
+                    .testTag(TestTags.PLAYER_VOLUME_SWIPE_ZONE),
         )
     }
 }
@@ -170,7 +175,10 @@ private fun PlaybackSeekBar(
             SliderDefaults.colors(
                 activeTrackColor = Color.Gray,
             ),
-        modifier = Modifier.padding(horizontal = 16.dp),
+        modifier =
+            Modifier
+                .padding(horizontal = 16.dp)
+                .testTag(TestTags.PLAYER_SEEK_BAR),
     )
 }
 
@@ -218,6 +226,7 @@ fun AlbumArt(
             modifier =
                 Modifier
                     .fillMaxWidth()
+                    .testTag(TestTags.PLAYER_ALBUM_ART)
                     .clip(shape = RoundedCornerShape(16.dp, 16.dp, 16.dp, 16.dp)),
         )
         Spacer(modifier = Modifier.height(16.dp))
@@ -249,6 +258,7 @@ fun MediaControllerButtons(
             modifier =
                 Modifier
                     .size(40.dp)
+                    .testTag(TestTags.PLAYER_PREVIOUS_BUTTON)
                     .clickable { previousClick.invoke() },
             tint = MaterialTheme.colorScheme.onSurfaceVariant,
         )
@@ -265,6 +275,7 @@ fun MediaControllerButtons(
             modifier =
                 Modifier
                     .size(40.dp)
+                    .testTag(TestTags.PLAYER_NEXT_BUTTON)
                     .clickable { nextClick.invoke() },
             tint = MaterialTheme.colorScheme.onSurfaceVariant,
         )
@@ -283,6 +294,7 @@ fun MediaButton(
         modifier =
             Modifier
                 .size(size)
+                .testTag(TestTags.PLAYER_PLAY_PAUSE_BUTTON)
                 .clickable { buttonClick.invoke() },
     )
 }

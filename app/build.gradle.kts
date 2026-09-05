@@ -5,6 +5,7 @@ plugins {
     alias(libs.plugins.com.google.devtools.ksp)
     alias(libs.plugins.ktlint)
     alias(libs.plugins.kotlin.compose)
+    alias(libs.plugins.kover)
     id("com.google.gms.google-services")
 }
 
@@ -45,6 +46,16 @@ android {
         getByName("release") {
             isMinifyEnabled = false
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+        }
+        getByName("debug") {
+            enableAndroidTestCoverage = true
+        }
+    }
+
+    testOptions {
+        unitTests {
+            isIncludeAndroidResources = true
+            isReturnDefaultValues = true
         }
     }
 
@@ -146,11 +157,41 @@ dependencies {
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.analytics)
 
-    // Test Dependencies
+    // Unit Test Dependencies
     testImplementation(libs.junit)
+    testImplementation(libs.mockito.core)
+    testImplementation(libs.mockito.kotlin)
+    testImplementation(libs.robolectric)
+    testImplementation(libs.kotlinx.coroutines.test)
+    testImplementation(libs.androidx.arch.core.testing)
+    testImplementation(libs.androidx.room.testing)
+    testImplementation(libs.androidx.work.testing)
+
+    // Instrumentation Test Dependencies
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
-    androidTestImplementation(libs.mockito.kotlin.kt1.x)
+    androidTestImplementation(libs.androidx.espresso.intents)
+    androidTestImplementation(libs.mockito.android)
+    androidTestImplementation(libs.mockito.kotlin)
     androidTestImplementation(libs.androidx.ui.test.junit4)
+    androidTestImplementation(libs.androidx.room.testing)
     androidTestImplementation(platform(libs.androidx.compose.bom))
+}
+
+kover {
+    reports {
+        filters {
+            excludes {
+                classes(
+                    "com.akundu.kkplayer.BuildConfig",
+                    "*.R",
+                    "*.R\$*",
+                    "*_Impl",
+                    "*ComposableSingletons*",
+                )
+                packages("com.akundu.kkplayer.ui.theme")
+                annotatedBy("androidx.compose.ui.tooling.preview.Preview")
+            }
+        }
+    }
 }

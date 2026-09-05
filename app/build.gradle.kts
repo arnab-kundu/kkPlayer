@@ -195,3 +195,31 @@ kover {
         }
     }
 }
+
+/**
+ * `./gradlew unitTestSuite` runs every local unit test in one pass through
+ * com.akundu.kkplayer.UnitTestSuite.
+ *
+ * A plain `./gradlew testDebugUnitTest` leaves the suite class out, so the same tests are not
+ * executed twice - once directly and once again through the suite.
+ */
+val isUnitTestSuiteRun = gradle.startParameter.taskNames.any { it.substringAfterLast(':') == "unitTestSuite" }
+
+tasks.withType<Test>().configureEach {
+    if (isUnitTestSuiteRun) {
+        filter.setIncludePatterns("com.akundu.kkplayer.UnitTestSuite")
+        // A suite builds every runner it lists up front, which does not fit in the 512m the
+        // Android plugin gives a unit test worker by default.
+        maxHeapSize = "2g"
+    } else {
+        // Excluded at class level: filter.excludeTestsMatching would only match the leaf tests, and
+        // the suite would still re-run every class it lists.
+        exclude("**/UnitTestSuite.class")
+    }
+}
+
+tasks.register("unitTestSuite") {
+    group = "verification"
+    description = "Runs all local unit tests through com.akundu.kkplayer.UnitTestSuite"
+    dependsOn("testDebugUnitTest")
+}

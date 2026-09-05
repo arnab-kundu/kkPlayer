@@ -182,14 +182,15 @@ class AppFileManagerTest {
         assertEquals("kkPlayer", destination.readText())
     }
 
-    // The source stream is opened outside copyFile's try block, so a missing source escapes
-    // as an exception instead of the documented false return value.
-    @Test(expected = java.io.FileNotFoundException::class)
-    fun `copyFile throws when the source is missing`() {
-        fileManager.copyFile(
-            sourcePath = File(cacheDir, "missing.txt").androidPath,
-            destinationPath = File(cacheDir, "target.txt").androidPath,
-        )
+    @Test
+    fun `copyFile returns false when the source is missing`() {
+        val copied =
+            fileManager.copyFile(
+                sourcePath = File(cacheDir, "missing.txt").androidPath,
+                destinationPath = File(cacheDir, "target.txt").androidPath,
+            )
+
+        assertFalse(copied)
     }
 
     @Test
@@ -254,10 +255,8 @@ class AppFileManagerTest {
         assertEquals("new", target.readText())
     }
 
-    // The original file is only removed on platforms that allow deleting an open file:
-    // copyInputStreamToFile never closes the source stream, so the handle is still held here.
     @Test
-    fun `renameFile writes the content into the external files directory`() {
+    fun `renameFile moves the file into the external files directory`() {
         val existing = sourceFile("before.txt", "renamed content")
 
         val renamed = fileManager.renameFile(context, existing.androidPath, "after.txt")
@@ -266,6 +265,7 @@ class AppFileManagerTest {
         assertEquals("renamed content", renamed.readText())
         assertEquals(externalFilesDir, renamed.parentFile)
         assertEquals("after.txt", renamed.name)
+        assertFalse(existing.exists())
     }
 
     @Test
@@ -279,14 +279,21 @@ class AppFileManagerTest {
     }
 
     @Test
-    fun `deleteFolder leaves subdirectories untouched`() {
+    fun `deleteFolder empties nested subdirectories`() {
         val folder = temporaryFolder.newFolder("partly_deletable")
         val subFolder = File(folder, "sub").apply { mkdirs() }
         val nested = File(subFolder, "nested.txt").apply { writeText("nested") }
 
         fileManager.deleteFolder(folder)
 
-        assertTrue(nested.exists())
+        assertFalse(nested.exists())
+        assertFalse(subFolder.exists())
+        assertTrue(folder.exists())
+    }
+
+    @Test
+    fun `deleteFolder tolerates a directory that does not exist`() {
+        fileManager.deleteFolder(File(cacheDir, "never_created"))
     }
 
     @Test
@@ -369,16 +376,25 @@ class AppFileManagerTest {
         assertEquals("scoped-secret.enc", encrypted.name)
     }
 
-    // Decrypting non-encrypted input produces a garbage file rather than failing:
-    // the cipher stream reports no error for input it cannot meaningfully decrypt.
     @Test
-    fun `decryptFile produces a file that does not match the original for invalid input`() {
+    fun `decryptFile returns null for input it cannot decrypt`() {
         val notEncrypted = sourceFile("garbage.enc", "this is not encrypted at all")
 
-        val decrypted = fileManager.decryptFile(context, notEncrypted.androidPath, "output.txt")
+        assertEquals(null, fileManager.decryptFile(context, notEncrypted.androidPath, "output.txt"))
+    }
 
-        assertTrue(decrypted!!.exists())
-        assertFalse("this is not encrypted at all" == decrypted.readText())
+    @Test
+    fun `a failed decryption leaves no partial file behind`() {
+        val notEncrypted = sourceFile("garbage2.enc", "this is not encrypted at all")
+
+        fileManager.decryptFile(context, notEncrypted.androidPath, "partial.txt")
+
+        assertFalse(File(externalStorageRoot, "Android/media/${BuildConfig.APPLICATION_ID}/partial.txt").exists())
+    }
+
+    @Test
+    fun `decryptFile returns null when the encrypted file is missing`() {
+        assertEquals(null, fileManager.decryptFile(context, File(cacheDir, "missing.enc").androidPath, "output.txt"))
     }
 
     @Test

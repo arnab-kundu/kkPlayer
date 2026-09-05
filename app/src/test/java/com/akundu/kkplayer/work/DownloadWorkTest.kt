@@ -13,6 +13,7 @@ import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.ResponseBody
 import okhttp3.ResponseBody.Companion.toResponseBody
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -26,6 +27,7 @@ import org.robolectric.RuntimeEnvironment
 import org.robolectric.annotation.Config
 import retrofit2.Call
 import retrofit2.Response
+import java.io.File
 
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [33])
@@ -76,8 +78,6 @@ class DownloadWorkTest {
         return call
     }
 
-    // doWork launches the actual download on a detached scope and reports success straight
-    // away, so the result never reflects whether the download worked.
     @Test
     fun `reports success for a successful download`() =
         runTest {
@@ -88,22 +88,37 @@ class DownloadWorkTest {
         }
 
     @Test
-    fun `reports success even when the download fails`() =
+    fun `saves the downloaded song to storage`() =
+        runTest {
+            val successful = call(Response.success("audio-bytes".toResponseBody("audio/mpeg".toMediaType())))
+            whenever(apiRequest.downloadSongByUrl(any())).thenReturn(successful)
+
+            worker().doWork()
+
+            val downloaded = File(temporaryFolder.root, "Android/media/com.akundu.kkplayer/song.mp3")
+            assertTrue(downloaded.exists())
+            assertEquals("audio-bytes", downloaded.readText())
+        }
+
+    // A rejected response is worth another attempt later, so the work is retried rather than
+    // reported as done.
+    @Test
+    fun `asks to retry when the server rejects the request`() =
         runTest {
             val failed = call(Response.error<ResponseBody>(404, "missing".toResponseBody("text/plain".toMediaType())))
             whenever(apiRequest.downloadSongByUrl(any())).thenReturn(failed)
 
-            assertEquals(ListenableWorker.Result.success(), worker().doWork())
+            assertEquals(ListenableWorker.Result.retry(), worker().doWork())
         }
 
     @Test
-    fun `reports success even when the request throws`() =
+    fun `reports failure when the request throws`() =
         runTest {
             val failing: Call<ResponseBody> = mock()
             whenever(failing.execute()).thenThrow(RuntimeException("offline"))
             whenever(apiRequest.downloadSongByUrl(any())).thenReturn(failing)
 
-            assertEquals(ListenableWorker.Result.success(), worker().doWork())
+            assertEquals(ListenableWorker.Result.failure(), worker().doWork())
         }
 
     @Test

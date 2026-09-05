@@ -157,16 +157,40 @@ class SplashViewModelTest {
         assertFalse(viewModel.uiState.value.isLoadingDotsVisible)
     }
 
-    // The method returns true even when validation fails; the source carries a `// TODO false`
-    // for this. Locked in here so the behaviour cannot change silently.
     @Test
-    fun `login always reports success even for invalid input`() {
+    fun `login reports success only for valid credentials`() {
+        val viewModel = SplashViewModel()
+        viewModel.typingEmail("user@example.com")
+        viewModel.typingPassword("12345678")
+
+        assertTrue(viewModel.loginButtonClickStateChangeEvent())
+    }
+
+    @Test
+    fun `login reports failure for invalid input`() {
         val viewModel = SplashViewModel()
 
-        assertTrue(viewModel.loginButtonClickStateChangeEvent())
+        assertFalse(viewModel.loginButtonClickStateChangeEvent())
 
         viewModel.typingEmail("not-an-email")
-        assertTrue(viewModel.loginButtonClickStateChangeEvent())
+        viewModel.typingPassword("12345678")
+        assertFalse(viewModel.loginButtonClickStateChangeEvent())
+
+        viewModel.typingEmail("user@example.com")
+        viewModel.typingPassword("short")
+        assertFalse(viewModel.loginButtonClickStateChangeEvent())
+    }
+
+    @Test
+    fun `a rejected login keeps the form on screen`() {
+        val viewModel = SplashViewModel()
+        viewModel.typingEmail("not-an-email")
+        viewModel.typingPassword("12345678")
+
+        viewModel.loginButtonClickStateChangeEvent()
+
+        assertTrue(viewModel.uiState.value.isLoginLayoutVisible)
+        assertFalse(viewModel.uiState.value.isLoadingDotsVisible)
     }
 
     // reverseAnimation re-schedules itself forever, so the scope has to be cancelled before

@@ -76,10 +76,11 @@ class AppFileManager(
     }
 
     override fun deleteFolder(directory: File) {
-        for (file in directory.listFiles()!!) {
-            if (!file.isDirectory) {
-                file.delete()
+        directory.listFiles()?.forEach { file ->
+            if (file.isDirectory) {
+                deleteFolder(file)
             }
+            file.delete()
         }
     }
 
@@ -182,35 +183,26 @@ class AppFileManager(
         return file
     }
 
-    @Throws(IOException::class)
     override fun copyFile(
         sourcePath: String,
         destinationPath: String,
-    ): Boolean {
-        val inputStream: InputStream = FileInputStream(sourcePath)
+    ): Boolean =
         try {
-            val outputStream: OutputStream = FileOutputStream(destinationPath)
-            try {
-                // Transfer bytes from in to out
-                val buffer = ByteArray(1024)
-                var len: Int
-                while (inputStream.read(buffer).also { len = it } > 0) {
-                    outputStream.write(buffer, 0, len)
+            FileInputStream(sourcePath).use { inputStream ->
+                FileOutputStream(destinationPath).use { outputStream ->
+                    // Transfer bytes from in to out
+                    val buffer = ByteArray(1024)
+                    var len: Int
+                    while (inputStream.read(buffer).also { len = it } > 0) {
+                        outputStream.write(buffer, 0, len)
+                    }
                 }
-            } catch (e: Exception) {
-                Logg.e(e.toString())
-                return false
-            } finally {
-                outputStream.close()
             }
-            return true
-        } catch (e: FileNotFoundException) {
+            true
+        } catch (e: IOException) {
             Logg.e(e.toString())
-            return false
-        } finally {
-            inputStream.close()
+            false
         }
-    }
 
     @Throws(IOException::class)
     override fun saveFile(
@@ -270,11 +262,13 @@ class AppFileManager(
         inputStream: InputStream,
         file: File,
     ) {
-        FileOutputStream(file, false).use { outputStream ->
-            var read: Int
-            val bytes = ByteArray(DEFAULT_BUFFER_SIZE)
-            while (inputStream.read(bytes).also { read = it } != -1) {
-                outputStream.write(bytes, 0, read)
+        inputStream.use { input ->
+            FileOutputStream(file, false).use { outputStream ->
+                var read: Int
+                val bytes = ByteArray(DEFAULT_BUFFER_SIZE)
+                while (input.read(bytes).also { read = it } != -1) {
+                    outputStream.write(bytes, 0, read)
+                }
             }
         }
     }
@@ -454,7 +448,7 @@ class AppFileManager(
         encryptedFileName: String,
     ): File? {
         var encryptedOutputFile: File? = null
-        try {
+        return try {
             val inputStream: InputStream = FileInputStream(srcFilePath)
 
             /** Create Folder and file */
@@ -467,12 +461,12 @@ class AppFileManager(
                 inputStream,
                 FileOutputStream(encryptedOutputFile),
             )
-        } catch (e: FileNotFoundException) {
-            e.printStackTrace()
+            encryptedOutputFile
         } catch (e: Exception) {
-            e.printStackTrace()
+            Logg.e("Failed to encrypt $srcFilePath: $e")
+            encryptedOutputFile?.delete()
+            null
         }
-        return encryptedOutputFile
     }
 
     override fun decryptFile(
@@ -480,9 +474,8 @@ class AppFileManager(
         encryptedFilePath: String,
         outputFileName: String,
     ): File? {
-        val decryptedOutputFile: File?
-        val mInputStream: InputStream = FileInputStream(encryptedFilePath)
-        try {
+        var decryptedOutputFile: File? = null
+        return try {
             /** Create Folder and file */
             createFolder("decrypt", encryptedFilePath)
             decryptedOutputFile = createFile(context, MEDIA_DIRECTORY, outputFileName, null)
@@ -490,17 +483,17 @@ class AppFileManager(
             decryptToFile(
                 keyStr = "keyLength16digit",
                 specStr = "keySizeMustBe16-",
-                mInputStream,
+                FileInputStream(encryptedFilePath),
                 FileOutputStream(decryptedOutputFile),
             )
-        } catch (e: FileNotFoundException) {
-            e.printStackTrace()
-            return null
+            decryptedOutputFile
         } catch (e: Exception) {
-            e.printStackTrace()
-            return null
+            Logg.e("Failed to decrypt $encryptedFilePath: $e")
+            // A failed decryption leaves a partially written file behind, which would otherwise
+            // look like a successful result to anything that only checks for the file's presence.
+            decryptedOutputFile?.delete()
+            null
         }
-        return decryptedOutputFile
     }
 
     companion object {

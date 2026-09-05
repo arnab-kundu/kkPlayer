@@ -18,11 +18,9 @@ import com.akundu.kkplayer.provider.FileAccessPermissionProvider
 import com.akundu.kkplayer.storage.AppFileManager
 import com.akundu.kkplayer.storage.FileLocationCategory.MEDIA_DIRECTORY
 import com.akundu.kkplayer.storage.FileManager
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import okhttp3.ResponseBody
 import retrofit2.Call
@@ -47,14 +45,20 @@ class DownloadWork
             val notificationID = inputData.getInt("notificationID", 0)
 
             // downloadFileAndSaveInAppDirectory(fileName, movie, notificationID)
-            CoroutineScope(Dispatchers.IO).launch {
-                runCatching {
-                    downloadFileAndSaveInScopedStorage(id, fileName, url, movie, notificationID)
+            // The download is awaited rather than detached, so WorkManager is told whether the
+            // song actually arrived and can retry when it did not.
+            return runCatching {
+                val isDownloaded = downloadFileAndSaveInScopedStorage(id, fileName, url, movie, notificationID)
+                if (isDownloaded) {
                     val bitmap: Bitmap? = MediaMetaDataRetriever.getMediaImage(fileName)
                     val isSaved: Boolean = MediaMetaDataRetriever.hasSavedMediaThumbnailsInCache(context, fileName, bitmap)
                     Logg.d("Is $fileName thumbnail saved: $isSaved")
-                }.onFailure {
-                    Logg.e("Error: ${it.message}, FileName: $fileName")
+                }
+                isDownloaded
+            }.fold(
+                onSuccess = { isDownloaded -> if (isDownloaded) Result.success() else Result.retry() },
+                onFailure = { error ->
+                    Logg.e("Error: ${error.message}, FileName: $fileName")
 
                     val database: SongDatabase = SongDatabase.getDatabase(context)
                     database.songDao().deleteSong(id)
@@ -69,10 +73,9 @@ class DownloadWork
                         pendingIntentFlag = PendingIntent.FLAG_IMMUTABLE,
                         drawableId = getDrawable(movie),
                     )
-                }
-            }
-
-            return Result.success()
+                    Result.failure()
+                },
+            )
         }
 
         /**
@@ -83,6 +86,7 @@ class DownloadWork
          * @param url (required)
          * @param movie (required) for displaying in notification
          * @param notificationID (required) for canceling on going downloading notification
+         * @return true when the song was saved to storage
          */
         internal suspend fun downloadFileAndSaveInScopedStorage(
             id: Long,
@@ -90,7 +94,7 @@ class DownloadWork
             url: String,
             movie: String,
             notificationID: Int,
-        ) {
+        ): Boolean =
             withContext(Dispatchers.IO) {
                 val deferred: Deferred<Response<ResponseBody>> =
                     async {
@@ -148,6 +152,8 @@ class DownloadWork
                         pendingIntentFlag = PendingIntent.FLAG_IMMUTABLE,
                         drawableId = getDrawable(movie),
                     )
+                    AppsNotificationManager.getInstance(context)?.cancelNotification(notificationID)
+                    true
                 } else {
                     Logg.e("StatusCode: ${response.code()}")
 
@@ -160,10 +166,10 @@ class DownloadWork
                         pendingIntentFlag = PendingIntent.FLAG_IMMUTABLE,
                         drawableId = getDrawable(movie),
                     )
+                    AppsNotificationManager.getInstance(context)?.cancelNotification(notificationID)
+                    false
                 }
-                AppsNotificationManager.getInstance(context)?.cancelNotification(notificationID)
             }
-        }
 
         /**
          * Download and Save file in app directory

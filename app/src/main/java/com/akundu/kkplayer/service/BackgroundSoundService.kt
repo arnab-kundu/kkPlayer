@@ -5,6 +5,9 @@ import android.app.NotificationManager
 import android.app.PendingIntent
 import android.app.Service
 import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.media.MediaMetadataRetriever
 import android.media.MediaPlayer
 import android.os.Build
 import android.os.Handler
@@ -17,17 +20,21 @@ import android.util.Log
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.core.app.NotificationCompat
+import androidx.core.content.ContextCompat
+import androidx.core.graphics.drawable.toBitmap
 import androidx.core.net.toUri
 import com.akundu.kkplayer.R
 import com.akundu.kkplayer.database.SongDatabase
 import com.akundu.kkplayer.database.entity.SongEntity
 import com.akundu.kkplayer.feature.settings.datastore.DataStoreManager
 import com.akundu.kkplayer.feature.settings.datastore.RepeatMode
+import com.akundu.kkplayer.getDrawable
 import com.akundu.kkplayer.storage.Constants.MEDIA_PATH
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.io.File
 import androidx.media.app.NotificationCompat as MediaNotificationCompat
 
@@ -37,6 +44,7 @@ class BackgroundSoundService : Service() {
     private var uriString: String = ""
     private var songTitle: String = ""
     private var currentSongId: Int = 0
+    private var albumArt: Bitmap? = null
     private val _repeatMode = MutableStateFlow(RepeatMode.NONE)
 
     private val positionUpdateHandler = Handler(Looper.getMainLooper())
@@ -44,7 +52,9 @@ class BackgroundSoundService : Service() {
         object : Runnable {
             override fun run() {
                 if (player?.isPlaying == true) {
-                    updatePlaybackState(PlaybackStateCompat.STATE_PLAYING)
+                    // Re-posting the notification (not just updating the session) is what actually
+                    // refreshes the visible progress/animation on most devices.
+                    runAsForeground()
                 }
                 positionUpdateHandler.postDelayed(this, 1000)
             }
@@ -132,6 +142,7 @@ class BackgroundSoundService : Service() {
                         }
                     }
                 }
+                loadAlbumArt(SongDatabase.getDatabase(this).songDao().findSongById(currentSongId.toLong()))
                 updateMetadata()
                 runAsForeground()
             }
@@ -152,6 +163,7 @@ class BackgroundSoundService : Service() {
 
         currentSongId = songEntity.id.toInt()
         songTitle = songEntity.title
+        loadAlbumArt(songEntity)
 
         if (player != null) {
             player?.stop()
@@ -193,6 +205,7 @@ class BackgroundSoundService : Service() {
 
         currentSongId = songEntity.id.toInt()
         songTitle = songEntity.title
+        loadAlbumArt(songEntity)
 
         if (player != null) {
             player?.stop()
@@ -288,6 +301,7 @@ class BackgroundSoundService : Service() {
                 .setSmallIcon(R.mipmap.ic_launcher) // .setSmallIcon(R.drawable.ic_notification)
                 .setSubText("is playing...")
                 .setContentTitle(songTitle)
+                .setLargeIcon(albumArt)
                 .addAction(android.R.drawable.ic_media_previous, "Previous", previousSongPendingIntent)
                 .addAction(playPauseIcon, playPauseLabel, pauseServicePendingIntent)
                 .addAction(android.R.drawable.ic_media_next, "Next", nextSongPendingIntent)
@@ -319,13 +333,57 @@ class BackgroundSoundService : Service() {
     }
 
     private fun updateMetadata() {
-        mediaSession?.setMetadata(
+        val metadataBuilder =
             MediaMetadataCompat
                 .Builder()
                 .putString(MediaMetadataCompat.METADATA_KEY_TITLE, songTitle)
                 .putLong(MediaMetadataCompat.METADATA_KEY_DURATION, player?.duration?.toLong() ?: 0L)
-                .build(),
-        )
+        albumArt?.let { metadataBuilder.putBitmap(MediaMetadataCompat.METADATA_KEY_ALBUM_ART, it) }
+        mediaSession?.setMetadata(metadataBuilder.build())
+    }
+
+    private fun loadAlbumArt(songEntity: SongEntity) {
+        albumArt = null
+        CoroutineScope(Dispatchers.IO).launch {
+            val bitmap = extractAlbumArt(songEntity)
+            withContext(Dispatchers.Main) {
+                albumArt = bitmap
+                updateMetadata()
+                runAsForeground()
+            }
+        }
+    }
+
+    private fun extractAlbumArt(songEntity: SongEntity): Bitmap {
+        val retriever = MediaMetadataRetriever()
+        return try {
+            if (songEntity.isDownloaded) {
+                retriever.setDataSource(File("$MEDIA_PATH/${songEntity.fileName}").absolutePath)
+            } else {
+                retriever.setDataSource(songEntity.url, HashMap<String, String>())
+            }
+            val data = retriever.embeddedPicture ?: throw RuntimeException("No embedded album art")
+            decodeAndScale(data)
+        } catch (e: Exception) {
+            Log.d("BackgroundSoundService", "No embedded album art for ${songEntity.fileName}: ${e.message}")
+            ContextCompat.getDrawable(this, getDrawable(songEntity.movie))!!.toBitmap()
+        } finally {
+            retriever.release()
+        }
+    }
+
+    private fun decodeAndScale(
+        data: ByteArray,
+        maxSize: Int = 512,
+    ): Bitmap {
+        val bounds = BitmapFactory.Options().apply { inJustDecodeBounds = true }
+        BitmapFactory.decodeByteArray(data, 0, data.size, bounds)
+        var sampleSize = 1
+        while (bounds.outWidth / sampleSize > maxSize || bounds.outHeight / sampleSize > maxSize) {
+            sampleSize *= 2
+        }
+        val options = BitmapFactory.Options().apply { inSampleSize = sampleSize }
+        return BitmapFactory.decodeByteArray(data, 0, data.size, options)
     }
 
     private fun updatePlaybackState(state: Int) {

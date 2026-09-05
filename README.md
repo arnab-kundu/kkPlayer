@@ -1,26 +1,28 @@
 ## Build Tools
-Android Studio Panda 2 | 2025.3.2
+Android Studio Quail 3 | 2026.1.3
 
-## Feature planning
-### Main screen
-search FAB button
-search song window visible
-search song
-
-### Setting screen
-Repeat One
-Repeat All
-Repeat None
-
-Light theme
-Dark theme
-Default theme
-
-All songs
-Downloaded songs only
-
-save file location change/ app internal directory or music directory
-
-### Notification
-Liquid glass background
-next song - button color or background
+### How to Run
+1. Grant execution permissions: Run this command in your terminal from the project root:
+```Shell Script
+chmod +x gradlew
+```
+2. Run the command with ./: Always use the dot-slash prefix:
+```Shell Script
+./gradlew <task>
+```
+3. Build
+```Shell Script
+./gradlew assembleDebug
+```
+4. Install APK
+```Shell Script
+./gradlew installDebug
+```
+5. Run Unit Tests
+```Shell Script
+./gradlew unitTestSuite
+```
+6. Run Android Tests / Instrumentation Tests
+```Shell Script
+./gradlew connectedDebugAndroidTest -Pandroid.testInstrumentationRunnerArguments.class=com.akundu.kkplayer.TestSuite
+```

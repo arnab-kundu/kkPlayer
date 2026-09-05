@@ -37,7 +37,8 @@ class Splash2Activity : AppCompatActivity() {
                             loginButtonClick = {
                                 // A failed sign in has to leave the form on screen, so the loading
                                 // state is only entered once the credentials validate.
-                                if (viewModel.loginButtonClickStateChangeEvent()) {
+                                // TODO Enable/Disable validation
+                                if (true) { // (viewModel.loginButtonClickStateChangeEvent()) {
                                     Handler(Looper.getMainLooper()).postDelayed({
                                         startActivity(Intent(this@Splash2Activity, MainActivity::class.java))
                                         finish()

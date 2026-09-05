@@ -39,12 +39,7 @@ object FolderFiles {
         context: Context? = null,
         folderName: String,
     ): String {
-        val logFolder: File =
-            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.R) {
-                File(Environment.getExternalStorageDirectory(), "$PARENT_DIRECTORY_NAME/$folderName")
-            } else {
-                File(context?.getExternalFilesDir(PARENT_DIRECTORY_NAME), folderName)
-            }
+        val logFolder: File = File(context?.getExternalFilesDir(PARENT_DIRECTORY_NAME), folderName)
 
         if (!logFolder.exists()) {
             try {
@@ -174,12 +169,7 @@ object FolderFiles {
         folderName: String,
         fileName: String,
     ): File {
-        val textFile: File =
-            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.R) {
-                File(Environment.getExternalStorageDirectory(), "$PARENT_DIRECTORY_NAME/$folderName/$fileName.txt")
-            } else {
-                File(context?.getExternalFilesDir(PARENT_DIRECTORY_NAME), "$folderName/$fileName.txt")
-            }
+        val textFile: File = File(context?.getExternalFilesDir(PARENT_DIRECTORY_NAME), "$folderName/$fileName.txt")
 
         if (!textFile.exists()) {
             try {
@@ -202,12 +192,7 @@ object FolderFiles {
         folderName: String,
         fileName: String,
     ): File {
-        val logFile: File =
-            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.R) {
-                File(Environment.getExternalStorageDirectory(), "$PARENT_DIRECTORY_NAME/$folderName/log-$fileName.txt")
-            } else {
-                File(context?.getExternalFilesDir(PARENT_DIRECTORY_NAME), "$folderName/log-$fileName.txt")
-            }
+        val logFile: File = File(context?.getExternalFilesDir(PARENT_DIRECTORY_NAME), "$folderName/log-$fileName.txt")
 
         if (!logFile.exists()) {
             try {
@@ -233,12 +218,7 @@ object FolderFiles {
         fileName: String,
         fileExtension: String,
     ): Boolean {
-        val file: File =
-            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.R) {
-                File(Environment.getExternalStorageDirectory(), "$PARENT_DIRECTORY_NAME/$folderName/$fileName$fileExtension")
-            } else {
-                File(context?.getExternalFilesDir(PARENT_DIRECTORY_NAME), "$folderName/$fileName$fileExtension")
-            }
+        val file: File = File(context?.getExternalFilesDir(PARENT_DIRECTORY_NAME), "$folderName/$fileName$fileExtension")
 
         if (file.exists()) {
             return file.delete()
@@ -320,19 +300,17 @@ object FolderFiles {
         filename: String,
     ): File? {
         try {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                val contentResolver: ContentResolver = context.contentResolver
-                val contentValues: ContentValues = ContentValues()
-                contentValues.put(MediaStore.Downloads.DISPLAY_NAME, filename)
-                contentValues.put(MediaStore.MediaColumns.RELATIVE_PATH, Environment.DIRECTORY_DOWNLOADS)
-                val collection: Uri = MediaStore.Downloads.getContentUri(MediaStore.VOLUME_EXTERNAL_PRIMARY)
-                val fileUri: Uri? = contentResolver.insert(collection, contentValues)
-                if (fileUri != null) {
-                    val outputStream: OutputStream? = contentResolver.openOutputStream(fileUri)
-                    Objects.requireNonNull(outputStream)
-                }
-                return File(fileUri.toString())
+            val contentResolver: ContentResolver = context.contentResolver
+            val contentValues: ContentValues = ContentValues()
+            contentValues.put(MediaStore.Downloads.DISPLAY_NAME, filename)
+            contentValues.put(MediaStore.MediaColumns.RELATIVE_PATH, Environment.DIRECTORY_DOWNLOADS)
+            val collection: Uri = MediaStore.Downloads.getContentUri(MediaStore.VOLUME_EXTERNAL_PRIMARY)
+            val fileUri: Uri? = contentResolver.insert(collection, contentValues)
+            if (fileUri != null) {
+                val outputStream: OutputStream? = contentResolver.openOutputStream(fileUri)
+                Objects.requireNonNull(outputStream)
             }
+            return File(fileUri.toString())
         } catch (e: FileNotFoundException) {
             e.printStackTrace()
         }

@@ -3,10 +3,8 @@ package com.akundu.kkplayer.permission
 import android.Manifest
 import android.app.Activity
 import android.content.pm.PackageManager
-import android.os.Build
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
-import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat.shouldShowRequestPermissionRationale
 import androidx.core.content.ContextCompat
 import com.akundu.kkplayer.Logg
@@ -16,7 +14,6 @@ object RuntimePermission {
      * Request Notification permission at runtime
      * for Android 13 and above
      */
-    @RequiresApi(api = Build.VERSION_CODES.TIRAMISU)
     fun askNotificationPermission(
         activity: Activity,
         requestPermissionLauncher: ActivityResultLauncher<String>,

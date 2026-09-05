@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<lint>
+    <!-- The app requests broad media library access to browse the user's audio/video collection,
+         not photo-specific access, so Android 14's partial "Selected Photos" access flow does not apply.
+         tools:ignore on the manifest elements does not suppress this check, hence the lint.xml entry. -->
+    <issue id="SelectedPhotoAccess" severity="ignore" />
+</lint>

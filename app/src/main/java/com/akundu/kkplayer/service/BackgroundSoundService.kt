@@ -9,7 +9,6 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.media.MediaMetadataRetriever
 import android.media.MediaPlayer
-import android.os.Build
 import android.os.Handler
 import android.os.IBinder
 import android.os.Looper
@@ -246,12 +245,10 @@ class BackgroundSoundService : Service() {
         notificationIntent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
         val pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, PendingIntent.FLAG_IMMUTABLE)
         val mNotificationManager = applicationContext.getSystemService(NOTIFICATION_SERVICE) as NotificationManager
-        if (Build.VERSION.SDK_INT >= 26) {
-            val channel = NotificationChannel("2", "Player channel", NotificationManager.IMPORTANCE_HIGH)
-            channel.description = "Playing song notification"
-            channel.setShowBadge(true)
-            mNotificationManager.createNotificationChannel(channel)
-        }
+        val channel = NotificationChannel("2", "Player channel", NotificationManager.IMPORTANCE_HIGH)
+        channel.description = "Playing song notification"
+        channel.setShowBadge(true)
+        mNotificationManager.createNotificationChannel(channel)
 
         val stopServicePendingIntent =
             PendingIntent.getBroadcast(

@@ -1,7 +1,6 @@
 package com.akundu.kkplayer.feature.main.view
 
 import android.content.Context
-import android.os.Build
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.ComponentActivity
@@ -94,9 +93,7 @@ class MainActivity : ComponentActivity() {
         }
 
         // ActivityCompat.requestPermissions(this@MainActivity, arrayOf(READ_EXTERNAL_STORAGE, WRITE_EXTERNAL_STORAGE), 111)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            askNotificationPermission(this, requestPermissionLauncher)
-        }
+        askNotificationPermission(this, requestPermissionLauncher)
     }
 
     @Suppress("RemoveExplicitTypeArguments")

@@ -29,6 +29,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -41,7 +42,7 @@ import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
@@ -71,7 +72,7 @@ fun PlayerPage(
     song: SongEntity,
     duration: Int = 0,
     currentPosition: Int = 0,
-    bitmap: ImageBitmap = BitmapFactory.decodeResource(LocalContext.current.resources, R.drawable.ic_music_album_avatar1).asImageBitmap(),
+    bitmap: ImageBitmap = BitmapFactory.decodeResource(LocalResources.current, R.drawable.ic_music_album_avatar1).asImageBitmap(),
     playClick: () -> Unit,
     pauseClick: () -> Unit,
     nextClick: () -> Unit,
@@ -178,7 +179,7 @@ private fun VolumeSwipeZone(
     onVolumeChange: (Float) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    var dragAccumulatorPx by remember { mutableStateOf(0f) }
+    var dragAccumulatorPx by remember { mutableFloatStateOf(0f) }
     Box(
         modifier =
             modifier.pointerInput(Unit) {
@@ -205,7 +206,7 @@ private fun VolumeSwipeZone(
 
 @Composable
 fun AlbumArt(
-    bitmap: ImageBitmap = BitmapFactory.decodeResource(LocalContext.current.resources, R.drawable.ic_music_album_avatar1).asImageBitmap(),
+    bitmap: ImageBitmap = BitmapFactory.decodeResource(LocalResources.current, R.drawable.ic_music_album_avatar1).asImageBitmap(),
     songTitle: String = "Tu hi meri sab hay",
     artist: String = "Arijit Singh",
 ) {

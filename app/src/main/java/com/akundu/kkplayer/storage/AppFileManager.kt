@@ -2,9 +2,7 @@ package com.akundu.kkplayer.storage
 
 import android.content.Context
 import android.media.MediaScannerConnection
-import android.os.Build.VERSION_CODES
 import android.util.Log
-import androidx.annotation.RequiresApi
 import com.akundu.kkplayer.BuildConfig
 import com.akundu.kkplayer.Logg
 import com.akundu.kkplayer.storage.FileLocationCategory.CACHE_DIRECTORY
@@ -115,7 +113,6 @@ class AppFileManager :
         return file
     }
 
-    @RequiresApi(VERSION_CODES.N)
     override fun createFile(
         context: Context,
         fileLocationCategory: FileLocationCategory,
@@ -255,7 +252,6 @@ class AppFileManager :
         deleteFile(sourcePath)
     }
 
-    @RequiresApi(VERSION_CODES.N)
     override fun renameFile(
         context: Context,
         existingFilePath: String,
@@ -452,7 +448,6 @@ class AppFileManager :
         }
     }
 
-    @RequiresApi(VERSION_CODES.N)
     override fun encryptFile(
         context: Context,
         srcFilePath: String,
@@ -480,7 +475,6 @@ class AppFileManager :
         return encryptedOutputFile
     }
 
-    @RequiresApi(VERSION_CODES.N)
     override fun decryptFile(
         context: Context,
         encryptedFilePath: String,

@@ -32,7 +32,10 @@ jobs:
       
     - name: Build with Gradle
       run: ./gradlew assemble${{ inputs.buildType == 'qa' && 'Qa' || inputs.buildType == 'debug' && 'Debug' || 'Release' }}
-    
+      
+    - name: Run UnitTests
+      run: ./gradlew unitTestSuite
+      
     - name: ktLint
       run: ./gradlew ktlintCheck
       
